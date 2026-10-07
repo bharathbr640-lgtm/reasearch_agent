@@ -1,0 +1,9 @@
+
+⚠️  Run finished but findings were not saved.
+Preserved partial findings to: outputs/72356611-f0ef-4258-9ed1-17feb57880c3/project_findings_partial.json
+Audit trace recorded at: outputs/72356611-f0ef-4258-9ed1-17feb57880c3/project_research_trace.json
+Loaded confirmed research specification for session: 72356611-f0ef-4258-9ed1-17feb57880c3
+Problem: Build an Android-only offline mobile app that lets a coffee farmer photograph a leaf, then instantly shows the diagnosed...
+
+Config: max_turns=60, max_tool_calls=30
+Starting ProjectResearcher agent run...

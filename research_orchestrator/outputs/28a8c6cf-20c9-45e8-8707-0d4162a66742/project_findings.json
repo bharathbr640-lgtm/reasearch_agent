@@ -1,0 +1,191 @@
+{
+  "session_id": "28a8c6cf-20c9-45e8-8707-0d4162a66742",
+  "search_queries_run": [
+    "real-time hate speech detection transformer",
+    "streaming toxic comment classification BERT",
+    "high throughput toxicity detection twitter",
+    "explainable hate speech detection transformer",
+    "hate speech detection",
+    "hate speech detection explainable",
+    "jigsaw toxic comment"
+  ],
+  "findings": [
+    {
+      "name": "ali-saied/hate-speech-detection-xai",
+      "url": "https://github.com/ali-saied/hate-speech-detection-xai",
+      "platform": "github",
+      "kind": "repository",
+      "problem_solved": "Explainable Hate Speech Detection using Transformer Models",
+      "input_output": "Text comment input; model returns classification with explainability output (details not specified)",
+      "dataset": "not found",
+      "model_and_architecture": "Transformer model (unspecified) with explainable AI",
+      "method": "Explainable AI techniques applied to transformer-based classifier (model architecture unspecified)",
+      "evaluation_and_results": "not found",
+      "repository_details": {
+        "stars": 0,
+        "license": "not found",
+        "language": "Jupyter Notebook",
+        "last_update": "2026-04-21T18:24:01Z",
+        "archived": "not found"
+      },
+      "reproducibility": "not found",
+      "known_limitations": "not found",
+      "field_sources": {}
+    },
+    {
+      "name": "lotachipro-prog/hate-speech-detection-nlp",
+      "url": "https://github.com/lotachipro-prog/hate-speech-detection-nlp",
+      "platform": "github",
+      "kind": "repository",
+      "problem_solved": "Automated hate speech detection with SHAP token-level explanations",
+      "input_output": "Text comment input; classification output with SHAP token explanations and confidence scores",
+      "dataset": "Jigsaw Toxic Comment Classification Challenge (Kaggle)",
+      "model_and_architecture": "BERT (bert-base-uncased), RoBERTa (roberta-base), HateBERT fine-tuned",
+      "method": "Fine-tuning BERT, RoBERTa, HateBERT; SHAP for explainability; Gradio demo deployment",
+      "evaluation_and_results": "Macro F1 0.9134, AUC-ROC 0.9767 (BERT); HateBERT F1 0.9125; Test set Macro F1 0.8005, AUC-ROC 0.9638, Recall 0.9041",
+      "repository_details": {
+        "stars": 0,
+        "license": "not found",
+        "language": "Jupyter Notebook",
+        "last_update": "2026-04-20T00:26:34Z",
+        "archived": "not found"
+      },
+      "reproducibility": "Full notebook pipeline (EDA, baseline, transformer training, SHAP explainability, Gradio demo, test evaluation) with Google Colab instructions",
+      "known_limitations": "Focus on binary toxic vs non‑toxic; may not handle multilingual or sarcasm; no streaming architecture",
+      "field_sources": {}
+    },
+    {
+      "name": "Karangarg01/peft-hate-speech-detection",
+      "url": "https://github.com/Karangarg01/peft-hate-speech-detection",
+      "platform": "github",
+      "kind": "repository",
+      "problem_solved": "Hate speech detection using DistilBERT fine-tuned with Parameter‑Efficient Fine‑Tuning (LoRA) for reduced computation",
+      "input_output": "Text comment input; binary classification output (toxic vs non‑toxic) with confidence scores",
+      "dataset": "Civil Comments dataset (binary toxicity scores converted to labels)",
+      "model_and_architecture": "DistilBERT with LoRA fine‑tuning",
+      "method": "PEFT (LoRA) applied to DistilBERT; weighted loss for class imbalance; Streamlit UI for real‑time inference",
+      "evaluation_and_results": "not found",
+      "repository_details": {
+        "stars": 0,
+        "license": "not found",
+        "language": "Python",
+        "last_update": "2026-04-14T21:14:04Z",
+        "archived": "not found"
+      },
+      "reproducibility": "Training script (train.py), Streamlit app (app.py), requirements.txt, step‑by‑step usage instructions provided",
+      "known_limitations": "Difficulty detecting sarcasm and implicit hate speech; limited multilingual support; performance depends on dataset quality",
+      "field_sources": {}
+    },
+    {
+      "name": "sntsemilio/Hate-Speech-Detection-System",
+      "url": "https://github.com/sntsemilio/Hate-Speech-Detection-System",
+      "platform": "github",
+      "kind": "repository",
+      "problem_solved": "Advanced hate speech detection with custom lightweight transformer for real‑time inference",
+      "input_output": "Text comment input; classification label (hate speech vs normal) with confidence and ~45 ms latency",
+      "dataset": "not explicitly stated (project mentions a dataset used for a course project)",
+      "model_and_architecture": "Custom transformer (847K parameters); also BERT and RoBERTa benchmarks",
+      "method": "Custom transformer architecture (16 heads, d_model=64); Keras Tuner hyperparameter optimization; Streamlit interactive demo; benchmark against BERT and RoBERTa",
+      "evaluation_and_results": "Accuracy 93%, Macro F1 0.74, Inference time 45 ms, 847K parameters",
+      "repository_details": {
+        "stars": 0,
+        "license": "MIT",
+        "language": "Jupyter Notebook",
+        "last_update": "2025-07-03T19:54:05Z",
+        "archived": "not found"
+      },
+      "reproducibility": "Notebook pipeline (EDA, baseline, transformer training, SHAP explainability, Gradio demo, test evaluation), requirements.txt, Streamlit app, model files with clear installation instructions",
+      "known_limitations": "Difficulty with sarcasm and implicit hate speech; English‑only; not tested on streaming pipelines",
+      "field_sources": {}
+    },
+    {
+      "name": "0xSatish/multilingual-hate-speech-detector",
+      "url": "https://github.com/0xSatish/multilingual-hate-speech-detector",
+      "platform": "github",
+      "kind": "repository",
+      "problem_solved": "Real‑time multilingual hate speech and abusive language detection via Chrome extension and FastAPI backend",
+      "input_output": "Extracted text from web pages; classification into Hate, Offensive, Neutral with confidence; optional content blurring",
+      "dataset": "not found",
+      "model_and_architecture": "Hugging Face transformer model (unspecified) with rule‑based multilingual enhancements",
+      "method": "Chrome extension captures DOM text; FastAPI backend tokenizes and runs transformer model; rule‑based multilingual checks; badges injected into page",
+      "evaluation_and_results": "not found",
+      "repository_details": {
+        "stars": 0,
+        "license": "not found",
+        "language": "Python",
+        "last_update": "2026-07-03T20:47:48Z",
+        "archived": "not found"
+      },
+      "reproducibility": "Source code for extension and backend provided; architecture diagrams included; training scripts and model files not included",
+      "known_limitations": "Multilingual focus; lacks explicit latency/throughput metrics; model details unspecified",
+      "field_sources": {}
+    },
+    {
+      "name": "Gladiaio/hate-speech-detection_bert-base-uncased-hatexplain_base_traced",
+      "url": "https://huggingface.co/Gladiaio/hate-speech-detection_bert-base-uncased-hatexplain_base_traced",
+      "platform": "huggingface",
+      "kind": "model",
+      "problem_solved": "Hate speech detection using BERT‑base‑uncased fine‑tuned on the HateXplain dataset and exported as a traced model for fast inference",
+      "input_output": "Text input; classification output (toxicity label) (specific output format not detailed)",
+      "dataset": "not found",
+      "model_and_architecture": "BERT‑base‑uncased fine‑tuned on HateXplain, exported as traced model",
+      "method": "Fine‑tuning on HateXplain; model tracing (TorchScript) for accelerated inference",
+      "evaluation_and_results": "not found",
+      "repository_details": {
+        "stars": 0,
+        "license": "not found",
+        "language": "not found",
+        "last_update": "not found",
+        "archived": "not found"
+      },
+      "reproducibility": "not found",
+      "known_limitations": "not found",
+      "field_sources": {}
+    },
+    {
+      "name": "eclat12450/fine-tuned-KcELECTRA-base-hatespeechdetection",
+      "url": "https://huggingface.co/eclat12450/fine-tuned-KcELECTRA-base-hatespeechdetection",
+      "platform": "huggingface",
+      "kind": "model",
+      "problem_solved": "Hate speech detection using KcELECTRA‑base fine‑tuned for text classification",
+      "input_output": "Text input; classification output (toxicity label) (details not provided)",
+      "dataset": "not found",
+      "model_and_architecture": "KcELECTRA‑base fine‑tuned for hate speech detection",
+      "method": "Fine‑tuning KcELECTRA‑base on a hate speech dataset (unspecified) using PyTorch Transformers",
+      "evaluation_and_results": "not found",
+      "repository_details": {
+        "stars": 0,
+        "license": "not found",
+        "language": "not found",
+        "last_update": "not found",
+        "archived": "not found"
+      },
+      "reproducibility": "not found",
+      "known_limitations": "not found",
+      "field_sources": {}
+    },
+    {
+      "name": "affahrizain/jigsaw-toxic-comment",
+      "url": "https://huggingface.co/datasets/affahrizain/jigsaw-toxic-comment",
+      "platform": "huggingface",
+      "kind": "dataset",
+      "problem_solved": "Provides annotated toxic comment data for training and evaluating hate speech detection models",
+      "input_output": "Each record contains 'comment_clean' (text) and 'labels' (binary toxicity label)",
+      "dataset": "Jigsaw Toxic Comment dataset (train 159,100 examples; dev 22,393; test 63,978)",
+      "model_and_architecture": "not applicable",
+      "method": "Dataset hosted on Hugging Face Datasets library; available in parquet format; can be loaded via datasets.load_dataset",
+      "evaluation_and_results": "not applicable",
+      "repository_details": {
+        "stars": "not applicable",
+        "license": "not found",
+        "language": "not applicable",
+        "last_update": "not found",
+        "archived": "not found"
+      },
+      "reproducibility": "Dataset card provides details and loading instructions",
+      "known_limitations": "Binary label only; annotator bias may affect fairness",
+      "field_sources": {}
+    }
+  ],
+  "notes": "Executed 7 search queries (4 on GitHub, 3 on Hugging Face). One GitHub query ('high throughput toxicity detection twitter') returned zero results. All other queries yielded candidate repositories, models, or dataset. Fields not explicitly described in source material are marked as 'not found'."
+}

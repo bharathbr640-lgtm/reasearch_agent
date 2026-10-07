@@ -1,0 +1,31 @@
+{
+  "session_id": "72356611-f0ef-4258-9ed1-17feb57880c3",
+  "status": "incomplete",
+  "failure_reason": "Agent completed execution without calling save_findings",
+  "search_queries_run": [
+    "coffee leaf disease dataset",
+    "coffee leaf disease tensorflow lite",
+    "coffee leaf disease"
+  ],
+  "candidate_urls_seen": [
+    "https://github.com/iam-stanis/coffee-leaf-diseases",
+    "https://github.com/bonfaceonyango/coffee_leaf_disease_detection_CNN",
+    "https://github.com/Divyanama/coffee-leaf-disease-svm",
+    "https://github.com/vislavathlokeshnayak-crypto/coffee-leaf-disease-detection",
+    "https://github.com/Saif-aljumaili/Detection-Coffee-leaf-Disease-Original_DataSet",
+    "https://github.com/guifnpaiva/coffee-leaf-disease-classification-case-study",
+    "https://huggingface.co/Walusimbi/Coffee_leaf_disease_detection",
+    "https://huggingface.co/brainer-fp66/vit-coffee-leaf-diseases",
+    "https://huggingface.co/fuxi611/coffee-rice-leaf-disease-rf-detr",
+    "https://huggingface.co/Huyt/arabica-coffee-leaf-disease-efficientnet-b0",
+    "https://huggingface.co/datasets/brainer-fp66/coffee-leaf-diseases",
+    "https://huggingface.co/datasets/Project-AgML/arabica_coffee_leaf_disease_classification",
+    "https://huggingface.co/spaces/dhanushdhanush0979/coffee-leaf-disease-detector",
+    "https://huggingface.co/spaces/Roza32/coffee-leaf-diseases-detection-using-dl-model",
+    "https://huggingface.co/spaces/Roza32/coffee-leaf-disease-dl-model",
+    "https://huggingface.co/spaces/Roza32/coffee-leaf-disease-using-dl-model",
+    "https://huggingface.co/spaces/Roza32/diseases-detection-coffee-leaf-using-dl-model"
+  ],
+  "total_tool_calls_attempted": 15,
+  "notes": "The run was incomplete and did not call save_findings before terminating. Reason: Agent completed execution without calling save_findings. This partial file preserves the search queries executed and the candidate URLs inspected before termination."
+}
