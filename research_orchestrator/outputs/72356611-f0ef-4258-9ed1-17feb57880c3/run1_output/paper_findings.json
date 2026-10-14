@@ -1,0 +1,673 @@
+{
+  "session_id": "72356611-f0ef-4258-9ed1-17feb57880c3",
+  "search_queries_run": [
+    "mobile offline coffee leaf disease detection deep learning Android TensorFlow Lite",
+    "coffee leaf disease classification deep learning",
+    "offline mobile app plant disease detection Android TensorFlow Lite tomato",
+    "smartphone coffee leaf disease detection app"
+  ],
+  "exact_research_found": false,
+  "findings": [
+    {
+      "title": "A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/1904.00742",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "offline operation not stated in the text (found: \"implementation as an App that allow the detection of the foliar damages\")",
+      "problem_addressed": "not found",
+      "research_objective": "not found",
+      "domain": "not found",
+      "input_type": "Smartphone‑captured coffee leaf image",
+      "output_type": "Disease class (rust or leaf miner) and severity percentage",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "not found",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "Artificial Neural Network (Backpropagation) and Extreme Learning Machine",
+        "architecture": "Hidden layer with 10 neurons, ReLu activation",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "not found",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "sensitivity and precision (also accuracy, precision, recall)",
+        "reported_results": "96.013% accuracy",
+        "baseline_comparisons": "Artificial Neural Network trained with Backpropagation",
+        "evidence_location": "a smartphone application to detection and classification of coffee leaf miner and coffee leaf rust, abstract, 1\\. introduction, 2\\. algorithms for digital image processing of coffee leaves, 2.1.1. the color space ycbcr"
+      },
+      "limitations": "Camera automatic adjustment causes color variations that hurt segmentation, especially with non‑white backgrounds",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "Need more robust segmentation methods that work across varied backgrounds",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "In this work, artificial neural network trained with Backpropagation algorithms and extreme learning machine was used.",
+          "section": "results",
+          "field": "model_name"
+        },
+        {
+          "quote": "96.013 ± 0.950",
+          "section": "results",
+          "field": "reported_results"
+        },
+        {
+          "quote": "The camera’s automatic adjustment, which depends on the ambient colors, generated images with different shades of green.",
+          "section": "conclusion",
+          "field": "limitations"
+        },
+        {
+          "quote": "The next steps for future work is to investigate segmentation methods that are more robust, i.e., that present good results for various types of backgrounds.",
+          "section": "conclusion",
+          "field": "research_gap"
+        },
+        {
+          "quote": "implementation as an App that allow the detection of the foliar damages",
+          "section": "abstract",
+          "field": "phone_app"
+        }
+      ],
+      "source_urls": [
+        "https://arxiv.org/abs/1904.00742"
+      ]
+    },
+    {
+      "title": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "offline operation not stated in the text",
+      "problem_addressed": "Detection and classification of coffee leaf diseases",
+      "research_objective": "Develop a hybrid deep learning framework for accurate coffee leaf disease classification",
+      "domain": "Coffee agriculture / plant disease detection",
+      "input_type": "RGB leaf image (224 × 224 × 3)",
+      "output_type": "not found",
+      "dataset": {
+        "name": "Kaggle coffee leaf disease dataset",
+        "description": "Kaggle coffee leaf disease dataset",
+        "source": "not found",
+        "size": "58,555 images",
+        "split": "70% training, 15% testing, 15% validation"
+      },
+      "model": {
+        "model_name": "EffResViT‑SE FusionNet",
+        "architecture": "not found",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "not found",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "accuracy, precision, recall, F1‑score",
+        "reported_results": "validation accuracy ≈ 99%",
+        "baseline_comparisons": "not found",
+        "evidence_location": "effresvit-se fusionnet: a hybrid deep learning framework for accurate classification of coffee leaf diseases, bhoomika mehta, salil bharany, dalia h elkamchouchi, ateeq ur rehman"
+      },
+      "limitations": "High parameter count prevents real‑time edge/mobile use",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "Coffee is a vital agricultural commodity that sustains millions of farmers worldwide, yet its cultivation is increasingly threatened by devastating leaf diseases such as Leaf Rust, Phoma, Cercospora, and Leaf Miner.",
+          "section": "abstract",
+          "field": "problem_addressed"
+        },
+        {
+          "quote": "To address these challenges, we propose EffResViT‑SE FusionNet, a novel hybrid deep learning framework that integrates EfficientNetB3 and ResNet50 enhanced with Squeeze‑and‑Excitation (SE) blocks for adaptive local feature recalibration, along with a Vision Transformer (ViT) for modeling global contextual dependencies.",
+          "section": "abstract",
+          "field": "research_objective"
+        },
+        {
+          "quote": "This study utilized the publicly available dataset from the Kaggle repository.",
+          "section": "3.1. input dataset",
+          "field": "dataset_name"
+        },
+        {
+          "quote": "The dataset consists of 58,555 images across five categories",
+          "section": "3.1. input dataset",
+          "field": "dataset_size"
+        },
+        {
+          "quote": "The proposed EffResViT‑SE FusionNet model",
+          "section": "3.3. proposed effresvit-se fusionnet model",
+          "field": "model_name"
+        },
+        {
+          "quote": "the validation accuracy maintains itself, increasing from approximately 0.6 to approximately 0.99.",
+          "section": "4.5. results on proposed effresvit-se fusionnet model",
+          "field": "reported_results"
+        },
+        {
+          "quote": "The EfficientNetB3‑ResNet50‑ViT hybrid model complicates and raises the number of parameters, which prevents real‑time use in the edge and mobile environment.",
+          "section": "5. conclusion and future work",
+          "field": "limitations"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/"
+      ]
+    },
+    {
+      "title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "offline operation not stated in the text",
+      "problem_addressed": "Plant diseases threaten agricultural sustainability by reducing crop yields.",
+      "research_objective": "enhancing the classification of diseases and estimating their severity in coffee leaf images",
+      "domain": "Plant disease",
+      "input_type": "not found",
+      "output_type": "not found",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "1,685 images",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "not found",
+        "architecture": "not found",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "not found",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "not found",
+        "reported_results": "not found",
+        "baseline_comparisons": "not found",
+        "evidence_location": "deepempr: coffee leaf disease detection with deep learning and enhanced multivariance product representation, ahmet topal, burcu tunga, erfan babaee tirkolaee, abstract"
+      },
+      "limitations": "several areas remain unexplored, including background bias",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "Plant diseases threaten agricultural sustainability by reducing crop yields.",
+          "section": "abstract",
+          "field": "problem_addressed"
+        },
+        {
+          "quote": "This study focuses on enhancing the classification of diseases and estimating their severity in coffee leaf images.",
+          "section": "abstract",
+          "field": "research_objective"
+        },
+        {
+          "quote": "The dataset comprises a total of 1,685 images, categorized into two primary classes: one representing healthy images and the other representing diseased images.",
+          "section": "dataset description",
+          "field": "dataset_size"
+        },
+        {
+          "quote": "several areas remain unexplored. One of the primary factors influencing classification success is the bias introduced by the background, which should be addressed in future research.",
+          "section": "conclusion",
+          "field": "limitations"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/"
+      ]
+    },
+    {
+      "title": "Arabica coffee leaf images dataset for coffee leaf disease detection and classification.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "offline operation not stated in the text",
+      "problem_addressed": "coffee plant leaf disease recognition and classification",
+      "research_objective": "introduce Arabica coffee leaf datasets JMuBEN and JMuBEN2",
+      "domain": "Machine learning, Deep learning, Disease diagnosis",
+      "input_type": "leaf images",
+      "output_type": "disease class labels",
+      "dataset": {
+        "name": "JMuBEN and JMuBEN2",
+        "description": "JMuBEN and JMuBEN2",
+        "source": "not found",
+        "size": "58,555",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "not applicable",
+        "architecture": "not applicable",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "not found",
+      "experiments_and_results": {
+        "experimental_setup": "not applicable",
+        "evaluation_metrics": "not applicable",
+        "reported_results": "not applicable",
+        "baseline_comparisons": "not applicable",
+        "evidence_location": "arabica coffee leaf images dataset for coffee leaf disease detection and classification, jennifer jepkoech, david muchangi mugo, benson k kenduiywo, edna chebet too"
+      },
+      "limitations": "not found",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "https://github.com/bonfaceonyango/coffee_leaf_disease_detection_CNN",
+        "is_official": true,
+        "framework": "not found",
+        "details": "GitHub repo: coffee_leaf_disease_detection_CNN (0 stars) - This repository is aimed at using published Arabica coffee leaf images dataset  for coffee leaf dise"
+      },
+      "key_evidence": [
+        {
+          "quote": "The Arabica datasets contain images that facilitates training and validation during the utilization of deep learning algorithms for coffee plant leaf disease recognition and classification.",
+          "section": "abstract",
+          "field": "problem_addressed"
+        },
+        {
+          "quote": "This article introduces Arabica coffee leaf datasets known as JMuBEN and JMuBEN2.",
+          "section": "abstract",
+          "field": "research_objective"
+        },
+        {
+          "quote": "JMuBEN and JMuBEN2",
+          "section": "abstract",
+          "field": "dataset_name"
+        },
+        {
+          "quote": "In total, the dataset contains 58,555 leaf images",
+          "section": "abstract",
+          "field": "dataset_size"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/"
+      ]
+    },
+    {
+      "title": "GreenAid: a confidence-weighted ensemble deep learning system for real-time plant disease detection and management.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13284324/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "offline operation not stated in the text (found: \"cross-platform mobile application supporting offline inference via TensorFlow Lite\")",
+      "problem_addressed": "Plant diseases cause 20–40% annual crop losses worldwide, and detection methods are slow, subjective, and inaccessible to smallholder farmers.",
+      "research_objective": "Present GreenAid, an end-to-end plant disease detection and management system integrating a confidence-weighted ensemble and offline mobile app.",
+      "domain": "Plant disease detection and precision agriculture",
+      "input_type": "High-resolution RGB images of crop leaves",
+      "output_type": "Disease class label (one of 38 categories)",
+      "dataset": {
+        "name": "PlantVillage",
+        "description": "PlantVillage",
+        "source": "not found",
+        "size": "approximately 87,000 images",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "GreenAid confidence-weighted ensemble",
+        "architecture": "VGG16, ResNet50, InceptionV3 fused with per-class F1-score reliability weights",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "not found",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "not found",
+        "reported_results": "not found",
+        "baseline_comparisons": "not found",
+        "evidence_location": "greenaid: a confidence-weighted ensemble deep learning system for real-time plant disease detection and management, fatma m talaat, mohammed tawfik, warda m shaban, abstract"
+      },
+      "limitations": "No cross-dataset validation",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "Plant diseases cause 20–40% annual crop losses worldwide, yet conventional detection methods remain slow, subjective, and inaccessible to smallholder farmers.",
+          "section": "abstract",
+          "field": "problem_addressed"
+        },
+        {
+          "quote": "This work presents GreenAid, an end-to-end plant disease detection and management system that bridges the gap between laboratory-level deep learning performance and practical agricultural deployment.",
+          "section": "abstract",
+          "field": "research_objective"
+        },
+        {
+          "quote": "The dataset used for all experiments is the publicly available PlantVillage dataset",
+          "section": "dataset description",
+          "field": "dataset_name"
+        },
+        {
+          "quote": "The dataset comprises approximately 87,000 RGB images of crop leaves",
+          "section": "dataset description",
+          "field": "dataset_size"
+        },
+        {
+          "quote": "confidence-weighted ensemble of three CNN architectures (VGG16, ResNet50, InceptionV3)",
+          "section": "abstract",
+          "field": "model_name"
+        },
+        {
+          "quote": "The most significant limitation is the absence of cross-dataset validation.",
+          "section": "limitations",
+          "field": "limitations"
+        },
+        {
+          "quote": "cross-platform mobile application supporting offline inference via TensorFlow Lite",
+          "section": "abstract",
+          "field": "phone_app"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC13284324/"
+      ]
+    },
+    {
+      "title": "LeafLiteX mobile application for leaf disease detection using U-Net segmentation and lightweight deep learning.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pubmed.ncbi.nlm.nih.gov/42420345/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/42420345/"
+      ]
+    },
+    {
+      "title": "Multi-Class Plant Leaf Disease Detection: A CNN-based Approach with Mobile App Integration",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/2408.15289",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://arxiv.org/abs/2408.15289"
+      ]
+    },
+    {
+      "title": "PMVT: a lightweight vision transformer for plant disease identification on mobile devices.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10562605/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10562605/"
+      ]
+    },
+    {
+      "title": "Plant disease detection model for edge computing devices.",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10748432/",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10748432/"
+      ]
+    },
+    {
+      "title": "Mobile-Friendly Deep Learning for Plant Disease Detection: A Lightweight CNN Benchmark Across 101 Classes of 33 Crops",
+      "authors": [],
+      "year": "not found",
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/2508.10817",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://arxiv.org/abs/2508.10817"
+      ]
+    }
+  ],
+  "notes": "Search queries executed (4): \"mobile offline coffee leaf disease detection deep learning Android TensorFlow Lite\", \"coffee leaf disease classification deep learning\", \"offline mobile app plant disease detection Android TensorFlow Lite tomato\", \"smartphone coffee leaf disease detection app\". Candidate papers verified with full-text reading (5): A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust, EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases., DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation., Arabica coffee leaf images dataset for coffee leaf disease detection and classification., GreenAid: a confidence-weighted ensemble deep learning system for real-time plant disease detection and management.. Candidate papers with search snippet only (5): LeafLiteX mobile application for leaf disease detection using U-Net segmentation and lightweight deep learning., Multi-Class Plant Leaf Disease Detection: A CNN-based Approach with Mobile App Integration, PMVT: a lightweight vision transformer for plant disease identification on mobile devices., Plant disease detection model for edge computing devices., Mobile-Friendly Deep Learning for Plant Disease Detection: A Lightweight CNN Benchmark Across 101 Classes of 33 Crops. Validator rejected fields (22): problem_addressed (quote not found in paper text), research_objective (quote not found in paper text), domain (quote not found in paper text), dataset_name (quote not found in paper text)."
+}

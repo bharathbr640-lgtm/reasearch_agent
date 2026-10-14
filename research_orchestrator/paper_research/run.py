@@ -5,14 +5,27 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import re
 import sys
+import time
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from agents import Runner
 
 from app.config import MAX_TURNS, MAX_TOOL_CALLS
 from paper_research.agent import paper_researcher_agent
-from paper_research.tools import PaperResearchContext
+from paper_research.tools import (
+    PaperResearchContext,
+    normalize_paper_identifiers,
+    read_paper_full_text_internal,
+    bucket_paper_sections,
+    _extract_sections,
+    extract_paper_evidence,
+    validate_extraction,
+    assemble_findings,
+)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -50,18 +63,7 @@ def _write_partial_findings(
     partial_path = output_dir / "paper_findings_partial.json"
 
     queries = list(dict.fromkeys(ctx.search_queries_run))
-    if not queries:
-        for t in ctx.trace_calls:
-            q = t.get("arguments", {}).get("query")
-            if q and q not in queries:
-                queries.append(q)
-
     candidate_urls = list(dict.fromkeys(ctx.candidate_urls))
-    for t in ctx.trace_calls:
-        args = t.get("arguments", {})
-        u = args.get("url_or_id") or args.get("url")
-        if u and u not in candidate_urls:
-            candidate_urls.append(str(u))
 
     partial_data = {
         "session_id": session_id,
@@ -71,7 +73,7 @@ def _write_partial_findings(
         "candidate_urls_seen": candidate_urls,
         "total_tool_calls_attempted": len(ctx.trace_calls),
         "notes": (
-            f"The paper research run was incomplete and did not call save_paper_findings before terminating. "
+            f"The paper research run was incomplete. "
             f"Reason: {reason}. This partial file preserves the search queries executed "
             f"and candidate paper/source URLs discovered before termination."
         ),
@@ -110,22 +112,6 @@ async def main() -> None:
     (output_dir / "paper_findings.json").unlink(missing_ok=True)
     (output_dir / "paper_findings.md").unlink(missing_ok=True)
 
-    input_prompt = (
-        f"Here is the confirmed research specification for session '{session_id}':\n\n"
-        f"```json\n{json.dumps(spec_data, indent=2)}\n```\n\n"
-        "Your task as Agent 2 (Research Paper Discovery and Evidence Collection Agent) is to discover and document scientific literature:\n"
-        "1. Understand the specification thoroughly (problem, constraints, datasets, target architectures, research focus).\n"
-        "2. Formulate 4 to 8 targeted academic search queries and execute them using `search_research_papers`.\n"
-        "3. For candidate papers, retrieve and read their full text using `read_paper_full_text(url_or_id, target_section='...')` "
-        "(use sections: 'method', 'dataset', 'results', 'limitations', or 'all'). Extract real factual numbers and quotes.\n"
-        "4. If checking for specific metrics, numbers, or terms in read papers, use `find_in_text(query='...', paper_url_or_id='...')`.\n"
-        "5. Search for associated official code repositories for every candidate using `search_paper_code_repository(paper_title, author_or_keyword)`.\n"
-        "6. Do NOT list GitHub repositories as papers; they belong ONLY in code_repository.\n"
-        "7. Extract limitations and research gaps directly from the authors' text; do NOT evaluate against my application's requirements.\n"
-        "8. CRITICAL: You MUST execute the `save_paper_findings` tool call to save your discovered candidates (up to 10), research notes, and exact_research_found flag. "
-        "Simply outputting markdown or tables in chat DOES NOT save the files to disk. You MUST generate a tool call to `save_paper_findings`.\n"
-    )
-
     ctx = PaperResearchContext(
         session_id=session_id,
         output_dir=output_dir,
@@ -133,9 +119,24 @@ async def main() -> None:
         max_tool_calls=args.max_tool_calls,
     )
 
-    print("Starting PaperResearcher agent run...")
-
     try:
+        # ==========================================
+        # Stage 1: Selector (Agent with Tools)
+        # ==========================================
+        print("\n" + "=" * 60)
+        print("STAGE 1: PAPER SELECTOR")
+        print("=" * 60)
+        input_prompt = (
+            f"Here is the confirmed research specification for session '{session_id}':\n\n"
+            f"```json\n{json.dumps(spec_data, indent=2)}\n```\n\n"
+            "Stage 1 Paper Selector Instructions:\n"
+            "1. Plan 4 targeted academic search queries covering: (a) the exact problem, (b) alternative terminology/synonyms, "
+            "(c) a closely related problem, and (d) a smartphone or mobile app for the same crop/disease.\n"
+            "2. Execute all 4 queries using `search_research_papers`.\n"
+            "3. From the results, choose up to 5 papers to read in depth (prefer method papers for the same crop/problem; at most 1 dataset paper; prefer open access text).\n"
+            "4. Call `select_papers` once with the list of chosen paper identifiers exactly as returned by the search tool.\n"
+        )
+
         result = await Runner.run(
             paper_researcher_agent,
             input=[{"role": "user", "content": input_prompt}],
@@ -148,21 +149,202 @@ async def main() -> None:
             ctx.turns_count = max(ctx.turns_count, getattr(result, "_current_turn", 1))
         ctx.flush_trace()
 
-        # If agent finished turn without calling save_paper_findings, prompt it in a follow-up turn
-        if not ctx.saved:
-            print("\n⚠️ Agent finished without calling save_paper_findings. Requesting agent to call save_paper_findings...")
-            followup_input = [
-                {"role": "user", "content": "You MUST call the `save_paper_findings` tool call now with the papers and evidence you collected. Do not reply with text; call `save_paper_findings`."}
-            ]
-            followup_result = await Runner.run(
-                paper_researcher_agent,
-                input=followup_input,
-                context=ctx,
-                max_turns=3,
+        # If selector finished turn without calling select_papers, prompt once
+        if not ctx.selection_done or not ctx.selected_papers:
+            if ctx.candidate_papers_seen:
+                print("\n⚠️ Selector did not call select_papers. Requesting select_papers call...")
+                followup_input = [
+                    {"role": "user", "content": "You have completed your searches. Now call `select_papers` once with up to 5 paper identifiers from the search results."}
+                ]
+                followup_result = await Runner.run(
+                    paper_researcher_agent,
+                    input=followup_input,
+                    context=ctx,
+                    max_turns=3,
+                )
+                if hasattr(followup_result, "raw_responses") and followup_result.raw_responses:
+                    ctx.turns_count += len(followup_result.raw_responses)
+                ctx.flush_trace()
+
+        # Fallback if still no papers selected
+        if not ctx.selected_papers and ctx.candidate_papers_seen:
+            print("\nℹ️ Selecting top candidate papers from search results...")
+            ctx.selected_papers = ctx.candidate_papers_seen[:5]
+            ctx.selection_done = True
+
+        print(f"Stage 1 Complete: {len(ctx.selected_papers)} papers selected:")
+        for idx, sp in enumerate(ctx.selected_papers, 1):
+            print(f"  {idx}. {sp.get('title') or sp.get('paper_id')} ({sp.get('url')})")
+
+        # ==========================================
+        # Stage 2: Reader (Code Only, No Model)
+        # ==========================================
+        print("\n" + "=" * 60)
+        print("STAGE 2: FULL-TEXT READER")
+        print("=" * 60)
+        stored_dir = output_dir / "stored_papers"
+        stored_dir.mkdir(parents=True, exist_ok=True)
+        stored_papers_map: dict[str, str] = {}
+
+        for idx, cand in enumerate(ctx.selected_papers, 1):
+            title = cand.get("title") or cand.get("paper_id") or "Research Paper"
+            c_url = cand.get("url") or cand.get("paper_url") or ""
+            if not c_url or c_url == "not found":
+                norm_cand = normalize_paper_identifiers(cand.get("paper_id") or cand.get("doi") or "")
+                c_url = norm_cand.get("canonical_url") or ""
+                cand["url"] = c_url
+            c_doi = cand.get("doi") or "not found"
+            print(f"[{idx}/{len(ctx.selected_papers)}] Fetching text for: {title} ({c_url or cand.get('paper_id')})...")
+
+            raw_text, source_sys, is_fallback = await read_paper_full_text_internal(ctx, cand)
+            if not raw_text or len(raw_text) < 500:
+                print(f"  -> WARNING: Full text retrieval returned {len(raw_text)} chars ({source_sys}).")
+                continue
+
+            norm = normalize_paper_identifiers(c_url or cand.get("paper_id") or "")
+            safe_id = norm.get("paper_id") or re.sub(r"[^a-zA-Z0-9]", "_", title)[:40]
+            safe_id = re.sub(r"[^a-zA-Z0-9_-]", "_", safe_id)
+
+            # Write individual stored paper text file
+            txt_path = stored_dir / f"{safe_id}.txt"
+            txt_path.write_text(raw_text, encoding="utf-8")
+
+            # Store in map for stored_papers.json
+            if c_url:
+                stored_papers_map[c_url] = raw_text
+            if c_doi and c_doi != "not found":
+                stored_papers_map[c_doi] = raw_text
+            stored_papers_map[safe_id] = raw_text
+            if title:
+                stored_papers_map[title] = raw_text
+
+            # Parse sections and bucket them
+            sections = _extract_sections(raw_text)
+            buckets = bucket_paper_sections(raw_text, sections)
+
+            # Update registry record
+            rec = ctx.paper_registry.find_paper(c_url or cand.get("paper_id") or title)
+            if not rec:
+                rec = ctx.paper_registry.register_candidate(
+                    title=title,
+                    paper_url=c_url,
+                    doi=c_doi,
+                    paper_id=cand.get("paper_id", ""),
+                    authors=cand.get("authors", []),
+                    year=cand.get("year", "not found"),
+                    abstract=cand.get("abstract", ""),
+                    source_system=source_sys,
+                )
+            ctx.paper_registry.record_read_text(rec, raw_text, source_sys, is_fallback)
+
+            # Record in full_text_sources for audit trace
+            ctx.full_text_sources.append({
+                "url": c_url,
+                "paper_id": cand.get("paper_id", ""),
+                "doi": c_doi,
+                "title": title,
+                "source_system": source_sys,
+                "characters_read": len(raw_text),
+                "stored_text": raw_text,
+                "headings": list(sections.keys()),
+            })
+
+            # Append trace
+            ctx.append_trace(
+                "read_paper_full_text",
+                {"paper": title, "url": c_url},
+                "success",
+                source_system=source_sys,
+                is_fallback=is_fallback,
+                details={"characters": len(raw_text), "headings": list(sections.keys())},
             )
-            if hasattr(followup_result, "raw_responses") and followup_result.raw_responses:
-                ctx.turns_count += len(followup_result.raw_responses)
-            ctx.flush_trace()
+            print(f"  -> Read {len(raw_text)} chars ({len(sections)} sections) via {source_sys}")
+
+        # Save aggregated stored_papers.json
+        stored_json_path = output_dir / "stored_papers.json"
+        stored_json_path.write_text(json.dumps(stored_papers_map, indent=2), encoding="utf-8")
+        ctx.flush_trace()
+        print(f"Stage 2 Complete: Stored full text for {len(ctx.full_text_sources)} papers.")
+
+        # ==========================================
+        # Stage 3 & 4: Extractor & Validator
+        # ==========================================
+        print("\n" + "=" * 60)
+        print("STAGE 3 & 4: EVIDENCE EXTRACTOR & VALIDATOR")
+        print("=" * 60)
+        validated_extractions: list[tuple[dict[str, Any], Any, list[str]]] = []
+
+        for idx, cand in enumerate(ctx.selected_papers, 1):
+            title = cand.get("title") or cand.get("paper_id") or "Research Paper"
+            rec = ctx.paper_registry.find_paper(cand.get("url") or cand.get("paper_id") or title)
+            if not rec or len(rec.stored_text) < 500:
+                print(f"[{idx}/{len(ctx.selected_papers)}] Skipping extraction for unread paper: {title}")
+                continue
+
+            print(f"[{idx}/{len(ctx.selected_papers)}] Extracting evidence for: {title}...")
+            buckets = rec.buckets if rec.buckets else bucket_paper_sections(rec.stored_text, rec.sections)
+            headings = list(rec.sections.keys())
+
+            is_dataset = any(kw in title.lower() for kw in ["rocole", "arabica dataset", "coleaf-db", "dataset for coffee"])
+
+            # Extractor Call (Attempt 1)
+            ctx.extractor_calls.append({
+                "paper": title,
+                "attempt": 1,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            })
+            ext = await extract_paper_evidence(spec_summary, title, buckets, headings)
+            if is_dataset:
+                ext.is_dataset_paper = True
+
+            # Validate Attempt 1 without dropping fields
+            val_ext, rejections = validate_extraction(ext, buckets, headings, title, drop_failures=False)
+
+            if rejections:
+                print(f"  -> Validation rejected {len(rejections)} fields on attempt 1: {[r['field'] for r in rejections]}. Retrying...")
+                feedback_lines = [
+                    f"- Field '{r['field']}': {r['reason']}. Value was: '{r.get('value')}'. Quote was: '{r.get('quote')}'."
+                    for r in rejections
+                ]
+                feedback_str = "\n".join(feedback_lines)
+                ctx.retries.append({
+                    "paper": title,
+                    "rejected_fields": [r["field"] for r in rejections],
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                })
+
+                # Extractor Call (Attempt 2 - Retry)
+                ctx.extractor_calls.append({
+                    "paper": title,
+                    "attempt": 2,
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                })
+                ext_retry = await extract_paper_evidence(spec_summary, title, buckets, headings, retry_feedback=feedback_str)
+                if is_dataset:
+                    ext_retry.is_dataset_paper = True
+
+                # Validate Attempt 2 with drop_failures=True
+                val_ext, final_rejections = validate_extraction(ext_retry, buckets, headings, title, drop_failures=True)
+                if final_rejections:
+                    print(f"  -> {len(final_rejections)} fields failed validation after retry: {[r['field'] for r in final_rejections]}. Dropped to 'not found'.")
+                    ctx.rejected_fields.extend(final_rejections)
+                else:
+                    print("  -> All rejected fields successfully resolved on retry!")
+            else:
+                val_ext, _ = validate_extraction(ext, buckets, headings, title, drop_failures=True)
+                print("  -> Extraction passed all validation checks on attempt 1!")
+
+            validated_extractions.append((cand, val_ext, headings))
+
+        print(f"Stage 3 & 4 Complete: Validated extractions for {len(validated_extractions)} papers.")
+
+        # ==========================================
+        # Stage 5: Assembler (Code Only, No Model)
+        # ==========================================
+        print("\n" + "=" * 60)
+        print("STAGE 5: FINDINGS ASSEMBLER")
+        print("=" * 60)
+        findings_obj = await assemble_findings(ctx, validated_extractions, spec_summary)
 
     except BaseException as exc:
         reason = f"{type(exc).__name__}: {exc}"
@@ -185,89 +367,9 @@ async def main() -> None:
                 pass
         ctx.flush_trace()
 
-    # If still not saved, auto-save from verified papers in registry
-    if not ctx.saved and ctx.paper_registry.papers:
-        print("\nℹ️ Auto-saving verified papers from registry...")
-        from paper_research.tools import _find_matching_sections
-        auto_findings = []
-        read_papers = [
-            p for p in ctx.paper_registry.papers
-            if p.characters_read >= 500 or len(p.stored_text) >= 500
-        ]
-        for p in read_papers[:10]:
-            method_text, m_sec, m_found = _find_matching_sections(p.sections, "method")
-            dataset_text, d_sec, d_found = _find_matching_sections(p.sections, "dataset")
-            results_text, r_sec, r_found = _find_matching_sections(p.sections, "results")
-            limitations_text, l_sec, l_found = _find_matching_sections(p.sections, "limitations")
-
-            def _clean_sec(txt: str, found: list[str]) -> str:
-                if not found:
-                    return "not found"
-                lines = txt.split("\n", 1)
-                return lines[1].strip() if len(lines) > 1 else txt.strip()
-
-            clean_m = _clean_sec(method_text, m_found)
-            clean_d = _clean_sec(dataset_text, d_found)
-            clean_r = _clean_sec(results_text, r_found)
-            clean_l = _clean_sec(limitations_text, l_found)
-
-            # Extract factual quotes with numbers for key_evidence
-            quotes: list[str] = []
-            if clean_r != "not found":
-                for sent in clean_r.replace("\n", " ").split(". "):
-                    sent_c = sent.strip()
-                    if any(c.isdigit() for c in sent_c) and any(kw in sent_c.lower() for kw in ["accuracy", "precision", "recall", "f1", "%", "latency", "fps", "map"]):
-                        if len(sent_c.split()) <= 40:
-                            q = sent_c.rstrip(".") + "."
-                            if q not in quotes:
-                                quotes.append(q)
-                            if len(quotes) >= 2:
-                                break
-
-            p_title = p.title or p.paper_id or p.paper_url or "Research Paper"
-            auto_findings.append({
-                "title": p_title,
-                "authors": p.authors,
-                "year": p.year,
-                "doi": p.doi,
-                "paper_url": p.paper_url,
-                "match_type": "closely_related",
-                "method": clean_m[:500] if clean_m != "not found" else "not found",
-                "dataset": {"name": clean_d[:200] if clean_d != "not found" else "not found", "description": clean_d[:500] if clean_d != "not found" else "not found"},
-                "experiments_and_results": {
-                    "reported_results": clean_r[:500] if clean_r != "not found" else "not found",
-                    "evidence_location": f"Read sections: {', '.join(p.sections.keys())[:200]}",
-                },
-                "limitations": clean_l[:500] if clean_l != "not found" else "not found",
-                "key_evidence": quotes,
-                "source_urls": p.source_urls,
-            })
-        if auto_findings:
-            from agents import RunContextWrapper
-            from paper_research.tools import _save_paper_findings_impl
-            wrapper = RunContextWrapper(ctx)
-            save_out = await _save_paper_findings_impl(
-                wrapper,
-                search_queries_run=ctx.search_queries_run,
-                exact_research_found=False,
-                findings=auto_findings,
-                notes="",
-            )
-            print(f"Auto-save completed: {save_out}")
-
-    # Clean up stale partial findings on successful run
-    if ctx.saved:
-        partial_file = output_dir / "paper_findings_partial.json"
-        if partial_file.exists():
-            try:
-                partial_file.unlink(missing_ok=True)
-            except Exception:
-                pass
-
-
     findings_json = output_dir / "paper_findings.json"
-    if not ctx.saved and not findings_json.exists():
-        reason = "Agent completed execution without calling save_paper_findings"
+    if not findings_json.exists():
+        reason = "Pipeline completed without generating paper_findings.json"
         partial_file = _write_partial_findings(output_dir, session_id, ctx, reason)
         print(
             f"\n⚠️  Run finished but findings were not saved.\n"
@@ -278,11 +380,8 @@ async def main() -> None:
         sys.exit(1)
 
     print("\n" + "=" * 60)
-    print("AGENT SUMMARY:")
+    print("AGENT 2 PIPELINE SUMMARY:")
     print("=" * 60)
-    print(result.final_output)
-    print("=" * 60)
-
     try:
         data = json.loads(findings_json.read_text(encoding="utf-8"))
         queries = data.get("search_queries_run", [])

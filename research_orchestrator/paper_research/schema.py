@@ -137,27 +137,7 @@ class DatasetInfo(BaseModel):
             cleaned = _sanitize_dict_nones(data)
             raw_name = str(cleaned.get("name", "")).strip()
             raw_desc = str(cleaned.get("description", "")).strip()
-            combined = f"{raw_name} {raw_desc}"
-
-            # Extract size if not populated or "not found"
-            if cleaned.get("size") in ["not found", "", None]:
-                size_m = re.search(r"(\b\d{1,3}(?:,\d{3})+|\b\d+)\s*(?:images|leaf images|leaves|photos|samples|records)\b", combined, re.IGNORECASE)
-                if size_m:
-                    cleaned["size"] = size_m.group(0).strip()
-
-            # Extract split if not populated or "not found"
-            if cleaned.get("split") in ["not found", "", None]:
-                split_m = re.search(r"(\b\d{1,2}/\d{1,2}(?:/\d{1,2})?(?:\s*(?:train/test\s+split|train/test|split))?|\b\d+-fold(?:\s+cross[- ]validation|\s+cv)?\b|\b\d{1,2}%\s*(?:train|training|test|testing|val|validation)\b)", combined, re.IGNORECASE)
-                if split_m:
-                    cleaned["split"] = split_m.group(0).strip()
-
-            # Preserve full original text in description if not populated
-            if cleaned.get("description") in ["not found", "", None] and len(raw_name) > 20:
-                cleaned["description"] = raw_name
-
-            # Format clean short dataset name
             cleaned["name"] = clean_dataset_name(raw_name, raw_desc)
-
             return cleaned
         return data or {}
 
@@ -392,3 +372,100 @@ class PaperResearchFindings(BaseModel):
                 for f in findings_list
             )
         return data
+
+
+class ExtractedField(BaseModel):
+    value: str = "not found"
+    quote: str = ""
+    section: str = "not found"
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_field(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            return {
+                "value": str(data.get("value") or "not found").strip(),
+                "quote": str(data.get("quote") or "").strip(),
+                "section": str(data.get("section") or "not found").strip(),
+            }
+        if isinstance(data, str):
+            return {"value": data.strip(), "quote": "", "section": "not found"}
+        return {"value": "not found", "quote": "", "section": "not found"}
+
+
+class ExtractedBooleanField(BaseModel):
+    value: bool = False
+    quote: str = ""
+    section: str = "not found"
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_bool_field(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            val = data.get("value")
+            if isinstance(val, str):
+                b_val = val.lower() in ["true", "yes", "1"]
+            else:
+                b_val = bool(val)
+            return {
+                "value": b_val,
+                "quote": str(data.get("quote") or "").strip(),
+                "section": str(data.get("section") or "not found").strip(),
+            }
+        if isinstance(data, bool):
+            return {"value": data, "quote": "", "section": "not found"}
+        return {"value": False, "quote": "", "section": "not found"}
+
+
+class PaperExtractionOutput(BaseModel):
+    problem_addressed: ExtractedField = Field(default_factory=ExtractedField)
+    research_objective: ExtractedField = Field(default_factory=ExtractedField)
+    domain: ExtractedField = Field(default_factory=ExtractedField)
+    input_type: ExtractedField = Field(default_factory=ExtractedField)
+    output_type: ExtractedField = Field(default_factory=ExtractedField)
+    dataset_name: ExtractedField = Field(default_factory=ExtractedField)
+    dataset_size: ExtractedField = Field(default_factory=ExtractedField)
+    dataset_split: ExtractedField = Field(default_factory=ExtractedField)
+    model_name: ExtractedField = Field(default_factory=ExtractedField)
+    architecture: ExtractedField = Field(default_factory=ExtractedField)
+    method: ExtractedField = Field(default_factory=ExtractedField)
+    evaluation_metrics: ExtractedField = Field(default_factory=ExtractedField)
+    reported_results: ExtractedField = Field(default_factory=ExtractedField)
+    baselines: ExtractedField = Field(default_factory=ExtractedField)
+    limitations: ExtractedField = Field(default_factory=ExtractedField)
+    research_gap: ExtractedField = Field(default_factory=ExtractedField)
+
+    is_dataset_paper: bool = False
+    same_task: ExtractedBooleanField = Field(default_factory=ExtractedBooleanField)
+    phone_app: ExtractedBooleanField = Field(default_factory=ExtractedBooleanField)
+    offline_stated: ExtractedBooleanField = Field(default_factory=ExtractedBooleanField)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _clean_incoming(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return {}
+        d = dict(data)
+        # Handle flat boolean fields if model returned flat keys
+        for bf in ["same_task", "phone_app", "offline_stated"]:
+            if bf in d:
+                if isinstance(d[bf], ExtractedBooleanField) or isinstance(d[bf], dict):
+                    continue
+                b_val = d[bf]
+                if isinstance(b_val, str):
+                    b_val = b_val.lower() in ["true", "yes", "1"]
+                else:
+                    b_val = bool(b_val)
+                q = str(d.get(f"{bf}_quote") or "").strip()
+                s = str(d.get(f"{bf}_section") or "not found").strip()
+                d[bf] = {"value": b_val, "quote": q, "section": s}
+        # Handle boolean conversion for is_dataset_paper
+        if "is_dataset_paper" in d:
+            val = d["is_dataset_paper"]
+            if isinstance(val, dict):
+                val = val.get("value")
+            if isinstance(val, str):
+                d["is_dataset_paper"] = val.lower() in ["true", "yes", "1"]
+            else:
+                d["is_dataset_paper"] = bool(val)
+        return d

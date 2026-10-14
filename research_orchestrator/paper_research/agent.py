@@ -13,12 +13,9 @@ from app.config import OLLAMA_BASE_URL, OLLAMA_API_KEY, MODEL_NAME
 from paper_research.tools import (
     PaperResearchContext,
     search_research_papers,
-    read_paper_full_text,
-    search_paper_code_repository,
-    find_in_text,
-    github_search_repositories,
-    save_paper_findings,
-    _save_paper_findings,
+    _search_research_papers,
+    select_papers,
+    _select_papers,
 )
 
 set_tracing_disabled(True)
@@ -49,11 +46,9 @@ paper_researcher_agent: Agent[PaperResearchContext] = Agent(
     hooks=PaperResearchHooks(),
     tools=[
         search_research_papers,
-        read_paper_full_text,
-        search_paper_code_repository,
-        find_in_text,
-        github_search_repositories,
-        save_paper_findings,
-        _save_paper_findings,
+        _search_research_papers,
+        select_papers,
+        _select_papers,
     ],
 )
+
