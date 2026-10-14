@@ -1,0 +1,659 @@
+{
+  "session_id": "72356611-f0ef-4258-9ed1-17feb57880c3",
+  "search_queries_run": [
+    "coffee leaf disease detection using deep learning",
+    "mobile offline plant disease classification Android TensorFlow Lite",
+    "smartphone application coffee leaf disease classification",
+    "coffee leaf disease image dataset"
+  ],
+  "exact_research_found": false,
+  "findings": [
+    {
+      "title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation.",
+      "authors": [
+        "Ahmet Topal",
+        "Burcu Tunga",
+        "Erfan Babaee Tirkolaee"
+      ],
+      "year": 2024,
+      "doi": "10.7717/peerj-cs.2406",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+      "citation": "Ahmet Topal, Burcu Tunga, Erfan Babaee Tirkolaee (2024). DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation.. doi:10.7717/peerj-cs.2406",
+      "match_type": "closely_related",
+      "match_reason": "Closely related: evaluated on standard compute/GPU or server without edge-only mobile deployment proof.",
+      "problem_addressed": "Automated detection and classification of coffee leaf diseases (such as coffee leaf rust and leaf miner) to assist agricultural monitoring.",
+      "research_objective": "Accurate and efficient detection/diagnosis of coffee crop pathologies using computer vision and machine learning.",
+      "domain": "Agriculture / Precision Agriculture / Plant Pathology",
+      "input_type": "RGB leaf images",
+      "output_type": "Disease classification / bounding box detection of infected areas",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "not found",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "VGG16",
+        "architecture": "not found",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "The study enhances model generalization by adding an EMPR-based channel to images during preprocessing and applying contrast enhancement before feeding to CNNs.",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "not found",
+        "reported_results": "not found",
+        "baseline_comparisons": "not found",
+        "evidence_location": "Outline_And_Abstract, Dataset Description, Proposed Methods, Results And Discussions, Conclusion"
+      },
+      "limitations": "not found",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "Rapid and accurate disease identification is crucial for effective management",
+          "section": "Abstract",
+          "field": "evidence"
+        },
+        {
+          "quote": "focuses on enhancing the classification of diseases and estimating their severity in coffee leaf images",
+          "section": "Abstract",
+          "field": "dataset"
+        },
+        {
+          "quote": "The main focus of the study is to develop approaches that will enhance the generalization and learning capacity of the model during the preprocessing stage. An additional channel based on the EMPR will be added to the images",
+          "section": "Proposed Methods",
+          "field": "dataset"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+        "https://doi.org/10.7717/peerj-cs.2406"
+      ]
+    },
+    {
+      "title": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases.",
+      "authors": [
+        "Bhoomika Mehta",
+        "Salil Bharany",
+        "Dalia H Elkamchouchi",
+        "Ateeq Ur Rehman",
+        "Rahul Singh",
+        "Seada Hussen Adem"
+      ],
+      "year": 2025,
+      "doi": "10.1002/fsn3.71311",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/",
+      "citation": "Bhoomika Mehta, Salil Bharany, Dalia H Elkamchouchi et al. (2025). EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases.. doi:10.1002/fsn3.71311",
+      "match_type": "closely_related",
+      "match_reason": "Closely related: evaluated on standard compute/GPU or server without edge-only mobile deployment proof.",
+      "problem_addressed": "Automated detection and classification of coffee leaf diseases (such as coffee leaf rust and leaf miner) to assist agricultural monitoring.",
+      "research_objective": "Accurate and efficient detection/diagnosis of coffee crop pathologies using computer vision and machine learning.",
+      "domain": "Agriculture / Precision Agriculture / Plant Pathology",
+      "input_type": "RGB leaf images",
+      "output_type": "Disease classification / bounding box detection of infected areas",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "not found",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "EffResViT-SE FusionNet (EfficientNetB3+ResNet50+ViT)",
+        "architecture": "not found",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "A hybrid architecture combines EfficientNetB3, ResNet50 (both with SE blocks) and a Vision Transformer; features are fused and classified via a multilayer perceptron.",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "not found",
+        "reported_results": "not found",
+        "baseline_comparisons": "not found",
+        "evidence_location": "Outline_And_Abstract, 3.1. Input Dataset, 3.3. Proposed Effresvit-Se Fusionnet Model, 4.5. Results On Proposed Effresvit-Se Fusionnet Model, 5\\. Conclusion And Future Work"
+      },
+      "limitations": "not found",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "Coffee is a vital agricultural commodity that sustains millions of farmers worldwide, yet its cultivation is increasingly threatened by devastating leaf diseases such as Leaf Rust, Phoma, Cercospora, and Leaf Miner.",
+          "section": "Abstract",
+          "field": "research_objective"
+        },
+        {
+          "quote": "Overall classification accuracy of 99% with precision, recall and F1 scores between 98% and 99%",
+          "section": "4\\. Results And Discussion",
+          "field": "reported_results"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/",
+        "https://doi.org/10.1002/fsn3.71311"
+      ]
+    },
+    {
+      "title": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification",
+      "authors": [
+        "Larissa Ferreira Rodrigues Moreira",
+        "Rodrigo Moreira",
+        "Leonardo Gabriel Ferreira Rodrigues"
+      ],
+      "year": 2026,
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/2601.12109",
+      "citation": "Larissa Ferreira Rodrigues Moreira, Rodrigo Moreira, Leonardo Gabriel Ferreira Rodrigues (2026). Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification.",
+      "match_type": "closely_related",
+      "match_reason": "Closely related: evaluated on standard compute/GPU or server without edge-only mobile deployment proof.",
+      "problem_addressed": "Automated detection and classification of coffee leaf diseases (such as coffee leaf rust and leaf miner) to assist agricultural monitoring.",
+      "research_objective": "Accurate and efficient detection/diagnosis of coffee crop pathologies using computer vision and machine learning.",
+      "domain": "Agriculture / Precision Agriculture / Plant Pathology",
+      "input_type": "RGB leaf images",
+      "output_type": "Disease classification / bounding box detection of infected areas",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "not found",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "Distilled tiny CNN ensembles",
+        "architecture": "not found",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "Knowledge distillation transfers knowledge from high-capacity CNNs to compact CNNs, which are then combined through simple averaging or stacking ensembles for on-device inference.",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "not found",
+        "reported_results": "not found",
+        "baseline_comparisons": "not found",
+        "evidence_location": "Outline_And_Abstract, B. Dataset, Iii. Proposed Approach, B. Ensemble Evaluation, V. Concluding Remarks"
+      },
+      "limitations": "not found",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "— **Coffee yields are contingent on the timely and** **accurate diagnosis of diseases; however, assessing leaf diseases** **in the field presents significant challenges.",
+          "section": "Abstract",
+          "field": "research_objective"
+        },
+        {
+          "quote": "All meta-models achieved an identical accuracy of 94.25% and recall of 94.24%",
+          "section": "B. Ensemble Evaluation",
+          "field": "reported_results"
+        },
+        {
+          "quote": "This study presented a knowledge distillation approach grounded in EL",
+          "section": "Iv. Results And Discussion",
+          "field": "evidence"
+        },
+        {
+          "quote": "can deliver accurate and efficient diagnoses on resource-constrained devices",
+          "section": "Iv. Results And Discussion",
+          "field": "evidence"
+        }
+      ],
+      "source_urls": [
+        "https://arxiv.org/abs/2601.12109",
+        "https://arxiv.org/pdf/2601.12109",
+        "https://arxiv.org/pdf/2601.12109.pdf",
+        "arxiv:2601.12109"
+      ]
+    },
+    {
+      "title": "A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust",
+      "authors": [
+        "Giuliano L. Manso",
+        "Helder Knidel",
+        "Renato A. Krohling",
+        "Jose A. Ventura"
+      ],
+      "year": 2019,
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/1904.00742",
+      "citation": "Giuliano L. Manso, Helder Knidel, Renato A. Krohling et al. (2019). A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust.",
+      "match_type": "closely_related",
+      "match_reason": "offline operation not stated in the text (found: \"With the ease of access to the internet and devices such as smartphones, the number of applications\", \"For the development of the application, the Android system was\")",
+      "problem_addressed": "Automated detection and classification of coffee leaf diseases (such as coffee leaf rust and leaf miner) to assist agricultural monitoring.",
+      "research_objective": "Accurate and efficient detection/diagnosis of coffee crop pathologies using computer vision and machine learning.",
+      "domain": "Agriculture / Precision Agriculture / Plant Pathology",
+      "input_type": "RGB leaf images",
+      "output_type": "Disease classification / bounding box detection of infected areas",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "not found",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "Artificial Neural Network (Backpropagation) and Extreme Learning Machine",
+        "architecture": "not found",
+        "backbone": "not found",
+        "components": "not found"
+      },
+      "method": "The app uses image segmentation in HSV and YCbCr color spaces, followed by feature extraction (texture and color) and classification via an Artificial Neural Network trained with backpropagation or Extreme Learning Machine.",
+      "experiments_and_results": {
+        "experimental_setup": "not found",
+        "evaluation_metrics": "not found",
+        "reported_results": "not found",
+        "baseline_comparisons": "not found",
+        "evidence_location": "Outline_And_Abstract, 3.1. Database, 2\\. Algorithms For Digital Image Processing Of Coffee Leaves, 3.3. Classification Results, 3.3.2. Classification Results Using Backpropagation, 5\\. Conclusion"
+      },
+      "limitations": "not found",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "Generally, the identification and classification of plant diseases and/or pests are performed by an expert .",
+          "section": "Abstract",
+          "field": "research_objective"
+        }
+      ],
+      "source_urls": [
+        "https://arxiv.org/abs/1904.00742",
+        "https://arxiv.org/pdf/1904.00742",
+        "https://arxiv.org/pdf/1904.00742.pdf",
+        "arxiv:1904.00742"
+      ]
+    },
+    {
+      "title": "Arabica coffee leaf images dataset for coffee leaf disease detection and classification.",
+      "authors": [
+        "Jennifer Jepkoech",
+        "David Muchangi Mugo",
+        "Benson K Kenduiywo",
+        "Edna Chebet Too"
+      ],
+      "year": 2021,
+      "doi": "10.1016/j.dib.2021.107142",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+      "citation": "Jennifer Jepkoech, David Muchangi Mugo, Benson K Kenduiywo et al. (2021). Arabica coffee leaf images dataset for coffee leaf disease detection and classification.. doi:10.1016/j.dib.2021.107142",
+      "match_type": "closely_related",
+      "match_reason": "Dataset descriptor providing benchmark images for coffee leaf diseases.",
+      "problem_addressed": "Automated detection and classification of coffee leaf diseases (such as coffee leaf rust and leaf miner) to assist agricultural monitoring.",
+      "research_objective": "Accurate and efficient detection/diagnosis of coffee crop pathologies using computer vision and machine learning.",
+      "domain": "Agriculture / Precision Agriculture / Plant Pathology",
+      "input_type": "RGB leaf images",
+      "output_type": "Disease classification / bounding box detection of infected areas",
+      "dataset": {
+        "name": "not found",
+        "description": "not found",
+        "source": "not found",
+        "size": "not found",
+        "split": "not found"
+      },
+      "model": {
+        "model_name": "not applicable",
+        "architecture": "not applicable",
+        "backbone": "not applicable",
+        "components": "not applicable"
+      },
+      "method": "Images were captured in the field with a high‑resolution camera, labeled by a pathologist, and organized into five disease classes for training deep learning models.",
+      "experiments_and_results": {
+        "experimental_setup": "not applicable",
+        "evaluation_metrics": "not applicable",
+        "reported_results": "not applicable",
+        "baseline_comparisons": "not applicable",
+        "evidence_location": "Outline_And_Abstract, 1\\. Data Description, 2.1. Data Acquisition, 3.1. Noise Filtering, 3.2. Cropping, 3.3. Data Augmentation"
+      },
+      "limitations": "not found",
+      "limitations_section": "not found",
+      "limitations_evidence": "not found",
+      "research_gap": "not found",
+      "research_gap_section": "not found",
+      "research_gap_evidence": "not found",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [
+        {
+          "quote": "The dataset contains 58,555 leaf images across five classes (Phoma, Cescospora, Rust, Healthy, Miner)",
+          "section": "Abstract",
+          "field": "dataset"
+        },
+        {
+          "quote": "Data acquisition was performed in the field using a high-resolution digital camera with assistance of a pathologist; five classes were collected",
+          "section": "Outline_And_Abstract",
+          "field": "evidence"
+        }
+      ],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+        "https://doi.org/10.1016/j.dib.2021.107142"
+      ]
+    },
+    {
+      "title": "Evaluating Data Augmentation Techniques for Coffee Leaf Disease Classification",
+      "authors": [
+        "Adrian Gheorghiu",
+        "Iulian-Marius Tăiatu",
+        "Dumitru-Clementin Cercel",
+        "Iuliana Marin",
+        "Florin Pop"
+      ],
+      "year": 2024,
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/2401.05768",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not read - search snippet only",
+      "limitations_evidence": "not read - search snippet only",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not read - search snippet only",
+      "research_gap_evidence": "not read - search snippet only",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://arxiv.org/abs/2401.05768"
+      ]
+    },
+    {
+      "title": "Robust coffee plant disease classification using deep learning and advanced feature engineering techniques.",
+      "authors": [
+        "Hanin Ardah",
+        "Maher Alrahhal",
+        "Walaa M Abd-Elhafiez",
+        "Doaa Trabay"
+      ],
+      "year": 2025,
+      "doi": "10.7717/peerj-cs.3386",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12695173/",
+      "citation": "Hanin Ardah, Maher Alrahhal, Walaa M Abd-Elhafiez et al. (2025). Robust coffee plant disease classification using deep learning and advanced feature engineering techniques.. doi:10.7717/peerj-cs.3386",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not read - search snippet only",
+      "limitations_evidence": "not read - search snippet only",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not read - search snippet only",
+      "research_gap_evidence": "not read - search snippet only",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12695173/",
+        "https://doi.org/10.7717/peerj-cs.3386"
+      ]
+    },
+    {
+      "title": "Early Detection of Coffee Leaf Rust Through Convolutional Neural Networks Trained on Low-Resolution Images",
+      "authors": [
+        "Angelly Cabrera",
+        "Kleanthis Avramidis",
+        "Shrikanth Narayanan"
+      ],
+      "year": 2024,
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/2407.14737",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not read - search snippet only",
+      "limitations_evidence": "not read - search snippet only",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not read - search snippet only",
+      "research_gap_evidence": "not read - search snippet only",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://arxiv.org/abs/2407.14737"
+      ]
+    },
+    {
+      "title": "Coffee Disease Visualization and Classification.",
+      "authors": [
+        "Milkisa Yebasse",
+        "Birhanu Shimelis",
+        "Henok Warku",
+        "Jaepil Ko",
+        "Kyung Joo Cheoi"
+      ],
+      "year": 2021,
+      "doi": "10.3390/plants10061257",
+      "paper_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8235481/",
+      "citation": "Milkisa Yebasse, Birhanu Shimelis, Henok Warku et al. (2021). Coffee Disease Visualization and Classification.. doi:10.3390/plants10061257",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not read - search snippet only",
+      "limitations_evidence": "not read - search snippet only",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not read - search snippet only",
+      "research_gap_evidence": "not read - search snippet only",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8235481/",
+        "https://doi.org/10.3390/plants10061257"
+      ]
+    },
+    {
+      "title": "Deep Learning for Classification and Severity Estimation of Coffee Leaf Biotic Stress",
+      "authors": [
+        "J. G. M. Esgario",
+        "R. A. Krohling",
+        "J. A. Ventura"
+      ],
+      "year": 2019,
+      "doi": "not found",
+      "paper_url": "https://arxiv.org/abs/1907.11561",
+      "citation": "not found",
+      "match_type": "closely_related",
+      "match_reason": "not found",
+      "problem_addressed": "not read - search snippet only",
+      "research_objective": "not read - search snippet only",
+      "domain": "not read - search snippet only",
+      "input_type": "not read - search snippet only",
+      "output_type": "not read - search snippet only",
+      "dataset": {
+        "name": "not read - search snippet only",
+        "description": "not read - search snippet only",
+        "source": "not read - search snippet only",
+        "size": "not read - search snippet only",
+        "split": "not read - search snippet only"
+      },
+      "model": {
+        "model_name": "not read - search snippet only",
+        "architecture": "not read - search snippet only",
+        "backbone": "not read - search snippet only",
+        "components": "not read - search snippet only"
+      },
+      "method": "not read - search snippet only",
+      "experiments_and_results": {
+        "experimental_setup": "not read - search snippet only",
+        "evaluation_metrics": "not read - search snippet only",
+        "reported_results": "not read - search snippet only",
+        "baseline_comparisons": "not read - search snippet only",
+        "evidence_location": "not read - search snippet only"
+      },
+      "limitations": "not read - search snippet only",
+      "limitations_section": "not read - search snippet only",
+      "limitations_evidence": "not read - search snippet only",
+      "research_gap": "not read - search snippet only",
+      "research_gap_section": "not read - search snippet only",
+      "research_gap_evidence": "not read - search snippet only",
+      "code_repository": {
+        "url": "not found",
+        "is_official": "not found",
+        "framework": "not found",
+        "details": "not found"
+      },
+      "key_evidence": [],
+      "source_urls": [
+        "https://arxiv.org/abs/1907.11561"
+      ]
+    }
+  ],
+  "notes": "Search queries executed (4): \"coffee leaf disease detection using deep learning\", \"mobile offline plant disease classification Android TensorFlow Lite\", \"smartphone application coffee leaf disease classification\", \"coffee leaf disease image dataset\". Candidate papers verified with full-text reading (5): DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation., EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases., Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification, A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust, Arabica coffee leaf images dataset for coffee leaf disease detection and classification.. Candidate papers with search snippet only (5): Evaluating Data Augmentation Techniques for Coffee Leaf Disease Classification, Robust coffee plant disease classification using deep learning and advanced feature engineering techniques., Early Detection of Coffee Leaf Rust Through Convolutional Neural Networks Trained on Low-Resolution Images, Coffee Disease Visualization and Classification., Deep Learning for Classification and Severity Estimation of Coffee Leaf Biotic Stress."
+}

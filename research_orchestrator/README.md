@@ -125,3 +125,27 @@ The research run generates files in `outputs/{session_id}/`:
 - `project_findings.md`: Markdown report summarizing the findings and field sources.
 - `project_research_trace.json`: Full audit trace recording every tool call, argument, and execution status (written in real time on every tool call).
 - `project_findings_partial.json`: Generated if the run fails or terminates prematurely, preserving queries executed and candidate URLs inspected.
+
+## Research Paper Research Agent (Agent 2)
+
+The Research Paper Research Agent (`paper_research`) discovers scientific literature, extracts evidence from open-access full texts and PDFs, checks for associated code implementations, and clearly distinguishes exact research from closely related research.
+
+### Running Agent 2
+
+Make sure the session is already clarified and has an existing `outputs/{session_id}/research_spec.json`.
+
+```bash
+python -m paper_research.run --session <session_id>
+```
+
+Optional arguments:
+- `--max-turns`: Maximum turns for the agent loop (default: `MAX_TURNS` in `.env` or `60`).
+- `--max-tool-calls`: Tool-call budget across all tools (default: `MAX_TOOL_CALLS` in `.env` or `30`).
+
+### Output Files
+
+The paper research run generates files in `outputs/{session_id}/`:
+- `paper_findings.json`: Structured JSON containing up to 10 paper candidates, match classification (`exact` vs `closely_related`), datasets, models, architectures, experimental metrics, verified evidence quotes, limitations, research gaps, and code repositories.
+- `paper_findings.md`: Human-readable Markdown research report.
+- `paper_research_trace.json`: Comprehensive audit trace recording all queries, API calls, and sources accessed.
+- `paper_findings_partial.json`: Saved if the run terminates prematurely, preserving discovered candidate URLs and queries.

@@ -1,0 +1,1375 @@
+{
+  "session_id": "72356611-f0ef-4258-9ed1-17feb57880c3",
+  "research_spec_used": "Build an Android-only offline mobile app that lets a coffee farmer photograph a leaf, then instantly shows the diagnosed disease name and a short, plain-language, step-by-step treatment guide (no chemical names or dosages, only practical actions such as pruning, spacing, shade management). The guide text will be supplied later in English and Kannada.",
+  "generated_queries": [
+    "coffee leaf disease classification deep learning",
+    "smartphone application coffee leaf disease classification",
+    "coffee leaf disease image dataset",
+    "TensorFlow Lite coffee leaf disease classification"
+  ],
+  "searches": [
+    {
+      "query": "coffee leaf disease classification deep learning",
+      "tool": "search_research_papers",
+      "source_system": "firecrawl_mcp",
+      "results_count": 10,
+      "is_fallback": false,
+      "timestamp": "2026-10-09T12:02:08.887971+00:00"
+    },
+    {
+      "query": "smartphone application coffee leaf disease classification",
+      "tool": "search_research_papers",
+      "source_system": "firecrawl_mcp",
+      "results_count": 10,
+      "is_fallback": false,
+      "timestamp": "2026-10-09T12:02:15.768383+00:00"
+    },
+    {
+      "query": "coffee leaf disease image dataset",
+      "tool": "search_research_papers",
+      "source_system": "firecrawl_mcp",
+      "results_count": 10,
+      "is_fallback": false,
+      "timestamp": "2026-10-09T12:02:21.291418+00:00"
+    },
+    {
+      "query": "TensorFlow Lite coffee leaf disease classification",
+      "tool": "search_research_papers",
+      "source_system": "firecrawl_mcp",
+      "results_count": 10,
+      "is_fallback": false,
+      "timestamp": "2026-10-09T12:02:27.673927+00:00"
+    }
+  ],
+  "sources_accessed": [
+    "firecrawl_mcp",
+    "github_api",
+    "cache",
+    "local_disk"
+  ],
+  "candidate_papers_seen": [
+    {
+      "title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+      "doi": "10.7717/peerj-cs.2406",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/",
+      "doi": "10.1002/fsn3.71311",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Robust coffee plant disease classification using deep learning and advanced feature engineering techniques.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12695173/",
+      "doi": "10.7717/peerj-cs.3386",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Evaluating Data Augmentation Techniques for Coffee Leaf Disease Classification",
+      "url": "https://arxiv.org/abs/2401.05768",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Coffee Disease Visualization and Classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8235481/",
+      "doi": "10.3390/plants10061257",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Deep Learning for Classification and Severity Estimation of Coffee Leaf Biotic Stress",
+      "url": "https://arxiv.org/abs/1907.11561",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Arabica coffee leaf images dataset for coffee leaf disease detection and classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+      "doi": "10.1016/j.dib.2021.107142",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Early Detection of Coffee Leaf Rust Through Convolutional Neural Networks Trained on Low-Resolution Images",
+      "url": "https://arxiv.org/abs/2407.14737",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification",
+      "url": "https://arxiv.org/abs/2601.12109",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Ambiguity-aware semi-supervised learning for leaf disease classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12019166/",
+      "doi": "10.1038/s41598-025-95849-3",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust",
+      "url": "https://arxiv.org/abs/1904.00742",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "LeafLiteX mobile application for leaf disease detection using U-Net segmentation and lightweight deep learning.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42420345/",
+      "doi": "10.1038/s41598-026-60625-4",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Artificial intelligence for detection and quantification of rust and leaf miner in coffee crop",
+      "url": "https://arxiv.org/abs/2103.11241",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Using Deep Learning for Image-Based Plant Disease Detection.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5032846/",
+      "doi": "10.3389/fpls.2016.01419",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Using Deep Learning for Image-Based Plant Disease Detection",
+      "url": "https://arxiv.org/abs/1604.03169",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Multi-Class Plant Leaf Disease Detection: A CNN-based Approach with Mobile App Integration",
+      "url": "https://arxiv.org/abs/2408.15289",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Deep Learning for Classification and Severity Estimation of Coffee Leaf Biotic Stress",
+      "url": "https://arxiv.org/abs/1907.11561",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Towards automated mobile-phone-based plant pathology management",
+      "url": "https://arxiv.org/abs/1912.09239",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Leaf Doctor: A New Portable Application for Quantifying Plant Disease Severity.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30690990/",
+      "doi": "10.1094/PDIS-03-15-0319-RE",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "App2: software solution for apple leaf disease detection based on deep learning (CNN+SVM).",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12568702/",
+      "doi": "10.3389/frai.2025.1648867",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Arabica coffee leaf images dataset for coffee leaf disease detection and classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+      "doi": "10.1016/j.dib.2021.107142",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "RoCoLe: A robusta coffee leaf images dataset for evaluation of machine learning based methods in plant diseases recognition.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6727496/",
+      "doi": "10.1016/j.dib.2019.104414",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Evaluating Data Augmentation Techniques for Coffee Leaf Disease Classification",
+      "url": "https://arxiv.org/abs/2401.05768",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Coffee Leaf Rust Disease Detection and Implementation of an Edge Device for Pruning Infected Leaves via Deep Learning Algorithms.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11679138/",
+      "doi": "10.3390/s24248018",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/",
+      "doi": "10.1002/fsn3.71311",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "CoLeaf-DB: Peruvian coffee leaf images dataset for coffee leaf nutritional deficiencies detection and classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10293970/",
+      "doi": "10.1016/j.dib.2023.109226",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Coffee Disease Visualization and Classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8235481/",
+      "doi": "10.3390/plants10061257",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Colombian coffee tree leaves multispectral images dataset.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11927593/",
+      "doi": "10.1016/j.dib.2025.111421",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+      "doi": "10.7717/peerj-cs.2406",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "A Cyber-Physical Data Collection System Integrating Remote Sensing and Wireless Sensor Networks for Coffee Leaf Rust Diagnosis.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8401721/",
+      "doi": "10.3390/s21165474",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification",
+      "url": "https://arxiv.org/abs/2601.12109",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Plant disease detection model for edge computing devices.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10748432/",
+      "doi": "10.3389/fpls.2023.1308528",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "LeafLiteX mobile application for leaf disease detection using U-Net segmentation and lightweight deep learning.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42420345/",
+      "doi": "10.1038/s41598-026-60625-4",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Classification of coffee leaf nutrient deficiencies using hybrid feature aggregation with hierarchical localized attention and MobileNet.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13161101/",
+      "doi": "10.3389/frai.2026.1784938",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "AgriMind: An Ensemble Deep Learning Framework for Multi-Class Plant Disease Classification",
+      "url": "https://arxiv.org/abs/2605.16076",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Arabica coffee leaf images dataset for coffee leaf disease detection and classification.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+      "doi": "10.1016/j.dib.2021.107142",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+      "doi": "10.7717/peerj-cs.2406",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "PMVT: a lightweight vision transformer for plant disease identification on mobile devices.",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10562605/",
+      "doi": "10.3389/fpls.2023.1256773",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "An Edge Computing-Based Solution for Real-Time Leaf Disease Classification using Thermal Imaging",
+      "url": "https://arxiv.org/abs/2411.03835",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    },
+    {
+      "title": "Deep learning pipeline for image classification on mobile phones",
+      "url": "https://arxiv.org/abs/2206.00105",
+      "doi": "not found",
+      "source_system": "firecrawl_mcp"
+    }
+  ],
+  "papers_inspected": [
+    {
+      "url": "PMC11623072",
+      "section_requested": "all",
+      "section_returned": "outline_and_abstract",
+      "characters_returned": 3869,
+      "characters_read": 93736,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC11623072",
+      "section_requested": "dataset description",
+      "section_returned": "dataset description",
+      "characters_returned": 1858,
+      "characters_read": 93736,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC11623072",
+      "section_requested": "proposed methods",
+      "section_returned": "proposed methods",
+      "characters_returned": 2062,
+      "characters_read": 93736,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC11623072",
+      "section_requested": "results and discussions",
+      "section_returned": "results and discussions",
+      "characters_returned": 2016,
+      "characters_read": 93736,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC11623072",
+      "section_requested": "conclusion",
+      "section_returned": "conclusion",
+      "characters_returned": 2498,
+      "characters_read": 93736,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC12689465",
+      "section_requested": "all",
+      "section_returned": "outline_and_abstract",
+      "characters_returned": 5071,
+      "characters_read": 132281,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC12689465",
+      "section_requested": "3.1. input dataset",
+      "section_returned": "3.1. input dataset",
+      "characters_returned": 3253,
+      "characters_read": 132281,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC12689465",
+      "section_requested": "4.5. results on proposed effresvit-se fusionnet model",
+      "section_returned": "4.5. results on proposed effresvit-se fusionnet model",
+      "characters_returned": 2554,
+      "characters_read": 132281,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC12689465",
+      "section_requested": "5. conclusion and future work",
+      "section_returned": "5\\. conclusion and future work",
+      "characters_returned": 3002,
+      "characters_read": 132281,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:2601.12109",
+      "section_requested": "all",
+      "section_returned": "outline_and_abstract",
+      "characters_returned": 2388,
+      "characters_read": 35004,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:2601.12109",
+      "section_requested": "b. dataset",
+      "section_returned": "b. dataset",
+      "characters_returned": 547,
+      "characters_read": 35004,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:2601.12109",
+      "section_requested": "c. lightweight base classifiers (base models)",
+      "section_returned": "c. lightweight base classifiers (base models)",
+      "characters_returned": 1339,
+      "characters_read": 35004,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:2601.12109",
+      "section_requested": "b. ensemble evaluation",
+      "section_returned": "b. ensemble evaluation",
+      "characters_returned": 5924,
+      "characters_read": 35004,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:2601.12109",
+      "section_requested": "v. concluding remarks",
+      "section_returned": "v. concluding remarks",
+      "characters_returned": 684,
+      "characters_read": 35004,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:1904.00742",
+      "section_requested": "all",
+      "section_returned": "outline_and_abstract",
+      "characters_returned": 3979,
+      "characters_read": 74733,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:1904.00742",
+      "section_requested": "3.1. database",
+      "section_returned": "3.1. database",
+      "characters_returned": 1611,
+      "characters_read": 74733,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:1904.00742",
+      "section_requested": "6. proposed approach",
+      "section_returned": "2.6. proposed approach",
+      "characters_returned": 1055,
+      "characters_read": 74733,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:1904.00742",
+      "section_requested": "3.3. classification results using backpropagation",
+      "section_returned": "3.3.2. classification results using backpropagation",
+      "characters_returned": 3573,
+      "characters_read": 74733,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:1904.00742",
+      "section_requested": "5. conclusion",
+      "section_returned": "5\\. conclusion",
+      "characters_returned": 3118,
+      "characters_read": 74733,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC8165403",
+      "section_requested": "abstract",
+      "section_returned": "abstract",
+      "characters_returned": 3819,
+      "characters_read": 25620,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC8165403",
+      "section_requested": "1. data description",
+      "section_returned": "1\\. data description",
+      "characters_returned": 840,
+      "characters_read": 25620,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC8165403",
+      "section_requested": "2.1. data acquisition",
+      "section_returned": "2.1. data acquisition",
+      "characters_returned": 536,
+      "characters_read": 25620,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "arxiv:2601.12109",
+      "section_requested": "conclusion",
+      "section_returned": "v. concluding remarks",
+      "characters_returned": 673,
+      "characters_read": 35004,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC8165403",
+      "section_requested": "method",
+      "section_returned": "3.1. noise filtering, 3.2. cropping, 3.3. data augmentation",
+      "characters_returned": 2582,
+      "characters_read": 25620,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "PMC8165403",
+      "section_requested": "results",
+      "section_returned": "arabica coffee leaf images dataset for coffee leaf disease detection and classification",
+      "characters_returned": 211,
+      "characters_read": 25620,
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    }
+  ],
+  "full_text_sources": [
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11623072/",
+      "characters": 93736,
+      "sections_found": [
+        "deepempr: coffee leaf disease detection with deep learning and enhanced multivariance product representation",
+        "ahmet topal",
+        "burcu tunga",
+        "erfan babaee tirkolaee",
+        "abstract",
+        "introduction",
+        "motivation for the study",
+        "motivation for the choice of methods used",
+        "contributions",
+        "structure of the manuscript",
+        "enhanced multivariance product representation",
+        "dataset description",
+        "figure 1. a sample image of each type of disease affecting coffee plant leaves.",
+        "figure 2. a sample image from each disease severity class.",
+        "table 1. dataset overview.",
+        "proposed methods",
+        "preprocessing stage",
+        "figure 3. preprocessing steps.",
+        "figure 4. visualization of preprocessing steps on an example image.",
+        "classification stage",
+        "figure 5. flowchart of the classification process.",
+        "performance metrics",
+        "figure 6. confusion matrix.",
+        "results and discussions",
+        "table 2. biotic stress dataset results.",
+        "table 3. stress severity dataset results.",
+        "figure 7. (a-d) performance metrics comparison of cnn models across different contrast stretching levels for biotic stress dataset.",
+        "figure 8. (a-d) performance metrics comparison of cnn models across different contrast stretching levels for severity dataset.",
+        "figure 9. (a-d) roc curves of each classification model for severity dataset.",
+        "conclusion",
+        "supplemental information",
+        "data availability",
+        "associated data",
+        "links to ncbi databases"
+      ],
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12689465/",
+      "characters": 132281,
+      "sections_found": [
+        "effresvit-se fusionnet: a hybrid deep learning framework for accurate classification of coffee leaf diseases",
+        "bhoomika mehta",
+        "salil bharany",
+        "dalia h elkamchouchi",
+        "ateeq ur rehman",
+        "rahul singh",
+        "seada hussen adem",
+        "abstract",
+        "1\\. introduction",
+        "2\\. literature review",
+        "table 1.",
+        "3\\. methods and material",
+        "3.1. input dataset",
+        "figure 1.",
+        "3.2. dataset splitting",
+        "table 2.",
+        "3.3. proposed effresvit-se fusionnet model",
+        "figure 2.",
+        "3.3.1. squeeze and excitation block",
+        "3.3.2. integrated se block with fine-tuned resnet50 model",
+        "3.3.3. integrated se block with fine-tuned efficientnetb3 model",
+        "3.3.4. feature extraction using vision transformer",
+        "3.3.5. feature fusion and classification",
+        "4\\. results and discussion",
+        "4.1. evaluation metrics",
+        "4.2. results on integrated se block with fine-tuned resnet50 model",
+        "figure 8.",
+        "figure 9.",
+        "table 3.",
+        "4.3. results on integrated se block with fine-tuned efficientnetb3 model",
+        "figure 10.",
+        "figure 11.",
+        "table 4.",
+        "4.4. results on vision transformer",
+        "figure 12.",
+        "figure 13.",
+        "table 5.",
+        "4.5. results on proposed effresvit-se fusionnet model",
+        "figure 14.",
+        "figure 15.",
+        "table 6.",
+        "4.6. hyperparameters of compared models",
+        "table 7.",
+        "4.7. discussion section",
+        "4.8. ablation study",
+        "table 8.",
+        "4.9. computational efficiency metrics",
+        "table 9.",
+        "4.10. state of the art comparison",
+        "table 10.",
+        "4.11. recent advances in deep learning for agricultural disease detection",
+        "5\\. conclusion and future work",
+        "consent",
+        "contributor information",
+        "associated data",
+        "links to ncbi databases"
+      ],
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2601.12109",
+      "characters": 35004,
+      "sections_found": [
+        "energy-aware ensemble learning for coffee leaf disease classification",
+        "abstract",
+        "i. introduction",
+        "ii. related work",
+        "iii. proposed approach",
+        "a. iot-driven data acquisition framework",
+        "b. dataset",
+        "c. lightweight base classifiers (base models)",
+        "d. meta-model analysis",
+        "e. ensemble strategies",
+        "iv. results and discussion",
+        "a. energy consumption and carbon footprint",
+        "b. ensemble evaluation",
+        "v. concluding remarks",
+        "resource-constrained devices and can advance practical coffee \\[12\\]",
+        "acknowledgment"
+      ],
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "https://arxiv.org/abs/1904.00742",
+      "characters": 74733,
+      "sections_found": [
+        "a smartphone application to detection and classification of coffee leaf miner and coffee leaf rust",
+        "abstract",
+        "1\\. introduction",
+        "2\\. algorithms for digital image processing of coffee leaves",
+        "2.1.1. the color space ycbcr",
+        "2.1.2. the color space ycgcr",
+        "2.1.3. the color space hsv",
+        "2.2. segmentation",
+        "2.2.1. otsu method",
+        "2.2.2. k-means algorithm",
+        "2.2.3. segmentation on the color space ycgcr",
+        "2.3. feature extraction",
+        "2.3.1. texture attributes",
+        "2.3.2. color attributes",
+        "2.4. classification algorithms",
+        "2.4.1. artificial neural networks",
+        "2.4.2. backpropagation algorithm",
+        "2.4.3. extreme learning machine",
+        "2.5. severity calculation",
+        "2.6. proposed approach",
+        "3.1. database",
+        "3.2. evaluation of the segmentation results",
+        "3.2.1. leaf segmentation",
+        "3.2.2. segmentation of injured coffee leaves",
+        "3.3. classification results",
+        "3.3.1. metrics used",
+        "3.3.2. classification results using backpropagation",
+        "3.3.3. classification results with extreme learning machine",
+        "3.4. severity calculation results",
+        "4\\. development of an application (app)",
+        "4.1.1. framework mean.js",
+        "4.1.2. android system",
+        "4.2. functionalities",
+        "5\\. conclusion"
+      ],
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/",
+      "characters": 25620,
+      "sections_found": [
+        "arabica coffee leaf images dataset for coffee leaf disease detection and classification",
+        "jennifer jepkoech",
+        "david muchangi mugo",
+        "benson k kenduiywo",
+        "edna chebet too",
+        "abstract",
+        "1\\. data description",
+        "table 1.",
+        "1.1. rust",
+        "fig. 1.",
+        "1.2. phoma",
+        "fig. 2.",
+        "1.3. miner",
+        "fig. 3.",
+        "1.4. cescospora",
+        "fig. 4.",
+        "2.1. data acquisition",
+        "3.1. noise filtering",
+        "3.2. cropping",
+        "fig. 5.",
+        "fig. 6.",
+        "3.3. data augmentation",
+        "fig. 7.",
+        "fig. 8.",
+        "credit author statement",
+        "links to ncbi databases"
+      ],
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false
+    }
+  ],
+  "repositories_inspected": [
+    {
+      "paper_title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation",
+      "query": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation Ahmet Topal",
+      "candidates_found": 0,
+      "status": "success",
+      "source_system": "github_api"
+    },
+    {
+      "paper_title": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases",
+      "query": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases Bhoomika Mehta",
+      "candidates_found": 0,
+      "status": "success",
+      "source_system": "github_api"
+    },
+    {
+      "paper_title": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification",
+      "query": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification Larissa Ferreira Rodrigues Moreira",
+      "candidates_found": 0,
+      "status": "success",
+      "source_system": "github_api"
+    },
+    {
+      "paper_title": "A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust",
+      "query": "A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust Giuliano L. Manso",
+      "candidates_found": 0,
+      "status": "success",
+      "source_system": "github_api"
+    }
+  ],
+  "failures": [],
+  "retries": [],
+  "fallbacks": [],
+  "cache_hits": {
+    "count": 1,
+    "keys": [
+      "read_paper_full_text:{\"target_section\": \"v. concluding remarks\", \"url_or_id\": \"arxiv:2601.12109\"}"
+    ]
+  },
+  "execution_stats": {
+    "turns": 42,
+    "total_tool_calls": 40,
+    "calls_per_tool": {
+      "search_research_papers": 4,
+      "read_paper_full_text": 26,
+      "search_paper_code_repository": 4,
+      "save_paper_findings": 5,
+      "find_in_text": 1
+    },
+    "duration_seconds": 134.0
+  },
+  "tool_calls": [
+    {
+      "timestamp": "2026-10-09T12:02:08.888168+00:00",
+      "tool": "search_research_papers",
+      "arguments": {
+        "query": "coffee leaf disease classification deep learning",
+        "max_results": 10
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "count": 10
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:15.768646+00:00",
+      "tool": "search_research_papers",
+      "arguments": {
+        "query": "smartphone application coffee leaf disease classification",
+        "max_results": 10
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "count": 10
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:21.291622+00:00",
+      "tool": "search_research_papers",
+      "arguments": {
+        "query": "coffee leaf disease image dataset",
+        "max_results": 10
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "count": 10
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:27.674118+00:00",
+      "tool": "search_research_papers",
+      "arguments": {
+        "query": "TensorFlow Lite coffee leaf disease classification",
+        "max_results": 10
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "count": 10
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:32.562179+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC11623072",
+        "target_section": "all"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 93736,
+        "chars_returned": 3869,
+        "section": "outline_and_abstract"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:34.520925+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC11623072",
+        "target_section": "dataset description"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 93736,
+        "chars_returned": 1858,
+        "section": "dataset description"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:35.436877+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC11623072",
+        "target_section": "proposed methods"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 93736,
+        "chars_returned": 2062,
+        "section": "proposed methods"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:37.589105+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC11623072",
+        "target_section": "results and discussions"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 93736,
+        "chars_returned": 2016,
+        "section": "results and discussions"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:38.556671+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC11623072",
+        "target_section": "conclusion"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 93736,
+        "chars_returned": 2498,
+        "section": "conclusion"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:41.621020+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC12689465",
+        "target_section": "all"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 132281,
+        "chars_returned": 5071,
+        "section": "outline_and_abstract"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:43.588184+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC12689465",
+        "target_section": "3.1. input dataset"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 132281,
+        "chars_returned": 3253,
+        "section": "3.1. input dataset"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:44.776177+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC12689465",
+        "target_section": "4.5. results on proposed effresvit-se fusionnet model"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 132281,
+        "chars_returned": 2554,
+        "section": "4.5. results on proposed effresvit-se fusionnet model"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:45.750507+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC12689465",
+        "target_section": "5. conclusion and future work"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 132281,
+        "chars_returned": 3002,
+        "section": "5\\. conclusion and future work"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:49.028744+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "all"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 35004,
+        "chars_returned": 2388,
+        "section": "outline_and_abstract"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:51.635632+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "b. dataset"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 35004,
+        "chars_returned": 547,
+        "section": "b. dataset"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:52.830989+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "c. lightweight base classifiers (base models)"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 35004,
+        "chars_returned": 1339,
+        "section": "c. lightweight base classifiers (base models)"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:54.778587+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "b. ensemble evaluation"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 35004,
+        "chars_returned": 5924,
+        "section": "b. ensemble evaluation"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:55.873302+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "v. concluding remarks"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 35004,
+        "chars_returned": 684,
+        "section": "v. concluding remarks"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:02:58.541194+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:1904.00742",
+        "target_section": "all"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 74733,
+        "chars_returned": 3979,
+        "section": "outline_and_abstract"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:00.592490+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:1904.00742",
+        "target_section": "3.1. database"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 74733,
+        "chars_returned": 1611,
+        "section": "3.1. database"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:01.916967+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:1904.00742",
+        "target_section": "6. proposed approach"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 74733,
+        "chars_returned": 1055,
+        "section": "2.6. proposed approach"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:02.902808+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:1904.00742",
+        "target_section": "3.3. classification results using backpropagation"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 74733,
+        "chars_returned": 3573,
+        "section": "3.3.2. classification results using backpropagation"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:03.939179+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:1904.00742",
+        "target_section": "5. conclusion"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 74733,
+        "chars_returned": 3118,
+        "section": "5\\. conclusion"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:06.480269+00:00",
+      "tool": "search_paper_code_repository",
+      "arguments": {
+        "paper_title": "DeepEMPR: coffee leaf disease detection with deep learning and enhanced multivariance product representation",
+        "author_or_keyword": "Ahmet Topal"
+      },
+      "status": "success",
+      "source_system": "github_api",
+      "is_fallback": false,
+      "details": {
+        "found": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:08.700491+00:00",
+      "tool": "search_paper_code_repository",
+      "arguments": {
+        "paper_title": "EffResViT-SE FusionNet: A Hybrid Deep Learning Framework for Accurate Classification of Coffee Leaf Diseases",
+        "author_or_keyword": "Bhoomika Mehta"
+      },
+      "status": "success",
+      "source_system": "github_api",
+      "is_fallback": false,
+      "details": {
+        "found": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:10.288859+00:00",
+      "tool": "search_paper_code_repository",
+      "arguments": {
+        "paper_title": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification",
+        "author_or_keyword": "Larissa Ferreira Rodrigues Moreira"
+      },
+      "status": "success",
+      "source_system": "github_api",
+      "is_fallback": false,
+      "details": {
+        "found": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:12.152226+00:00",
+      "tool": "search_paper_code_repository",
+      "arguments": {
+        "paper_title": "A smartphone application to detection and classification of coffee leaf miner and coffee leaf rust",
+        "author_or_keyword": "Giuliano L. Manso"
+      },
+      "status": "success",
+      "source_system": "github_api",
+      "is_fallback": false,
+      "details": {
+        "found": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:27.730724+00:00",
+      "tool": "save_paper_findings",
+      "arguments": {
+        "missing_sections_count": 1
+      },
+      "status": "missing_sections_warning",
+      "source_system": "unknown",
+      "is_fallback": false
+    },
+    {
+      "timestamp": "2026-10-09T12:03:31.273415+00:00",
+      "tool": "find_in_text",
+      "arguments": {
+        "query": "Conclusion",
+        "paper_url_or_id": "arxiv:2601.12109",
+        "paper_title": "Energy-Aware Ensemble Learning for Coffee Leaf Disease Classification"
+      },
+      "status": "searched_not_found",
+      "source_system": "unknown",
+      "is_fallback": false,
+      "details": {
+        "chars_searched": 35004
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:33.249423+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "v. concluding remarks"
+      },
+      "status": "cache_hit",
+      "source_system": "cache",
+      "is_fallback": false
+    },
+    {
+      "timestamp": "2026-10-09T12:03:37.406888+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC8165403",
+        "target_section": "abstract"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 25620,
+        "chars_returned": 3819,
+        "section": "abstract"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:44.222369+00:00",
+      "tool": "save_paper_findings",
+      "arguments": {
+        "missing_sections_count": 2
+      },
+      "status": "missing_sections_warning",
+      "source_system": "unknown",
+      "is_fallback": false
+    },
+    {
+      "timestamp": "2026-10-09T12:03:46.129299+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC8165403",
+        "target_section": "1. data description"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 25620,
+        "chars_returned": 840,
+        "section": "1\\. data description"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:48.921081+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC8165403",
+        "target_section": "2.1. data acquisition"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 25620,
+        "chars_returned": 536,
+        "section": "2.1. data acquisition"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:54.054438+00:00",
+      "tool": "save_paper_findings",
+      "arguments": {
+        "missing_sections_count": 2
+      },
+      "status": "missing_sections_warning",
+      "source_system": "unknown",
+      "is_fallback": false
+    },
+    {
+      "timestamp": "2026-10-09T12:03:55.784306+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "arxiv:2601.12109",
+        "target_section": "conclusion"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 35004,
+        "chars_returned": 673,
+        "section": "v. concluding remarks"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:57.424686+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC8165403",
+        "target_section": "method"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 25620,
+        "chars_returned": 2582,
+        "section": "3.1. noise filtering, 3.2. cropping, 3.3. data augmentation"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:03:59.991693+00:00",
+      "tool": "read_paper_full_text",
+      "arguments": {
+        "url_or_id": "PMC8165403",
+        "target_section": "results"
+      },
+      "status": "success",
+      "source_system": "firecrawl_mcp",
+      "is_fallback": false,
+      "details": {
+        "chars_stored": 25620,
+        "chars_returned": 211,
+        "section": "arabica coffee leaf images dataset for coffee leaf disease detection and classification"
+      }
+    },
+    {
+      "timestamp": "2026-10-09T12:04:06.032452+00:00",
+      "tool": "save_paper_findings",
+      "arguments": {
+        "paper": ""
+      },
+      "status": "missing_method_error",
+      "source_system": "unknown",
+      "is_fallback": false
+    },
+    {
+      "timestamp": "2026-10-09T12:04:13.789292+00:00",
+      "tool": "save_paper_findings",
+      "arguments": {
+        "num_queries": 4,
+        "num_findings": 10,
+        "exact_found": false
+      },
+      "status": "success",
+      "source_system": "local_disk",
+      "is_fallback": false
+    }
+  ]
+}
