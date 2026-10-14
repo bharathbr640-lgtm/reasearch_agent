@@ -498,7 +498,7 @@ class TestAgent2Redesign(unittest.IsolatedAsyncioTestCase):
         (stored_papers_dir / "pmcid_PMC8165403.txt").write_text(SAMPLE_PAPER_TEXT, encoding="utf-8")
         (stored_papers_dir / "arxiv_2601_12109.txt").write_text(SAMPLE_APP_PAPER_TEXT, encoding="utf-8")
 
-        # Create paper findings adhering to all 7 quality checks
+        # Create paper findings adhering to all 10 quality checks
         findings_data = {
             "session_id": self.session_id,
             "search_queries_run": ["coffee leaf disease mobile", "arabica leaf rust offline"],
@@ -513,25 +513,31 @@ class TestAgent2Redesign(unittest.IsolatedAsyncioTestCase):
                     "citation": "Farmer (2024). Mobile-Coffee Application.",
                     "match_type": "exact",
                     "match_reason": "Validated edge deployment",
-                    "problem_addressed": "Diagnosis of coffee leaf rust on mobile devices",
-                    "research_objective": "Real-time coffee disease recognition",
-                    "domain": "Mobile plant pathology",
-                    "input_type": "Camera photo",
-                    "output_type": "Disease label",
-                    "dataset": {"name": "Field Leaves", "size": "2,400 images", "split": "not reported"},
-                    "model": {"model_name": "TensorFlow Lite CNN", "architecture": "Mobile CNN"},
+                    "problem_addressed": "Diagnosis of coffee leaf rust",
+                    "research_objective": "not found",
+                    "domain": "not found",
+                    "input_type": "not found",
+                    "output_type": "not found",
+                    "dataset": {"name": "not found", "size": "2,400 images", "split": "not found", "description": "not found"},
+                    "model": {"model_name": "TensorFlow Lite", "architecture": "Android app using TensorFlow Lite"},
                     "method": "The mobile app was built for Android smartphones using TensorFlow Lite.",
                     "experiments_and_results": {
                         "reported_results": "Mobile-Coffee achieved 94.25% classification accuracy.",
-                        "evaluation_metrics": "Accuracy",
-                        "baseline_comparisons": "not reported",
+                        "evaluation_metrics": "classification accuracy",
+                        "baseline_comparisons": "not found",
                     },
                     "limitations": "Battery consumption increases during continuous camera stream processing.",
-                    "research_gap": "not reported",
+                    "research_gap": "not found",
                     "code_repository": {"url": "not found"},
                     "key_evidence": [
-                        {"quote": "Mobile-Coffee achieved 94.25% classification accuracy.", "section": "Results", "field": "reported_results"},
-                        {"quote": "The mobile app was built for Android smartphones using TensorFlow Lite.", "section": "Methods", "field": "method"},
+                        {"quote": "We present Mobile-Coffee, a mobile application running on Android devices for real-time coffee leaf rust detection.", "section": "Abstract", "field": "problem_addressed"},
+                        {"quote": "The mobile app was built for Android smartphones using TensorFlow Lite.", "section": "2. System Design and Mobile Deployment", "field": "method"},
+                        {"quote": "The mobile app was built for Android smartphones using TensorFlow Lite.", "section": "2. System Design and Mobile Deployment", "field": "model_name"},
+                        {"quote": "The mobile app was built for Android smartphones using TensorFlow Lite.", "section": "2. System Design and Mobile Deployment", "field": "architecture"},
+                        {"quote": "On the field test set of 2,400 leaf images, Mobile-Coffee achieved 94.25% classification accuracy.", "section": "3. Experimental Results", "field": "dataset_size"},
+                        {"quote": "On the field test set of 2,400 leaf images, Mobile-Coffee achieved 94.25% classification accuracy.", "section": "3. Experimental Results", "field": "reported_results"},
+                        {"quote": "On the field test set of 2,400 leaf images, Mobile-Coffee achieved 94.25% classification accuracy.", "section": "3. Experimental Results", "field": "evaluation_metrics"},
+                        {"quote": "Battery consumption increases during continuous camera stream processing.", "section": "4. Discussion and Limitations", "field": "limitations"},
                     ],
                     "source_urls": ["https://arxiv.org/abs/2601.12109"],
                 },
@@ -544,25 +550,34 @@ class TestAgent2Redesign(unittest.IsolatedAsyncioTestCase):
                     "citation": "Research Team (2023). DeepEMPR Diagnosis System. doi:10.1016/j.deepempr.2023",
                     "match_type": "closely_related",
                     "match_reason": "High accuracy diagnosis without edge deployment proof",
-                    "problem_addressed": "Plant disease diagnosis across large coffee plantations",
-                    "research_objective": "Multi-class disease detection using attention networks",
-                    "domain": "Agricultural deep learning",
-                    "input_type": "High resolution RGB images",
-                    "output_type": "Pest and disease classification",
-                    "dataset": {"name": "Arabica Coffee Dataset", "size": "58,555 images", "split": "70/15/15"},
-                    "model": {"model_name": "DeepEMPR", "architecture": "EfficientNetV2 with attention"},
+                    "problem_addressed": "Diagnosis system for Arabica coffee leaf diseases",
+                    "research_objective": "not found",
+                    "domain": "not found",
+                    "input_type": "not found",
+                    "output_type": "not found",
+                    "dataset": {"name": "not found", "size": "58,555 images", "split": "70% training, 15% validation, and 15% testing sets.", "description": "not found"},
+                    "model": {"model_name": "DeepEMPR", "architecture": "EfficientNetV2 backbone integrated with squeeze-and-excitation attention blocks."},
                     "method": "We developed DeepEMPR using an improved EfficientNetV2 backbone integrated with squeeze-and-excitation attention blocks.",
                     "experiments_and_results": {
                         "reported_results": "DeepEMPR achieved an overall accuracy of 99.1% across all diagnostic categories.",
-                        "evaluation_metrics": "Accuracy, Precision, Recall, F1",
-                        "baseline_comparisons": "ResNet-50 92.4%",
+                        "evaluation_metrics": "accuracy of 99.1%",
+                        "baseline_comparisons": "ResNet-50 (accuracy 92.4%) and MobileNetV2 (accuracy 90.1%)",
                     },
                     "limitations": "The current model was trained exclusively on daytime photos; performance under artificial night lighting has not been evaluated.",
                     "research_gap": "Future research will investigate quantization for microcontrollers.",
                     "code_repository": {"url": "not found"},
                     "key_evidence": [
-                        {"quote": "DeepEMPR achieved an overall accuracy of 99.1% across all diagnostic categories.", "section": "Results", "field": "reported_results"},
-                        {"quote": "A total of 58,555 images were gathered under real field conditions across multiple plantations.", "section": "Dataset", "field": "dataset_size"},
+                        {"quote": "In this study, we propose DeepEMPR, an intelligent diagnosis system for Arabica coffee leaf diseases.", "section": "Abstract", "field": "problem_addressed"},
+                        {"quote": "A total of 58,555 images were gathered under real field conditions across multiple plantations.", "section": "2.1 Dataset Collection and Preprocessing", "field": "dataset_size"},
+                        {"quote": "The dataset was split into 70% training, 15% validation, and 15% testing sets.", "section": "2.1 Dataset Collection and Preprocessing", "field": "dataset_split"},
+                        {"quote": "We developed DeepEMPR using an improved EfficientNetV2 backbone integrated with squeeze-and-excitation attention blocks.", "section": "2.2 Proposed Architecture", "field": "model_name"},
+                        {"quote": "We developed DeepEMPR using an improved EfficientNetV2 backbone integrated with squeeze-and-excitation attention blocks.", "section": "2.2 Proposed Architecture", "field": "architecture"},
+                        {"quote": "We developed DeepEMPR using an improved EfficientNetV2 backbone integrated with squeeze-and-excitation attention blocks.", "section": "2.2 Proposed Architecture", "field": "method"},
+                        {"quote": "Experimental evaluation shows that DeepEMPR achieved an overall accuracy of 99.1% across all diagnostic categories.", "section": "3. Results and Discussion", "field": "reported_results"},
+                        {"quote": "Experimental evaluation shows that DeepEMPR achieved an overall accuracy of 99.1% across all diagnostic categories.", "section": "3. Results and Discussion", "field": "evaluation_metrics"},
+                        {"quote": "When compared against baseline ResNet-50 (accuracy 92.4%) and MobileNetV2 (accuracy 90.1%), our model achieved superior performance.", "section": "3. Results and Discussion", "field": "baselines"},
+                        {"quote": "The current model was trained exclusively on daytime photos; performance under artificial night lighting has not been evaluated.", "section": "4. Limitations and Future Work", "field": "limitations"},
+                        {"quote": "Future research will investigate quantization for microcontrollers.", "section": "4. Limitations and Future Work", "field": "research_gap"},
                     ],
                     "source_urls": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC8165403/"],
                 },
@@ -577,6 +592,91 @@ class TestAgent2Redesign(unittest.IsolatedAsyncioTestCase):
         for check_name, (passed, msg) in results.items():
             self.assertTrue(passed, f"Check failed: {check_name} -> {msg}")
 
+    # -------------------------------------------------------------
+    # 7. Method Extraction and Fallback Unit Test (Problem A fix)
+    # -------------------------------------------------------------
+    async def test_stage3_method_extraction_and_fallback(self):
+        """Verify that when a paper has a method-type bucket, method is never 'not found'."""
+        sample_method_bucket = (
+            "We proposed an improved CNN framework combining multi-scale feature extraction "
+            "with depthwise separable convolutions to classify coffee leaf rust efficiently."
+        )
+        buckets = {
+            "abstract": "Diagnosing coffee leaf diseases is critical for agriculture.",
+            "method": sample_method_bucket,
+            "results": "The proposed method achieved 95.5% accuracy.",
+            "limitations": "Field tests were conducted only in dry season.",
+        }
+        headings = ["1. Introduction", "2. Materials and Methods", "3. Results", "4. Conclusion"]
+
+        # Case 1: Model returned 'not found' for method in initial extraction output
+        extraction_with_missing_method = PaperExtractionOutput(
+            problem_addressed=ExtractedField(
+                value="Diagnosing coffee leaf diseases",
+                quote="Diagnosing coffee leaf diseases is critical for agriculture.",
+                section="abstract",
+            ),
+            architecture=ExtractedField(
+                value="CNN framework with depthwise separable convolutions",
+                quote="We proposed an improved CNN framework combining multi-scale feature extraction with depthwise separable convolutions to classify coffee leaf rust efficiently.",
+                section="2. Materials and Methods",
+            ),
+            method=ExtractedField(
+                value="not found",
+                quote="",
+                section="not found",
+            ),
+            is_dataset_paper=False,
+        )
+
+        cand = {
+            "title": "Coffee Rust Classification Study",
+            "url": "https://doi.org/10.1016/j.coffee.2024.01",
+            "paper_id": "doi:10.1016/j.coffee.2024.01",
+            "authors": ["Test Author"],
+            "year": "2024",
+            "doi": "10.1016/j.coffee.2024.01",
+        }
+
+        # Register paper in context registry so buckets are accessible
+        rec = self.ctx.paper_registry.register_candidate(
+            title=cand["title"],
+            paper_url=cand["url"],
+            doi=cand["doi"],
+            paper_id=cand["paper_id"],
+        )
+        rec.buckets = buckets
+        rec.stored_text = "\n\n".join(buckets.values())
+
+        # Validate extraction: Validator logs rejection for empty method when method section exists
+        val_ext, rejections = validate_extraction(
+            extraction_with_missing_method,
+            buckets,
+            headings,
+            cand["title"],
+            stored_text=rec.stored_text,
+            ctx=self.ctx,
+            drop_failures=False,
+        )
+        # Should record rejection that method must not be not found
+        self.assertTrue(any(r["field"] == "method" for r in rejections))
+
+        # Assemble findings: Assembler fallback extracts from architecture or method bucket
+        validated_list = [(cand, val_ext, headings)]
+        findings_obj = await assemble_findings(self.ctx, validated_list, self.ctx.research_spec_summary)
+
+        # Finding must have a non-empty method value
+        found_paper = findings_obj.findings[0]
+        self.assertNotEqual(found_paper.method, "not found")
+        self.assertNotEqual(found_paper.method, "")
+        self.assertNotEqual(found_paper.method, "not reported")
+
+        # Must have a saved quote for method in key_evidence
+        method_quotes = [ev for ev in found_paper.key_evidence if ev.field == "method"]
+        self.assertTrue(len(method_quotes) > 0)
+        self.assertTrue(len(method_quotes[0].quote) > 10)
+
 
 if __name__ == "__main__":
     unittest.main()
+
