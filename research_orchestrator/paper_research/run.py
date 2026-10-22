@@ -19,6 +19,7 @@ from paper_research.agent import paper_researcher_agent
 from paper_research.tools import (
     PaperResearchContext,
     normalize_paper_identifiers,
+    inspect_candidate_papers_metadata,
     read_paper_full_text_internal,
     bucket_paper_sections,
     _extract_sections,
@@ -177,6 +178,21 @@ async def main() -> None:
             print(f"  {idx}. {sp.get('title') or sp.get('paper_id')} ({sp.get('url')})")
 
         # ==========================================
+        # Stage 1.5: Paper Metadata Inspection (Firecrawl Inspect Paper)
+        # ==========================================
+        print("\n" + "=" * 60)
+        print("STAGE 1.5: PAPER METADATA INSPECTION")
+        print("=" * 60)
+        papers_to_inspect = list(ctx.selected_papers)
+        for c in ctx.candidate_papers_seen:
+            if len(papers_to_inspect) >= 10:
+                break
+            if c not in papers_to_inspect:
+                papers_to_inspect.append(c)
+        await inspect_candidate_papers_metadata(ctx, papers_to_inspect)
+        print(f"Metadata inspected for {len(papers_to_inspect)} papers.")
+
+        # ==========================================
         # Stage 2: Reader (Code Only, No Model)
         # ==========================================
         print("\n" + "=" * 60)
@@ -288,17 +304,27 @@ async def main() -> None:
             is_dataset = any(kw in title.lower() for kw in ["rocole", "arabica dataset", "coleaf-db", "dataset for coffee"])
 
             # Extractor Call (Attempt 1)
+            ext, raw_json, counts = await extract_paper_evidence(spec_summary, title, buckets, headings)
             ctx.extractor_calls.append({
                 "paper": title,
                 "attempt": 1,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
+                "raw_json": raw_json,
+                "bucket_character_counts": counts,
             })
-            ext = await extract_paper_evidence(spec_summary, title, buckets, headings)
             if is_dataset:
                 ext.is_dataset_paper = True
 
             # Validate Attempt 1 without dropping fields
-            val_ext, rejections = validate_extraction(ext, buckets, headings, title, drop_failures=False)
+            val_ext, rejections = validate_extraction(
+                ext,
+                buckets,
+                headings,
+                title,
+                stored_text=rec.stored_text,
+                ctx=ctx,
+                drop_failures=False,
+            )
 
             if rejections:
                 print(f"  -> Validation rejected {len(rejections)} fields on attempt 1: {[r['field'] for r in rejections]}. Retrying...")
@@ -314,24 +340,42 @@ async def main() -> None:
                 })
 
                 # Extractor Call (Attempt 2 - Retry)
+                ext_retry, raw_json_retry, counts_retry = await extract_paper_evidence(spec_summary, title, buckets, headings, retry_feedback=feedback_str)
                 ctx.extractor_calls.append({
                     "paper": title,
                     "attempt": 2,
                     "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "raw_json": raw_json_retry,
+                    "bucket_character_counts": counts_retry,
                 })
-                ext_retry = await extract_paper_evidence(spec_summary, title, buckets, headings, retry_feedback=feedback_str)
                 if is_dataset:
                     ext_retry.is_dataset_paper = True
 
                 # Validate Attempt 2 with drop_failures=True
-                val_ext, final_rejections = validate_extraction(ext_retry, buckets, headings, title, drop_failures=True)
+                val_ext, final_rejections = validate_extraction(
+                    ext_retry,
+                    buckets,
+                    headings,
+                    title,
+                    stored_text=rec.stored_text,
+                    ctx=ctx,
+                    drop_failures=True,
+                )
                 if final_rejections:
                     print(f"  -> {len(final_rejections)} fields failed validation after retry: {[r['field'] for r in final_rejections]}. Dropped to 'not found'.")
                     ctx.rejected_fields.extend(final_rejections)
                 else:
                     print("  -> All rejected fields successfully resolved on retry!")
             else:
-                val_ext, _ = validate_extraction(ext, buckets, headings, title, drop_failures=True)
+                val_ext, _ = validate_extraction(
+                    ext,
+                    buckets,
+                    headings,
+                    title,
+                    stored_text=rec.stored_text,
+                    ctx=ctx,
+                    drop_failures=True,
+                )
                 print("  -> Extraction passed all validation checks on attempt 1!")
 
             validated_extractions.append((cand, val_ext, headings))

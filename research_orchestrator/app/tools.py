@@ -69,7 +69,14 @@ async def finalize_research_spec(
         research_focus=research_focus,
     )
 
-    output_dir = Path("outputs") / ctx.context.session_id
+    base_dir = (Path(__file__).resolve().parent.parent / "outputs").resolve()
+    base_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = (base_dir / ctx.context.session_id).resolve()
+
+    # Defense-in-depth: Ensure the resolved path remains strictly inside outputs/
+    if not output_dir.is_relative_to(base_dir) or output_dir == base_dir:
+        raise ValueError(f"Unsafe session_id: {ctx.context.session_id!r}")
+
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Clarified problem statement as Markdown
@@ -85,6 +92,6 @@ async def finalize_research_spec(
 
     # Mark session as finalized so the endpoint can report it
     ctx.context.finalized = True
-    ctx.context.output_dir = str(output_dir)
+    ctx.context.output_dir = f"outputs/{ctx.context.session_id}"
 
     return f"Research specification saved to {output_dir}/"

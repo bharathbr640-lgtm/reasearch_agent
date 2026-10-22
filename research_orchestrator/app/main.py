@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import re
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from agents import Runner
 
 from app.agent import orchestrator_agent
@@ -13,8 +16,18 @@ from app.tools import SessionContext
 
 app = FastAPI(title="AI Research Orchestrator")
 
+# ── Directory paths & static mounts ──────────────────────────────────
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIR = BASE_DIR / "static"
+OUTPUTS_DIR = BASE_DIR / "outputs"
+
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+
 # ── In-memory conversation store ─────────────────────────────────────
 sessions: dict[str, list] = {}
+
+SESSION_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
 
 
 # ── Request / response schemas ───────────────────────────────────────
@@ -22,6 +35,24 @@ sessions: dict[str, list] = {}
 class ChatRequest(BaseModel):
     session_id: str
     message: str
+
+    @field_validator("session_id")
+    @classmethod
+    def validate_session_id(cls, v: str) -> str:
+        v = v.strip()
+        if not SESSION_ID_PATTERN.match(v):
+            raise ValueError(
+                "session_id must be alphanumeric with hyphens or underscores (1-64 characters)"
+            )
+        return v
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("message cannot be empty")
+        return v
 
 
 class ChatResponse(BaseModel):
@@ -48,7 +79,8 @@ async def chat(req: ChatRequest) -> ChatResponse:
         )
     except Exception as exc:
         # Remove the message we just appended so the user can retry.
-        history.pop()
+        if history:
+            history.pop()
         return ChatResponse(
             reply=f"Error communicating with the model: {exc}",
             finalized=False,
@@ -64,10 +96,11 @@ async def chat(req: ChatRequest) -> ChatResponse:
     )
 
 
-# Static files & root page
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Static files & output directory mounting
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
 
 
 @app.get("/")
 async def root():
-    return FileResponse("static/index.html")
+    return FileResponse(str(STATIC_DIR / "index.html"))

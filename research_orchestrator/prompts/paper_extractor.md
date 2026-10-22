@@ -16,5 +16,8 @@ Rules:
 - is_dataset_paper is true only if the abstract presents a dataset and the paper proposes no model. Then the results fields are "not applicable".
 - same_task: does this paper itself diagnose or classify the plant disease of the clarified problem from a leaf photo. phone_app: does the paper describe a smartphone or mobile app. offline_stated: does the text state that the model runs on the device without internet or a server. Each is true or false with a quote. If the text does not say it, return false with an empty quote.
 - Never reuse the same wording for different papers. Never fill a field with a default or an example.
+- method: one or two sentences describing how the paper's approach works, taken from the method, approach, framework or model section. If a method-type section was given to you, do not return "not found".
+- Every value that is not "not found" or "not applicable" needs its own quote and section. Do not reuse one quote for several fields unless it truly contains the answer to each.
+- dataset_description is one short sentence from the dataset section and must differ from dataset_name.
 
 Return only the JSON.

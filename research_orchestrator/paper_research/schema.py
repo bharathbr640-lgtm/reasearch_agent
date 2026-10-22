@@ -132,12 +132,16 @@ class DatasetInfo(BaseModel):
     @classmethod
     def _clean_nones(cls, data: Any) -> Any:
         if isinstance(data, str):
-            data = {"name": data, "description": data}
+            data = {"name": data, "description": "not found"}
         if isinstance(data, dict):
             cleaned = _sanitize_dict_nones(data)
             raw_name = str(cleaned.get("name", "")).strip()
             raw_desc = str(cleaned.get("description", "")).strip()
             cleaned["name"] = clean_dataset_name(raw_name, raw_desc)
+            if raw_desc.lower() == raw_name.lower() or raw_desc.lower() == cleaned["name"].lower():
+                cleaned["description"] = "not found"
+            else:
+                cleaned["description"] = raw_desc if raw_desc else "not found"
             return cleaned
         return data or {}
 
@@ -424,6 +428,7 @@ class PaperExtractionOutput(BaseModel):
     input_type: ExtractedField = Field(default_factory=ExtractedField)
     output_type: ExtractedField = Field(default_factory=ExtractedField)
     dataset_name: ExtractedField = Field(default_factory=ExtractedField)
+    dataset_description: ExtractedField = Field(default_factory=ExtractedField)
     dataset_size: ExtractedField = Field(default_factory=ExtractedField)
     dataset_split: ExtractedField = Field(default_factory=ExtractedField)
     model_name: ExtractedField = Field(default_factory=ExtractedField)

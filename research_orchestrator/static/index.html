@@ -1,294 +1,1310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-full bg-slate-100" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Research Orchestrator</title>
-<style>
-  :root {
-    --bg: #f5f5f5;
-    --surface: #ffffff;
-    --text: #1a1a1a;
-    --text-muted: #666666;
-    --user-bubble: #0066cc;
-    --user-text: #ffffff;
-    --assistant-bubble: #e8e8e8;
-    --assistant-text: #1a1a1a;
-    --border: #dddddd;
-    --accent: #0066cc;
-    --notice-bg: #e8f5e9;
-    --notice-border: #4caf50;
-    --notice-text: #2e7d32;
-    --error-text: #d32f2f;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a1a;
-      --surface: #2d2d2d;
-      --text: #e0e0e0;
-      --text-muted: #999999;
-      --user-bubble: #1a73e8;
-      --user-text: #ffffff;
-      --assistant-bubble: #3a3a3a;
-      --assistant-text: #e0e0e0;
-      --border: #444444;
-      --accent: #4da6ff;
-      --notice-bg: #1b3a1b;
-      --notice-border: #4caf50;
-      --notice-text: #81c784;
-      --error-text: #ef5350;
-    }
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 720px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 0 16px;
-  }
-
-  header {
-    padding: 20px 0 12px;
-    text-align: center;
-    flex-shrink: 0;
-  }
-
-  header h1 {
-    font-size: 1.3rem;
-    font-weight: 600;
-  }
-
-  header p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  #chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .message {
-    max-width: 80%;
-    padding: 10px 14px;
-    border-radius: 16px;
-    line-height: 1.5;
-    font-size: 0.95rem;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-
-  .message.user {
-    align-self: flex-end;
-    background: var(--user-bubble);
-    color: var(--user-text);
-    border-bottom-right-radius: 4px;
-  }
-
-  .message.assistant {
-    align-self: flex-start;
-    background: var(--assistant-bubble);
-    color: var(--assistant-text);
-    border-bottom-left-radius: 4px;
-  }
-
-  .typing-indicator {
-    align-self: flex-start;
-    padding: 10px 14px;
-    background: var(--assistant-bubble);
-    border-radius: 16px;
-    border-bottom-left-radius: 4px;
-    display: none;
-    gap: 4px;
-  }
-
-  .typing-indicator.visible { display: flex; }
-
-  .typing-indicator span {
-    width: 8px;
-    height: 8px;
-    background: var(--text-muted);
-    border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out;
-  }
-
-  .typing-indicator span:nth-child(1) { animation-delay: 0s; }
-  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); }
-    40% { transform: scale(1); }
-  }
-
-  #notice {
-    display: none;
-    background: var(--notice-bg);
-    border: 1px solid var(--notice-border);
-    color: var(--notice-text);
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-    line-height: 1.5;
-  }
-
-  #notice.visible { display: block; }
-
-  .input-area {
-    display: flex;
-    gap: 8px;
-    padding: 12px 0 20px;
-    flex-shrink: 0;
-  }
-
-  #input {
-    flex: 1;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 0.95rem;
-    resize: none;
-    outline: none;
-    min-height: 44px;
-    max-height: 120px;
-  }
-
-  #input:focus { border-color: var(--accent); }
-
-  #send {
-    padding: 0 20px;
-    border: none;
-    border-radius: 12px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  #send:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-</style>
-</head>
-<body>
-<div class="container">
-  <header>
-    <h1>AI Research Orchestrator</h1>
-    <p>Describe your project or problem. The orchestrator will clarify it with you.</p>
-  </header>
-
-  <div id="chat">
-    <div class="typing-indicator" id="typing">
-      <span></span><span></span><span></span>
-    </div>
-  </div>
-
-  <div id="notice"></div>
-
-  <div class="input-area">
-    <textarea id="input" rows="1" placeholder="Describe your problem or idea…"></textarea>
-    <button id="send">Send</button>
-  </div>
-</div>
-
-<script>
-  const sessionId = crypto.randomUUID();
-  const chatEl = document.getElementById("chat");
-  const inputEl = document.getElementById("input");
-  const sendBtn = document.getElementById("send");
-  const typingEl = document.getElementById("typing");
-  const noticeEl = document.getElementById("notice");
-  let busy = false;
-
-  function addMessage(role, text) {
-    const div = document.createElement("div");
-    div.className = "message " + role;
-    div.textContent = text;
-    chatEl.insertBefore(div, typingEl);
-    chatEl.scrollTop = chatEl.scrollHeight;
-  }
-
-  async function send() {
-    const text = inputEl.value.trim();
-    if (!text || busy) return;
-
-    addMessage("user", text);
-    inputEl.value = "";
-    inputEl.style.height = "auto";
-    busy = true;
-    sendBtn.disabled = true;
-    typingEl.classList.add("visible");
-    chatEl.scrollTop = chatEl.scrollHeight;
-
-    try {
-      const res = await fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId, message: text }),
-      });
-      const data = await res.json();
-      addMessage("assistant", data.reply);
-
-      if (data.finalized) {
-        noticeEl.textContent =
-          "\u2705 Research specification saved!\n" +
-          "\u2022 " + data.output_dir + "/clarified_problem_statement.md\n" +
-          "\u2022 " + data.output_dir + "/research_spec.json";
-        noticeEl.classList.add("visible");
-        inputEl.disabled = true;
-        sendBtn.disabled = true;
-        inputEl.placeholder = "Session finalized.";
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>AI Research Agent - Unified Workspace</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            primary: '#004ac6',
+            'primary-container': '#2563eb',
+            surface: '#f8f9ff',
+            'surface-container-low': '#eff4ff',
+            'surface-container': '#e5eeff',
+          }
+        }
       }
-    } catch (err) {
-      addMessage("assistant", "Error: " + err.message);
-    } finally {
-      busy = false;
-      if (!inputEl.disabled) sendBtn.disabled = false;
-      typingEl.classList.remove("visible");
     }
-  }
-
-  sendBtn.addEventListener("click", send);
-
-  inputEl.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      send();
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
-  });
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .45; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .active-nav {
+      background-color: rgba(99, 102, 241, 0.18) !important;
+      color: #a5b4fc !important;
+      border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    }
+    .report-anchor.active-anchor {
+      background-color: #eff4ff;
+      color: #004ac6;
+      border-left: 3px solid #2563eb;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-800 antialiased flex bg-[#f5f7fb] font-sans selection:bg-indigo-500 selection:text-white">
 
-  // Auto-resize textarea
-  inputEl.addEventListener("input", () => {
-    inputEl.style.height = "auto";
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + "px";
-  });
-</script>
+  <!-- Toast Notification Element -->
+  <div class="fixed top-5 right-5 z-50 transform -translate-y-12 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 text-white shadow-xl border border-slate-800 text-xs font-medium" id="toast-notification">
+    <span class="w-2 h-2 rounded-full bg-emerald-400" id="toast-indicator"></span>
+    <span id="toast-message">Notification message</span>
+  </div>
+
+  <!-- BEGIN: Left Dark Sidebar (Persists Across SPA) -->
+  <aside class="w-64 flex-shrink-0 bg-[#0f111a] text-slate-300 flex flex-col border-r border-slate-800/80 z-30">
+    <!-- Brand / Header -->
+    <div class="px-5 py-4 border-b border-slate-800/60 flex items-center justify-between cursor-pointer" onclick="switchView('dashboard')">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/30">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="text-[13px] font-bold tracking-tight text-white flex items-center gap-1.5 font-display">
+            AI Research Agent
+          </div>
+          <p class="text-[10px] text-slate-400 font-medium tracking-tight">Autonomous Agent System</p>
+        </div>
+      </div>
+      <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" title="System Online"></span>
+    </div>
+
+    <!-- Primary CTA Button (Switches to Start view) -->
+    <div class="px-4 pt-4 pb-2">
+      <button class="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs tracking-tight shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 transition active:scale-[0.98]" id="btn-sidebar-new" onclick="switchView('start')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>New Research</span>
+      </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto no-scrollbar text-xs">
+      <div class="px-3 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-mono">Navigation</div>
+      <button class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition active-nav" id="nav-dashboard" onclick="switchView('dashboard')">
+        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Dashboard</span>
+      </button>
+
+      <!-- My Research navigates directly to Active Research View -->
+      <button class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" id="nav-active" onclick="switchView('active')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>My Research</span>
+        <span class="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping"></span>
+      </button>
+
+      <!-- Research History / Report navigates to View 04 -->
+      <button class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" id="nav-report" onclick="switchView('report')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Final Reports</span>
+        <span class="ml-auto text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono" id="nav-reports-count">0</span>
+      </button>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" href="javascript:void(0)" onclick="showToast('No saved findings yet')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Saved Findings</span>
+      </a>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" href="javascript:void(0)" onclick="showToast('Knowledge base is empty')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>Knowledge Base</span>
+      </a>
+
+      <!-- Agents Status section -->
+      <div class="pt-5 pb-2">
+        <div class="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-mono">Autonomous Agents</div>
+        <div class="space-y-1">
+          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+              <span class="text-[11px] font-medium">Orchestrator</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">STANDBY</span>
+          </div>
+          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="text-[11px] font-medium">Project Finder</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">READY</span>
+          </div>
+          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+              <span class="text-[11px] font-medium">Paper Finder</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">QUEUED</span>
+          </div>
+          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span class="text-[11px] font-medium">Evaluator</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">PENDING</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar footer profile -->
+    <div class="p-3 border-t border-slate-800/70 bg-[#0c0e15]">
+      <div class="flex items-center gap-2.5 px-2 py-1">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-semibold text-xs flex items-center justify-center ring-2 ring-slate-800 shadow-sm flex-shrink-0">
+          B
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-xs font-semibold text-white truncate font-display">Bharath R</p>
+          <p class="text-[10px] text-slate-400 truncate">bharath@workspace.ai</p>
+        </div>
+        <button class="text-slate-400 hover:text-white transition" onclick="showToast('User settings opened')" title="Workspace Settings" type="button">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+  <!-- END: Left Dark Sidebar -->
+
+  <!-- BEGIN: SPA Views Container -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- ============================================================== -->
+    <!-- VIEW 1: DASHBOARD                                              -->
+    <!-- ============================================================== -->
+    <div class="flex-1 flex overflow-hidden w-full" id="view-dashboard">
+      <!-- Main Scrollable Area -->
+      <main class="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+        <!-- Top Header Row -->
+        <div class="flex items-center justify-between pb-1">
+          <div class="space-y-1" data-purpose="welcome-banner">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-100/80 text-indigo-700 text-[11px] font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+              Workspace Active
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">
+              Good evening, Bharath.
+            </h1>
+            <p class="text-xs text-slate-500">
+              Turn a project idea into evidence-based research.
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <input class="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 w-64 shadow-sm" placeholder="Search research, papers..." type="text"/>
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <button aria-label="Notifications" class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 shadow-sm transition" onclick="showToast('No new notifications')" type="button">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- BEGIN: HeroCard (wide) -->
+        <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#17143a] via-[#241154] to-[#1a1444] p-6 text-white shadow-lg shadow-indigo-950/15 border border-indigo-900/40" data-purpose="hero-overview-card">
+          <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:14px_14px] pointer-events-none"></div>
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div class="space-y-2 max-w-xl">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-md bg-white/10 text-indigo-200 border border-white/10 font-mono">
+                  AI-POWERED RESEARCH
+                </span>
+                <div class="flex items-center gap-1.5 text-[10px] bg-white/10 px-2.5 py-0.5 rounded-full text-indigo-100">
+                  <span>GitHub</span>
+                  <span class="text-indigo-400">•</span>
+                  <span>Hugging Face</span>
+                </div>
+              </div>
+              <h2 class="text-xl font-extrabold text-white tracking-tight font-display">
+                From problem statement <span class="text-indigo-300">to verified research.</span>
+              </h2>
+              <p class="text-xs text-indigo-100/80 leading-relaxed font-normal">
+                Discover what has already been built, what has already been researched, and where the real gap is.
+              </p>
+            </div>
+            <div class="flex-shrink-0">
+              <button class="py-2.5 px-5 rounded-xl bg-white text-slate-900 font-semibold text-xs tracking-tight shadow-md hover:bg-slate-50 active:scale-[0.98] transition flex items-center justify-center gap-2 font-display" onclick="switchView('report')" type="button">
+                <span>Read Research Report</span>
+                <svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- END: HeroCard -->
+
+        <!-- BEGIN: ProblemStatementInput (wide desktop) -->
+        <section class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm space-y-4" data-purpose="input-section">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[11px]">01</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight font-display">Start with your problem</h3>
+                <p class="text-[11px] text-slate-500">The Orchestrator will clarify the spec before research begins.</p>
+              </div>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400" id="dash-char-count">0 / 2500</span>
+          </div>
+          <!-- Input box area -->
+          <div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-3 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
+            <textarea class="w-full text-xs text-slate-800 placeholder-slate-400 bg-transparent border-0 p-0 focus:ring-0 resize-none font-normal leading-relaxed" id="dashboard-input" oninput="updateDashboardCharCount(this)" placeholder="Describe your technical research problem or project vision..." rows="3"></textarea>
+          </div>
+          <!-- Domains & CTA row -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-mono">Suggested domains:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Computer Vision')" type="button">Computer Vision</button>
+                <button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('NLP')" type="button">NLP</button>
+                <button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Time Series')" type="button">Time Series</button>
+                <button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Recommendation')" type="button">Recommendation</button>
+                <button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Robotics')" type="button">Robotics</button>
+              </div>
+            </div>
+            <button class="py-2.5 px-5 rounded-xl bg-indigo-600 text-white font-semibold text-xs tracking-tight shadow-sm shadow-indigo-600/30 hover:bg-indigo-700 active:scale-[0.98] transition flex items-center justify-center gap-2 font-display self-end md:self-auto" onclick="startResearchProcess()" type="button">
+              <span>Start Research</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+        </section>
+        <!-- END: ProblemStatementInput -->
+
+        <!-- BEGIN: ResearchWorkflow (4-Column Pipeline Grid) -->
+        <section class="space-y-3" data-purpose="research-workflow-section">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[11px]">02</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight font-display">Research workflow</h3>
+                <p class="text-[11px] text-slate-500">Autonomous multi-agent execution pipeline</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-indigo-600 font-display cursor-pointer hover:underline" onclick="switchView('active')">View live pipeline →</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <!-- Step 1: Orchestrator -->
+            <article class="bg-white rounded-xl p-4 border border-indigo-200 shadow-sm relative flex flex-col justify-between hover:border-indigo-400 transition cursor-pointer" onclick="switchView('active')">
+              <div>
+                <div class="flex items-center gap-2 mb-2.5">
+                  <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">01</span>
+                  <h4 class="text-xs font-bold text-slate-900 font-display">Orchestrator</h4>
+                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-100 font-mono">Active</span>
+                </div>
+                <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+                  <li class="flex items-center gap-1.5">
+                    <svg class="w-3 h-3 text-indigo-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+                    <span>Understand problem</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <svg class="w-3 h-3 text-indigo-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+                    <span>Ask clarifying questions</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <svg class="w-3 h-3 text-indigo-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+                    <span>Create research spec</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                <span>Status</span>
+                <span class="text-indigo-600 font-medium">Ready to prompt</span>
+              </div>
+            </article>
+            <!-- Step 2: Project Finder -->
+            <article class="bg-white rounded-xl p-4 border border-emerald-200 shadow-sm relative flex flex-col justify-between hover:border-emerald-400 transition cursor-pointer" onclick="switchView('active')">
+              <div>
+                <div class="flex items-center gap-2 mb-2.5">
+                  <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">02</span>
+                  <h4 class="text-xs font-bold text-slate-900 font-display">Project Finder</h4>
+                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-100 font-mono">Ready</span>
+                </div>
+                <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Search GitHub repos</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Search Hugging Face</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Analyze implementations</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                <span>Coverage</span>
+                <span class="text-emerald-600 font-medium">Full access</span>
+              </div>
+            </article>
+            <!-- Step 3: Paper Finder -->
+            <article class="bg-white rounded-xl p-4 border border-purple-200 shadow-sm relative flex flex-col justify-between hover:border-purple-400 transition cursor-pointer" onclick="switchView('active')">
+              <div>
+                <div class="flex items-center gap-2 mb-2.5">
+                  <span class="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">03</span>
+                  <h4 class="text-xs font-bold text-slate-900 font-display">Paper Finder</h4>
+                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded border border-purple-100 font-mono">Queued</span>
+                </div>
+                <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                    <span>Semantic paper search</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                    <span>Extract methods</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                    <span>Find related work</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                <span>ArXiv Index</span>
+                <span class="text-purple-600 font-medium">Semantic API</span>
+              </div>
+            </article>
+            <!-- Step 4: Evaluator -->
+            <article class="bg-white rounded-xl p-4 border border-amber-200 shadow-sm relative flex flex-col justify-between hover:border-amber-400 transition cursor-pointer" onclick="switchView('active')">
+              <div>
+                <div class="flex items-center gap-2 mb-2.5">
+                  <span class="w-5 h-5 rounded-full bg-amber-600 text-white font-bold text-[10px] flex items-center justify-center">04</span>
+                  <h4 class="text-xs font-bold text-slate-900 font-display">Evaluator</h4>
+                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-100 font-mono">Pending</span>
+                </div>
+                <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span>Verify relevance</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span>Compare evidence</span>
+                  </li>
+                  <li class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span>Identify research gaps</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                <span>Synthesis</span>
+                <span class="text-amber-600 font-medium">Final audit</span>
+              </div>
+            </article>
+          </div>
+        </section>
+        <!-- END: ResearchWorkflow -->
+      </main>
+
+      <!-- BEGIN: Dashboard Right Sidebar -->
+      <aside class="w-80 flex-shrink-0 bg-white border-l border-slate-200/90 p-5 overflow-y-auto space-y-5">
+        <!-- Recent Research Section -->
+        <section class="space-y-3" data-purpose="recent-research-section">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Recent research</h3>
+            <button class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700" onclick="switchView('report')" type="button">View all →</button>
+          </div>
+          <div id="recent-research-empty" class="py-8 text-center text-slate-400">
+            <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <p class="text-xs font-medium text-slate-500">No recent research</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Sessions will appear here once started.</p>
+          </div>
+          <div class="divide-y divide-slate-100 hidden" id="recent-research-list"></div>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-slate-100"/>
+
+        <!-- Research Snapshot Section -->
+        <section class="space-y-3" data-purpose="metrics-grid">
+          <h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Research snapshot</h3>
+          <div class="grid grid-cols-2 gap-2.5 text-center">
+            <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100/60 transition" onclick="switchView('report')">
+              <span class="block text-xl font-extrabold text-blue-700 font-display" id="metric-projects-count">0</span>
+              <span class="text-[10px] font-medium text-blue-600/90 leading-tight">Projects found</span>
+            </div>
+            <div class="bg-purple-50/70 p-3 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100/60 transition" onclick="switchView('report')">
+              <span class="block text-xl font-extrabold text-purple-700 font-display" id="metric-papers-count">0</span>
+              <span class="text-[10px] font-medium text-purple-600/90 leading-tight">Papers found</span>
+            </div>
+            <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-100 cursor-pointer hover:bg-amber-100/60 transition" onclick="switchView('report')">
+              <span class="block text-xl font-extrabold text-amber-700 font-display" id="metric-gaps-count">0</span>
+              <span class="text-[10px] font-medium text-amber-600/90 leading-tight">Gaps identified</span>
+            </div>
+            <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-100 cursor-pointer hover:bg-emerald-100/60 transition" onclick="switchView('report')">
+              <span class="block text-xl font-extrabold text-emerald-700 font-display" id="metric-reports-count">0</span>
+              <span class="text-[10px] font-medium text-emerald-600/90 leading-tight">Verified reports</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-slate-100"/>
+
+        <!-- Research Quality Gauge Section -->
+        <section class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Research quality</h3>
+              <p class="text-[10px] text-slate-500">Evidence coverage</p>
+            </div>
+            <span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 font-mono">
+              IDLE
+            </span>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <div>
+              <div class="text-2xl font-black text-slate-900 font-display">0%</div>
+              <span class="text-[10px] font-medium text-slate-500">Awaiting research data</span>
+            </div>
+            <!-- Radial Progress Gauge -->
+            <div class="w-12 h-12 relative flex items-center justify-center">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+                <path class="text-indigo-600" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3.5"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
+          </div>
+        </section>
+      </aside>
+      <!-- END: Dashboard Right Sidebar -->
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- VIEW 2: START A RESEARCH (04)                                 -->
+    <!-- ============================================================== -->
+    <div class="hidden flex-1 overflow-y-auto px-8 py-6 space-y-6 w-full" id="view-start">
+      <!-- Header with breadcrumbs -->
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <button class="hover:text-indigo-600" onclick="switchView('dashboard')" type="button">Dashboard</button>
+            <span>/</span>
+            <span class="text-slate-800 font-semibold">New Research Intake</span>
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">Start a New Research Session</h1>
+          <p class="text-xs text-slate-500">Provide an initial objective. Our multi-agent system will cross-reference state-of-the-art literature &amp; codebases.</p>
+        </div>
+        <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 shadow-sm flex items-center gap-1.5 transition" onclick="switchView('dashboard')" type="button">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Cancel
+        </button>
+      </div>
+
+      <div class="max-w-4xl space-y-6">
+        <!-- Interactive Intake Form -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+          <div class="flex items-center justify-between">
+            <label class="text-sm font-bold text-slate-900 font-display flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center">1</span>
+              Describe your research problem or project vision
+            </label>
+            <span class="text-xs font-mono text-slate-400" id="start-char-count">0 / 2500</span>
+          </div>
+          <div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-3.5 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
+            <textarea class="w-full text-xs text-slate-800 placeholder-slate-400 bg-transparent border-0 p-0 focus:ring-0 resize-none font-normal leading-relaxed" id="start-problem-textarea" oninput="updateStartCharCount(this)" placeholder="State your technical problem, baseline assumptions, expected inputs and target output metrics..." rows="4"></textarea>
+          </div>
+          <!-- Optional Context Tags / Adders -->
+          <div class="space-y-2">
+            <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider font-mono">Optional context tags:</span>
+            <div class="flex flex-wrap gap-2">
+              <button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Domain: Agritech &amp; Remote Sensing')" type="button">
+                <span class="text-indigo-500 font-bold">+</span> Domain: Agritech
+              </button>
+              <button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Dataset: Sentinel-2 &amp; MODIS')" type="button">
+                <span class="text-indigo-500 font-bold">+</span> Dataset: Sentinel-2
+              </button>
+              <button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Tech: PyTorch / Vision Transformer')" type="button">
+                <span class="text-indigo-500 font-bold">+</span> Tech: PyTorch ViT
+              </button>
+              <button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Constraint: Low-latency inference &lt; 200ms')" type="button">
+                <span class="text-indigo-500 font-bold">+</span> Constraint: Low-latency
+              </button>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-500 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              Orchestrator pre-checks passed
+            </span>
+            <button class="py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs tracking-tight shadow-md shadow-indigo-600/30 flex items-center gap-2 active:scale-95 transition font-display" onclick="startResearchProcess()" type="button">
+              <span>Start Research Pipeline</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- VIEW 3: ACTIVE RESEARCH (02)                                  -->
+    <!-- ============================================================== -->
+    <div class="hidden flex-1 overflow-y-auto px-8 py-6 space-y-6 w-full" id="view-active">
+      <!-- Active Research Header & Breadcrumbs -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+            <button class="hover:text-indigo-600" onclick="switchView('dashboard')" type="button">Dashboard</button>
+            <span>/</span>
+            <span class="text-indigo-600 font-semibold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+              Active Research Session
+            </span>
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display flex items-center gap-3">
+            <span id="active-session-title">No Active Session</span>
+            <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold uppercase" id="active-session-badge">IDLE</span>
+          </h1>
+          <p class="text-xs text-slate-500" id="active-session-desc">Start a research session from the dashboard or intake form to begin.</p>
+        </div>
+        <!-- Controls: Pause & View Live Findings -->
+        <div class="flex items-center gap-2.5 flex-shrink-0">
+          <button class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm flex items-center gap-1.5 transition" id="btn-pause-session" onclick="togglePauseResearch()" type="button">
+            <svg class="w-3.5 h-3.5" fill="none" id="icon-pause" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.75 5.25v13.5m-7.5-13.5v13.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span id="label-pause">Pause Agents</span>
+          </button>
+          <button class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 flex items-center gap-2 transition font-display" onclick="switchView('report')" type="button">
+            <span>View Verified Report</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Overall Interactive Progress Bar -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2 font-display font-bold text-slate-800">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400" id="active-pulse-dot"></span>
+            Pipeline Progress: <span class="text-indigo-600 font-mono" id="active-percent-text">0% - Idle</span>
+          </div>
+          <span class="text-[11px] font-mono text-slate-500" id="active-stage-text">Stage: Waiting to start</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+          <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 h-2.5 rounded-full transition-all duration-700" id="active-progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- 4 Pipeline Agent State Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+        <!-- Agent 1: Orchestrator -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2" id="card-agent-1">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-900 font-display">01 Orchestrator</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold" id="badge-agent-1">STANDBY</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Deconstructs research problem statement and clarifies specifications.</p>
+          <div class="text-[10px] text-slate-400 font-medium flex items-center gap-1" id="status-agent-1">
+            Ready to prompt
+          </div>
+        </div>
+        <!-- Agent 2: Project Finder -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2" id="card-agent-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-900 font-display">02 Project Finder</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold" id="badge-agent-2">STANDBY</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Searches GitHub repositories &amp; Hugging Face models for runnable architectures.</p>
+          <div class="text-[10px] text-slate-400 font-medium flex items-center gap-1" id="status-agent-2">
+            Awaiting task
+          </div>
+        </div>
+        <!-- Agent 3: Paper Finder -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2" id="card-agent-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-900 font-display">03 Paper Finder</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold" id="badge-agent-3">STANDBY</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Retrieves academic preprints and extracts state-of-the-art methodology.</p>
+          <div class="text-[10px] text-slate-400 font-medium flex items-center gap-1" id="status-agent-3">
+            Awaiting task
+          </div>
+        </div>
+        <!-- Agent 4: Evaluator -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2" id="card-agent-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-900 font-display">04 Evaluator</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold" id="badge-agent-4">STANDBY</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Audits research claims, identifies gaps, and compiles verified report.</p>
+          <div class="text-[10px] text-slate-400 font-medium" id="status-agent-4">Pending input feed</div>
+        </div>
+      </div>
+
+      <!-- Live Evidence Stream Console -->
+      <div class="bg-slate-900 text-slate-200 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-3 font-mono">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span class="text-xs font-bold text-white tracking-wide">Live Agent Telemetry &amp; Evidence Stream</span>
+          </div>
+          <span class="text-[10px] text-slate-400" id="telemetry-count">STANDBY • 0 events</span>
+        </div>
+        <div class="space-y-2 text-xs max-h-64 overflow-y-auto no-scrollbar font-normal text-slate-300" id="telemetry-log">
+          <div class="py-12 text-center text-slate-500 text-xs italic" id="telemetry-empty">No telemetry events yet. Start a research session to stream real-time agent execution.</div>
+        </div>
+      </div>
+
+      <!-- Follow-up Message Input Bar -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="flex-1 relative">
+            <input type="text" id="followup-input"
+              class="w-full text-xs text-slate-800 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition"
+              placeholder="Reply to the Orchestrator or ask a follow-up question..."
+              onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendFollowup();}" />
+          </div>
+          <button id="btn-send-followup"
+            class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 flex items-center gap-2 transition font-display active:scale-95"
+            onclick="sendFollowup()" type="button">
+            <span>Send</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+        <div class="flex items-center gap-2 mt-2 text-[10px] text-slate-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400" id="session-status-dot"></span>
+          <span id="session-status-text">Session: Ready</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- VIEW 4: FINAL RESEARCH REPORT (03)                            -->
+    <!-- ============================================================== -->
+    <div class="hidden flex-1 overflow-y-auto px-8 py-6 space-y-6 w-full pb-24" id="view-report">
+      <!-- Empty State (Shown when no report has been finalized) -->
+      <div id="report-empty-state" class="flex flex-col items-center justify-center py-24 px-4 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-500 mb-4 shadow-sm">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold text-slate-800 font-display">No Research Reports Yet</h2>
+        <p class="text-xs text-slate-500 max-w-md mt-1.5 leading-relaxed">
+          Verified research specifications and findings are automatically compiled once your research session is finalized. Start a research session to generate a report.
+        </p>
+        <button onclick="switchView('start')" class="mt-5 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md shadow-indigo-600/30 flex items-center gap-2 transition font-display" type="button">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <span>Start New Research</span>
+        </button>
+      </div>
+
+      <!-- Populated Report Container (Shown when session is finalized) -->
+      <div id="report-populated-container" class="hidden space-y-6">
+        <!-- Header & Breadcrumbs -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-slate-200">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+              <button class="hover:text-indigo-600" onclick="switchView('dashboard')" type="button">Dashboard</button>
+              <span>/</span>
+              <button class="hover:text-indigo-600" onclick="switchView('active')" type="button">Research Runs</button>
+              <span>/</span>
+              <span class="text-slate-800 font-semibold" id="report-id-breadcrumb">Report</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display" id="report-header-title">Research Report</h1>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold flex items-center gap-1 font-mono">
+                <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+                VERIFIED REPORT
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-sm transition" onclick="switchView('dashboard')" type="button">
+              Back to Dashboard
+            </button>
+            <button class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 flex items-center gap-1.5 transition font-display" onclick="shareReport()" type="button">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span>Share Report</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Agent Research Output Section -->
+        <section class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4" id="report-agent-output-section">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide font-display">Synthesized Research Output</h2>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">FINALIZED</span>
+          </div>
+          <div id="report-agent-output" class="text-xs text-slate-700 leading-relaxed font-sans">
+            <!-- Populated dynamically by populateReport() -->
+          </div>
+          <div id="report-output-link" class="hidden text-[11px] font-mono text-indigo-700 bg-indigo-50/80 px-4 py-3 rounded-xl border border-indigo-100"></div>
+        </section>
+      </div>
+    </div>
+
+  </div>
+  <!-- END: SPA Views Container -->
+
+  <!-- Client-side SPA State & Interaction Scripts -->
+  <script>
+    // Global View and State Definitions
+    const VALID_VIEWS = ['dashboard', 'start', 'active', 'report'];
+    let toastTimer = null;
+    let activeResearchInterval = null;
+    let currentProgress = 0;
+    let isPaused = false;
+
+    // ── Session & Backend State ──────────────────────────────────
+    let currentSessionId = null;
+    let messageHistory = [];
+    let isWaitingForReply = false;
+    let sessionFinalized = false;
+
+    function generateSessionId() {
+      return 'ses-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+    }
+
+    /**
+     * Send a message to the backend POST /chat endpoint.
+     * Returns the parsed ChatResponse or null on error.
+     */
+    async function sendChatMessage(message) {
+      if (!currentSessionId) {
+        currentSessionId = generateSessionId();
+      }
+      isWaitingForReply = true;
+      updateActiveViewLoading(true);
+
+      try {
+        const resp = await window.fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            session_id: currentSessionId,
+            message: message
+          })
+        });
+
+        if (!resp.ok) {
+          const errText = await resp.text().catch(() => resp.statusText);
+          throw new Error('Server returned ' + resp.status + ': ' + errText);
+        }
+
+        const data = await resp.json();
+        messageHistory.push({ role: 'user', content: message });
+        messageHistory.push({ role: 'assistant', content: data.reply, finalized: data.finalized });
+
+        // Append to telemetry log
+        appendTelemetryEntry('[Orchestrator]', data.reply, 'text-indigo-400');
+
+        // Handle finalization
+        if (data.finalized) {
+          sessionFinalized = true;
+          currentProgress = 100;
+          const bar = document.getElementById('active-progress-bar');
+          const txt = document.getElementById('active-percent-text');
+          const stageTxt = document.getElementById('active-stage-text');
+          if (bar) bar.style.width = '100%';
+          if (txt) txt.innerText = '100% — Research Complete';
+          if (stageTxt) stageTxt.innerText = 'Stage: Final Research Spec Compiled';
+          if (activeResearchInterval) clearInterval(activeResearchInterval);
+
+          showToast('Research finalized! Report ready.');
+
+          // Populate report with the final output
+          populateReport(data.reply, data.output_dir);
+        }
+
+        return data;
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+        appendTelemetryEntry('[System]', 'Error: ' + err.message, 'text-rose-400');
+        return null;
+      } finally {
+        isWaitingForReply = false;
+        updateActiveViewLoading(false);
+      }
+    }
+
+    /**
+     * Append a log entry to the live telemetry console.
+     */
+    function appendTelemetryEntry(agent, text, colorClass) {
+      const logBox = document.getElementById('telemetry-log');
+      if (!logBox) return;
+
+      const emptyMsg = document.getElementById('telemetry-empty');
+      if (emptyMsg) emptyMsg.remove();
+
+      const now = new Date();
+      const ts = '[' + now.toLocaleTimeString('en-US', { hour12: false }) + ']';
+      const div = document.createElement('div');
+      div.className = 'flex items-start gap-2 text-slate-300';
+      div.innerHTML =
+        '<span class="text-slate-500 text-[10px] flex-shrink-0">' + ts + '</span>' +
+        '<span class="' + colorClass + ' font-semibold flex-shrink-0">' + agent + '</span>' +
+        '<span>' + escapeHtml(text) + '</span>';
+      logBox.appendChild(div);
+      logBox.scrollTop = logBox.scrollHeight;
+
+      const countEl = document.getElementById('telemetry-count');
+      if (countEl) {
+        const count = logBox.children.length;
+        countEl.textContent = 'STREAMING • ' + count + (count === 1 ? ' event' : ' events');
+      }
+    }
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    /**
+     * Show/hide a loading indicator on the active view.
+     */
+    function updateActiveViewLoading(loading) {
+      const btn = document.getElementById('btn-send-followup');
+      if (btn) {
+        btn.disabled = loading;
+        btn.classList.toggle('opacity-50', loading);
+      }
+    }
+
+    /**
+     * Populate the Report view with finalized agent output.
+     */
+    function populateReport(replyText, outputDir) {
+      const emptyState = document.getElementById('report-empty-state');
+      if (emptyState) emptyState.classList.add('hidden');
+
+      const populatedContainer = document.getElementById('report-populated-container');
+      if (populatedContainer) populatedContainer.classList.remove('hidden');
+
+      const reportContent = document.getElementById('report-agent-output');
+      if (reportContent) {
+        reportContent.innerHTML = '<div class="whitespace-pre-wrap leading-relaxed text-slate-700">' + escapeHtml(replyText) + '</div>';
+      }
+
+      if (currentSessionId) {
+        const breadcrumb = document.getElementById('report-id-breadcrumb');
+        if (breadcrumb) breadcrumb.textContent = 'Session #' + currentSessionId;
+      }
+
+      if (outputDir) {
+        const outputLink = document.getElementById('report-output-link');
+        if (outputLink) {
+          outputLink.innerHTML = '<span class="font-bold">Output Artifacts:</span> <span>' + escapeHtml(outputDir) + '</span>';
+          outputLink.classList.remove('hidden');
+        }
+      }
+
+      // Update counters
+      const navCount = document.getElementById('nav-reports-count');
+      if (navCount) navCount.textContent = '1';
+      const metricReports = document.getElementById('metric-reports-count');
+      if (metricReports) metricReports.textContent = '1';
+    }
+
+    /**
+     * Parse the current hash into a view name and optional in-page anchor.
+     * Supports: '', '#', '#/dashboard', '#dashboard', '#/report', '#rep-sec-1'
+     */
+    function parseHash() {
+      const raw = (window.location.hash || '').replace(/^#\/?/, '').trim();
+      if (raw.startsWith('rep-sec-')) {
+        return { view: 'report', section: raw };
+      }
+      const clean = raw.toLowerCase();
+      if (VALID_VIEWS.includes(clean)) {
+        return { view: clean, section: null };
+      }
+      return { view: 'dashboard', section: null };
+    }
+
+    /**
+     * Synchronously update the DOM to show the requested view.
+     * Resets nav highlights, hides other views, and activates target view.
+     */
+    function renderView(viewName, sectionId = null) {
+      const views = {
+        'dashboard': document.getElementById('view-dashboard'),
+        'start': document.getElementById('view-start'),
+        'active': document.getElementById('view-active'),
+        'report': document.getElementById('view-report')
+      };
+
+      // Hide all view containers
+      Object.values(views).forEach(el => {
+        if (el) el.classList.add('hidden');
+      });
+
+      // Reset navigation items
+      const navItems = ['nav-dashboard', 'nav-active', 'nav-report'];
+      navItems.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('active-nav');
+          el.classList.add('text-slate-400');
+        }
+      });
+
+      // Display the requested view
+      if (views[viewName]) {
+        views[viewName].classList.remove('hidden');
+      }
+
+      // Highlight active nav item
+      const navMap = {
+        'dashboard': 'nav-dashboard',
+        'active': 'nav-active',
+        'report': 'nav-report'
+      };
+
+      if (navMap[viewName]) {
+        const activeNav = document.getElementById(navMap[viewName]);
+        if (activeNav) {
+          activeNav.classList.remove('text-slate-400');
+          activeNav.classList.add('active-nav');
+        }
+      } else if (viewName === 'start') {
+        const dashNav = document.getElementById('nav-dashboard');
+        if (dashNav) dashNav.classList.add('text-slate-400');
+      }
+
+      // View-specific lifecycle hooks
+      if (viewName === 'report') {
+        if (sectionId) {
+          const secEl = document.getElementById(sectionId);
+          if (secEl) {
+            secEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else {
+          const viewReport = document.getElementById('view-report');
+          if (viewReport) viewReport.scrollTop = 0;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    }
+
+    /**
+     * Primary navigation entrypoint.
+     * Calls renderView synchronously (ensuring zero-tick DOM assertion pass in tests),
+     * then synchronizes window.location.hash.
+     */
+    function switchView(viewName) {
+      if (!VALID_VIEWS.includes(viewName)) viewName = 'dashboard';
+      
+      // Immediate synchronous DOM transition
+      renderView(viewName);
+
+      // Hash synchronization
+      const targetHash = '#/' + viewName;
+      if (window.location.hash !== targetHash) {
+        window.location.hash = targetHash;
+      }
+    }
+
+    // Window hashchange event listener for browser history (Back / Forward)
+    window.addEventListener('hashchange', () => {
+      const route = parseHash();
+      renderView(route.view, route.section);
+    });
+
+    // DOMContentLoaded initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      const route = parseHash();
+      if (!window.location.hash) {
+        history.replaceState(null, '', '#/' + route.view);
+      }
+      renderView(route.view, route.section);
+    });
+
+    /**
+     * Floating Toast feedback helper with debounce and type support.
+     */
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast-notification');
+      const msgEl = document.getElementById('toast-message');
+      const indicator = document.getElementById('toast-indicator');
+      if (!toast || !msgEl) return;
+
+      msgEl.textContent = message;
+
+      if (indicator) {
+        if (type === 'error') {
+          indicator.className = 'w-2 h-2 rounded-full bg-rose-400';
+        } else if (type === 'warning') {
+          indicator.className = 'w-2 h-2 rounded-full bg-amber-400';
+        } else {
+          indicator.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        }
+      }
+
+      toast.classList.remove('-translate-y-12', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-12', 'opacity-0', 'pointer-events-none');
+      }, 2800);
+    }
+
+    // Domain Appender on Dashboard
+    function appendDomain(domain) {
+      const input = document.getElementById('dashboard-input');
+      if (!input) return;
+      if (!input.value.includes(domain)) {
+        input.value = input.value.trim() + (input.value.trim() ? " [" + domain + "]" : "[" + domain + "]");
+        updateDashboardCharCount(input);
+        showToast('Added domain filter: ' + domain);
+      }
+    }
+
+    // Live Character Counters with null-safety
+    function updateDashboardCharCount(el) {
+      const counter = document.getElementById('dash-char-count');
+      if (counter && el) {
+        counter.innerText = el.value.length + " / 2500";
+      }
+    }
+
+    function updateStartCharCount(el) {
+      const counter = document.getElementById('start-char-count');
+      if (counter && el) {
+        counter.innerText = el.value.length + " / 2500";
+      }
+    }
+
+    // Optional Context Tag Adder
+    function addContextTag(btn, tagText) {
+      const area = document.getElementById('start-problem-textarea');
+      if (area) {
+        area.value = area.value.trim() + (area.value.trim() ? " (" + tagText + ")" : "(" + tagText + ")");
+        updateStartCharCount(area);
+      }
+      if (btn) {
+        btn.classList.add('bg-indigo-100', 'text-indigo-800', 'border-indigo-300');
+      }
+      showToast('Tag appended: ' + tagText);
+    }
+
+    // Start Research Action from Dashboard or Start View
+    async function startResearchProcess() {
+      // Gather problem text from whichever view is active
+      const startArea = document.getElementById('start-problem-textarea');
+      const dashArea = document.getElementById('dashboard-input');
+      const problemText = (startArea && startArea.value.trim()) || (dashArea && dashArea.value.trim()) || '';
+
+      if (!problemText) {
+        showToast('Please enter a research problem first.', 'warning');
+        return;
+      }
+
+      // Reset session state for a new research run
+      currentSessionId = generateSessionId();
+      messageHistory = [];
+      sessionFinalized = false;
+      currentProgress = 10;
+      isPaused = false;
+
+      // Update Active View UI for this session
+      const titleEl = document.getElementById('active-session-title');
+      if (titleEl) titleEl.textContent = problemText.length > 50 ? problemText.slice(0, 50) + '...' : problemText;
+      const badgeEl = document.getElementById('active-session-badge');
+      if (badgeEl) {
+        badgeEl.textContent = '#' + currentSessionId;
+        badgeEl.className = 'text-xs font-mono px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-semibold uppercase';
+      }
+      const descEl = document.getElementById('active-session-desc');
+      if (descEl) descEl.textContent = 'Orchestrator active for session ' + currentSessionId;
+
+      const bar = document.getElementById('active-progress-bar');
+      const txt = document.getElementById('active-percent-text');
+      const stageTxt = document.getElementById('active-stage-text');
+      const dot = document.getElementById('active-pulse-dot');
+      if (bar) bar.style.width = '10%';
+      if (txt) txt.innerText = '10% — Initializing';
+      if (stageTxt) stageTxt.innerText = 'Stage: Problem Intake & Spec Definition';
+      if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse';
+
+      // Update agent 1 card
+      const b1 = document.getElementById('badge-agent-1');
+      if (b1) { b1.textContent = 'ACTIVE'; b1.className = 'text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-semibold animate-pulse'; }
+      const s1 = document.getElementById('status-agent-1');
+      if (s1) s1.textContent = 'Formulating research specification...';
+
+      // Clear previous telemetry
+      const logBox = document.getElementById('telemetry-log');
+      if (logBox) logBox.innerHTML = '';
+      const countEl = document.getElementById('telemetry-count');
+      if (countEl) countEl.textContent = 'STREAMING • 1 event';
+
+      showToast('Initializing multi-agent pipeline...');
+      switchView('active');
+
+      // Append user message to telemetry
+      appendTelemetryEntry('[You]', problemText, 'text-sky-400');
+
+      // Send to backend
+      const result = await sendChatMessage(problemText);
+
+      if (result && !result.finalized) {
+        currentProgress = 40;
+        if (bar) bar.style.width = '40%';
+        if (txt) txt.innerText = '40% — Clarifying Questions';
+        if (stageTxt) stageTxt.innerText = 'Stage: Interactive Clarification';
+        if (s1) s1.textContent = 'Awaiting your answers';
+      }
+    }
+
+    // Pause/Resume Agents toggle
+    function togglePauseResearch() {
+      isPaused = !isPaused;
+      const btn = document.getElementById('label-pause');
+      if (isPaused) {
+        if (btn) btn.innerText = 'Resume Agents';
+        showToast('Multi-agent pipeline paused');
+      } else {
+        if (btn) btn.innerText = 'Pause Agents';
+        showToast('Multi-agent pipeline resumed');
+      }
+    }
+
+    // Report sharing
+    function shareReport() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href);
+      }
+      showToast('Direct report link copied to clipboard!');
+    }
+
+    // Full specification export
+    function exportFullSpec() {
+      if (!sessionFinalized) {
+        showToast('No finalized research report to export yet.', 'warning');
+        return;
+      }
+      showToast('Exporting research specification...');
+    }
+
+    // Follow-up message handler for the Active view input
+    async function sendFollowup() {
+      const input = document.getElementById('followup-input');
+      if (!input) return;
+      const msg = input.value.trim();
+      if (!msg) return;
+      if (isWaitingForReply) {
+        showToast('Please wait for the current response...', 'warning');
+        return;
+      }
+      if (sessionFinalized) {
+        showToast('This session is finalized. Start a new research session.', 'warning');
+        return;
+      }
+      if (!currentSessionId) {
+        showToast('No active session. Start a new research first.', 'warning');
+        return;
+      }
+
+      input.value = '';
+
+      // Show user message in telemetry
+      appendTelemetryEntry('[You]', msg, 'text-sky-400');
+
+      // Update status
+      const statusText = document.getElementById('session-status-text');
+      const statusDot = document.getElementById('session-status-dot');
+      if (statusText) statusText.textContent = 'Session: ' + currentSessionId + ' — Waiting for agent...';
+      if (statusDot) statusDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse';
+
+      const result = await sendChatMessage(msg);
+
+      // Update status after response
+      if (statusDot) statusDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
+      if (result) {
+        if (result.finalized) {
+          if (statusText) statusText.textContent = 'Session: ' + currentSessionId + ' — Finalized ✓';
+        } else {
+          if (statusText) statusText.textContent = 'Session: ' + currentSessionId + ' — Active';
+          if (currentProgress < 90) {
+            currentProgress = Math.min(currentProgress + 15, 90);
+            const bar = document.getElementById('active-progress-bar');
+            const txt = document.getElementById('active-percent-text');
+            if (bar) bar.style.width = currentProgress + '%';
+            if (txt) txt.innerText = currentProgress + '% — Agent processing';
+          }
+        }
+      } else {
+        if (statusText) statusText.textContent = 'Session: ' + currentSessionId + ' — Error (retry)';
+      }
+    }
+
+    // Expose functions globally for event handlers & testing
+    window.switchView = switchView;
+    window.showToast = showToast;
+    window.renderView = renderView;
+    window.togglePauseResearch = togglePauseResearch;
+    window.startResearchProcess = startResearchProcess;
+    window.addContextTag = addContextTag;
+    window.appendDomain = appendDomain;
+    window.updateDashboardCharCount = updateDashboardCharCount;
+    window.updateStartCharCount = updateStartCharCount;
+    window.shareReport = shareReport;
+    window.exportFullSpec = exportFullSpec;
+    window.sendFollowup = sendFollowup;
+    window.sendChatMessage = sendChatMessage;
+    window.appendTelemetryEntry = appendTelemetryEntry;
+    window.populateReport = populateReport;
+  </script>
 </body>
 </html>

@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import base64
+import difflib
 import io
 import json
 import os
 import re
 import time
+import unicodedata
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -261,6 +263,7 @@ class PaperResearchContext:
     repositories_inspected: list[dict[str, Any]] = field(default_factory=list)
     extractor_calls: list[dict[str, Any]] = field(default_factory=list)
     rejected_fields: list[dict[str, Any]] = field(default_factory=list)
+    fuzzy_matches: list[dict[str, Any]] = field(default_factory=list)
     failures: list[dict[str, Any]] = field(default_factory=list)
     retries: list[dict[str, Any]] = field(default_factory=list)
     fallbacks: list[dict[str, Any]] = field(default_factory=list)
@@ -312,6 +315,17 @@ class PaperResearchContext:
         })
         self.flush_trace()
 
+    def record_fuzzy_match(self, paper: str, field: str, matched_text: str, model_quote: str, ratio: float) -> None:
+        self.fuzzy_matches.append({
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "paper": paper,
+            "field": field,
+            "matched_text": matched_text,
+            "model_quote": model_quote,
+            "ratio": round(ratio, 4),
+        })
+        self.flush_trace()
+
     def flush_trace(self) -> None:
         """Write the complete, structured audit trace object to paper_research_trace.json."""
         try:
@@ -329,6 +343,7 @@ class PaperResearchContext:
                 "repositories_inspected": self.repositories_inspected,
                 "extractor_calls": self.extractor_calls,
                 "rejected_fields": self.rejected_fields,
+                "fuzzy_matches": self.fuzzy_matches,
                 "failures": self.failures,
                 "retries": self.retries,
                 "fallbacks": self.fallbacks,
@@ -544,15 +559,129 @@ def _is_noise_content(text: str) -> bool:
     return False
 
 
-def _normalize_for_match(s: str) -> str:
-    """Normalize whitespace, Unicode hyphens, dashes, quotes, and markdown asterisks for quote matching."""
+def normalize_text_for_matching(s: str) -> str:
+    """Normalize text to be tolerant to PDF artifacts, ligatures, soft hyphens, dashes, quotes, etc."""
     if not s:
         return ""
-    s = re.sub(r"[\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u00ad]", "-", s)
-    s = re.sub(r"[\u2018\u2019\u201a\u201b]", "'", s)
-    s = re.sub(r"[\u201c\u201d\u201e\u201f«»]", '"', s)
-    s = s.replace("**", "").replace("*", "")
-    return re.sub(r"\s+", " ", s).strip()
+    t = unicodedata.normalize("NFKC", str(s))
+    ligatures = {
+        "ﬁ": "fi", "ﬂ": "fl", "ﬀ": "ff", "ﬃ": "ffi", "ﬄ": "ffl",
+        "ﬅ": "st", "ﬆ": "st", "æ": "ae", "œ": "oe",
+    }
+    for lig, rep in ligatures.items():
+        t = t.replace(lig, rep)
+    t = re.sub(r"[\u00ad\u200b\u200c\u200d\ufeff]", "", t)
+    t = re.sub(r"(\w+)[-\u2010\u2011]\s*\n\s*(\w+)", r"\1\2", t)
+    t = re.sub(r"[\u2010\u2011\u2012\u2013\u2014\u2015\u2212]", "-", t)
+    t = re.sub(r"[\u2018\u2019\u201a\u201b`]", "'", t)
+    t = re.sub(r"[\u201c\u201d\u201e\u201f«»]", '"', t)
+    t = t.replace("**", "").replace("*", "")
+    t = re.sub(r"\s+", " ", t).strip()
+    return t.lower()
+
+
+_normalize_for_match = normalize_text_for_matching
+
+
+def _recover_span_from_stored(norm_target: str, stored_text: str) -> str:
+    """Recover the original textual slice from stored_text corresponding to norm_target."""
+    words = norm_target.split()
+    if not words or not stored_text:
+        return ""
+    w_first = words[0]
+    w_last = words[-1]
+    clean_s = stored_text.replace("\r", "")
+
+    best_cand = ""
+    best_r = 0.0
+
+    for m_start in re.finditer(rf"\b{re.escape(w_first)}\b", clean_s, flags=re.IGNORECASE):
+        s_idx = m_start.start()
+        est_len = len(norm_target)
+        search_start = max(s_idx, s_idx + est_len - 150)
+        search_end = min(len(clean_s), s_idx + est_len + 150)
+        for m_end in re.finditer(rf"\b{re.escape(w_last)}\b", clean_s[search_start:search_end], flags=re.IGNORECASE):
+            e_idx = search_start + m_end.end()
+            cand = clean_s[s_idx:e_idx]
+            cand_norm = normalize_text_for_matching(cand)
+            r = difflib.SequenceMatcher(None, norm_target, cand_norm).ratio()
+            if r > best_r:
+                best_r = r
+                best_cand = re.sub(r"\s+", " ", cand).strip()
+
+    if best_r >= 0.88:
+        return best_cand
+    return ""
+
+
+def find_quote_in_stored_text(
+    raw_quote: str,
+    stored_text: str,
+    target_bucket_text: str,
+) -> tuple[bool, str, float]:
+    """
+    Check if raw_quote matches in target_bucket_text (or stored_text).
+    Tolerant to PDF text artifacts and minor paraphrasing via exact substring after normalization,
+    or difflib ratio >= 0.95 over sliding window of similar length.
+    Returns (is_match, matched_stored_text, match_ratio).
+    """
+    clean_q = raw_quote.strip().strip('"').strip("'")
+    if not clean_q or clean_q in ["not found", "not applicable"]:
+        return False, "", 0.0
+
+    # 1. Exact substring in raw target_bucket_text
+    if clean_q in target_bucket_text:
+        return True, clean_q, 1.0
+
+    # 2. Normalized exact substring
+    norm_q = normalize_text_for_matching(clean_q)
+    norm_bucket = normalize_text_for_matching(target_bucket_text)
+
+    if norm_q in norm_bucket:
+        orig_match = _recover_span_from_stored(norm_q, stored_text)
+        return True, orig_match if orig_match else clean_q, 1.0
+
+    # If quote has ellipses (...) split and check unbroken span
+    if "..." in clean_q or "…" in clean_q:
+        parts = [p.strip() for p in clean_q.replace("…", "...").split("...") if p.strip()]
+        if len(parts) >= 2:
+            p1 = normalize_text_for_matching(parts[0])
+            p2 = normalize_text_for_matching(parts[-1])
+            if p1 in norm_bucket and p2 in norm_bucket:
+                idx2 = norm_bucket.find(p2)
+                idx1 = norm_bucket.rfind(p1, max(0, idx2 - 300), idx2)
+                if idx1 != -1 and (idx2 - (idx1 + len(p1))) <= 200:
+                    sub_norm = norm_bucket[idx1 : idx2 + len(p2)]
+                    orig_match = _recover_span_from_stored(sub_norm, stored_text)
+                    return True, orig_match if orig_match else sub_norm, 1.0
+
+    # 3. Fuzzy matching via difflib window (ratio >= 0.95)
+    q_words = norm_q.split()
+    b_words = norm_bucket.split()
+    if not q_words or not b_words:
+        return False, "", 0.0
+
+    n_q = len(q_words)
+    best_ratio = 0.0
+    best_window = ""
+
+    first_w = q_words[0]
+    for i in range(len(b_words)):
+        if b_words[i] == first_w or (len(first_w) > 3 and b_words[i].startswith(first_w[:3])):
+            for L in range(max(1, n_q - 2), min(len(b_words) - i + 1, n_q + 3)):
+                cand_str = " ".join(b_words[i : i + L])
+                r = difflib.SequenceMatcher(None, norm_q, cand_str).ratio()
+                if r > best_ratio:
+                    best_ratio = r
+                    best_window = cand_str
+                    if best_ratio >= 0.98:
+                        break
+
+    if best_ratio >= 0.95:
+        orig_match = _recover_span_from_stored(best_window, stored_text)
+        return True, orig_match if orig_match else best_window, best_ratio
+
+    return False, "", best_ratio
 
 
 def _extract_sections(text: str) -> dict[str, str]:
@@ -955,6 +1084,114 @@ select_papers = function_tool(_select_papers_impl, name_override="select_papers"
 _select_papers = function_tool(_select_papers_impl, name_override="_select_papers")
 
 
+def parse_inspect_output(text: str, default_title: str = "") -> dict[str, Any]:
+    """Parse output of firecrawl_research_inspect_paper into authors, year, doi, venue, citation."""
+    authors: list[str] = []
+    year = "not found"
+    doi = "not found"
+    venue = "not found"
+    title = default_title
+
+    # Title from # Heading
+    m_title = re.search(r"(?m)^#\s+([^\n]+)", text)
+    if m_title and m_title.group(1).strip():
+        title = m_title.group(1).strip()
+
+    # Authors
+    m_auth = re.search(r"(?im)^Authors:\s*([^\n]+)", text)
+    if m_auth:
+        raw_auth = m_auth.group(1).strip()
+        if ";" in raw_auth:
+            authors = [a.strip() for a in raw_auth.split(";") if a.strip()]
+        else:
+            authors = [a.strip() for a in raw_auth.split(",") if a.strip()]
+
+    # Year from Dates:
+    m_year = re.search(r"(?im)^Dates:\s*.*?(\b(?:19|20)\d{2}\b)", text)
+    if m_year:
+        year = m_year.group(1)
+    else:
+        m_year2 = re.search(r"\b(20\d{2}|19\d{2})\b", text[:300])
+        if m_year2:
+            year = m_year2.group(1)
+
+    # DOI
+    m_doi = re.search(r"(?im)\bdoi:\s*([^\s,;]+)", text)
+    if m_doi:
+        doi = m_doi.group(1).strip().rstrip(".")
+    elif "10." in text:
+        m_doi2 = re.search(r"\b(10\.\d{4,9}/[-._;()/:A-Za-z0-9]+)", text)
+        if m_doi2:
+            doi = m_doi2.group(1).strip().rstrip(".")
+
+    # Venue / Categories
+    m_venue = re.search(r"(?im)^(?:Venue|Journal):\s*([^\n]+)", text)
+    if m_venue:
+        venue = m_venue.group(1).strip()
+    else:
+        m_cat = re.search(r"(?im)^Categories:\s*([^\n]+)", text)
+        if m_cat:
+            venue = m_cat.group(1).strip()
+
+    # Build citation
+    auth_str = ", ".join(authors[:3]) + (" et al." if len(authors) > 3 else "") if authors else "Anonymous"
+    year_str = f"({year})" if year != "not found" else "(n.d.)"
+    doi_str = f" doi:{doi}" if doi != "not found" else ""
+    venue_str = f" {venue}." if venue != "not found" else ""
+    citation = f"{auth_str} {year_str}. {title}.{venue_str}{doi_str}".strip()
+
+    return {
+        "title": title,
+        "authors": authors,
+        "year": year,
+        "doi": doi,
+        "venue": venue,
+        "citation": citation,
+    }
+
+
+async def inspect_candidate_papers_metadata(ctx: PaperResearchContext, papers: list[dict[str, Any]]) -> None:
+    """Inspect up to 10 candidate papers using firecrawl_research_inspect_paper to fill authors, year, DOI, venue, citation.
+    Inspect calls do not count toward read budget."""
+    if not FIRECRAWL_API_KEY:
+        return
+    mcp_server = await _get_mcp_server(ctx)
+    if not mcp_server:
+        return
+
+    for idx, cand in enumerate(papers[:10], 1):
+        paper_id = cand.get("paper_id") or cand.get("url") or cand.get("title") or ""
+        norm_id = normalize_paper_identifiers(paper_id)
+        pid_query = norm_id.get("paper_id") or paper_id
+
+        try:
+            res = await mcp_server.call_tool("firecrawl_research_inspect_paper", {"paperId": pid_query})
+            text_content = "\n".join(c.text for c in res.content if hasattr(c, "text"))
+            if text_content and len(text_content) > 40:
+                parsed_meta = parse_inspect_output(text_content, default_title=cand.get("title", ""))
+                cand["authors"] = parsed_meta["authors"]
+                cand["year"] = parsed_meta["year"]
+                cand["doi"] = parsed_meta["doi"]
+                cand["venue"] = parsed_meta["venue"]
+                cand["citation"] = parsed_meta["citation"]
+                if parsed_meta["title"] and not cand.get("title"):
+                    cand["title"] = parsed_meta["title"]
+
+                ctx.papers_inspected.append({
+                    "paper_id": pid_query,
+                    "title": cand.get("title", ""),
+                    "authors": parsed_meta["authors"],
+                    "year": parsed_meta["year"],
+                    "doi": parsed_meta["doi"],
+                    "venue": parsed_meta["venue"],
+                    "status": "success",
+                })
+            else:
+                ctx.record_failure("inspect_paper", f"Empty inspect output for {pid_query}", "firecrawl_mcp")
+        except Exception as exc:
+            ctx.record_failure("inspect_paper", str(exc), "firecrawl_mcp")
+
+
 # ==========================================
 # Stage 2: Reader (Code Only, No Model)
 # ==========================================
@@ -1136,13 +1373,15 @@ async def extract_paper_evidence(
     buckets: dict[str, str],
     real_headings: list[str],
     retry_feedback: str | None = None,
-) -> PaperExtractionOutput:
-    """Stage 3: Extract factual quotes and values for one paper using paper_extractor.md prompt."""
+) -> tuple[PaperExtractionOutput, dict[str, Any], dict[str, int]]:
+    """Stage 3: Extract factual quotes and values for one paper using paper_extractor.md prompt.
+    Returns (extraction_model, raw_json_dict, bucket_character_counts)."""
     prompt_path = Path(__file__).resolve().parent.parent / "prompts" / "paper_extractor.md"
     if not prompt_path.exists():
         raise FileNotFoundError(f"Required prompt file not found at: {prompt_path}")
     system_prompt = prompt_path.read_text(encoding="utf-8")
 
+    bucket_counts = {k: len(v) for k, v in buckets.items()}
     headings_str = ", ".join(f'"{h}"' for h in real_headings[:35])
     user_content = f"""Clarified Research Problem:
 {clarified_problem}
@@ -1158,6 +1397,33 @@ Key Extraction Rules:
 2. Every number in value must appear in the quote.
 3. reported_results, evaluation_metrics, and baselines must come only from the RESULTS section.
 4. For dataset-descriptor papers (papers introducing a dataset without proposing a new machine learning model), set is_dataset_paper to true and results/model fields to "not applicable".
+5. "method" must summarize the methodology, algorithm, or training procedure described in the METHOD section, backed by an exact quote from the method section.
+6. "dataset_description" must be one short sentence from the DATASET section describing the dataset, backed by an exact quote, distinct from dataset_name.
+
+Required JSON Structure:
+{{
+  "problem_addressed": {{"value": "...", "quote": "...", "section": "abstract"}},
+  "research_objective": {{"value": "...", "quote": "...", "section": "abstract"}},
+  "domain": {{"value": "...", "quote": "...", "section": "abstract"}},
+  "input_type": {{"value": "...", "quote": "...", "section": "..."}},
+  "output_type": {{"value": "...", "quote": "...", "section": "..."}},
+  "dataset_name": {{"value": "...", "quote": "...", "section": "..."}},
+  "dataset_description": {{"value": "...", "quote": "...", "section": "..."}},
+  "dataset_size": {{"value": "...", "quote": "...", "section": "..."}},
+  "dataset_split": {{"value": "...", "quote": "...", "section": "..."}},
+  "model_name": {{"value": "...", "quote": "...", "section": "..."}},
+  "architecture": {{"value": "...", "quote": "...", "section": "..."}},
+  "method": {{"value": "...", "quote": "...", "section": "..."}},
+  "evaluation_metrics": {{"value": "...", "quote": "...", "section": "..."}},
+  "reported_results": {{"value": "...", "quote": "...", "section": "..."}},
+  "baselines": {{"value": "...", "quote": "...", "section": "..."}},
+  "limitations": {{"value": "...", "quote": "...", "section": "..."}},
+  "research_gap": {{"value": "...", "quote": "...", "section": "..."}},
+  "is_dataset_paper": false,
+  "same_task": {{"value": false, "quote": "", "section": "not found"}},
+  "phone_app": {{"value": false, "quote": "", "section": "not found"}},
+  "offline_stated": {{"value": false, "quote": "", "section": "not found"}}
+}}
 
 === SECTION: ABSTRACT ===
 {buckets.get('abstract', '')[:6000]}
@@ -1203,7 +1469,21 @@ Please correct the rejected fields strictly following all instructions:
         clean_json_str = re.sub(r"^```(?:json)?\s*", "", clean_json_str)
         clean_json_str = re.sub(r"\s*```$", "", clean_json_str)
     parsed = json.loads(clean_json_str)
-    return PaperExtractionOutput.model_validate(parsed)
+
+    # Ensure method is populated if method section has text and model returned not found
+    if not parsed.get("is_dataset_paper") and buckets.get("method", "").strip():
+        m_field = parsed.get("method")
+        if not isinstance(m_field, dict) or m_field.get("value") in ["not found", "", "not reported", None]:
+            method_lines = [l.strip() for l in buckets["method"].split("\n") if len(l.strip()) > 25 and not l.strip().startswith("#")]
+            if method_lines:
+                cand_sent = method_lines[0].split(". ")[0] + "."
+                parsed["method"] = {
+                    "value": cand_sent[:150],
+                    "quote": cand_sent[:150],
+                    "section": "method",
+                }
+
+    return PaperExtractionOutput.model_validate(parsed), parsed, bucket_counts
 
 
 # ==========================================
@@ -1215,6 +1495,8 @@ def validate_extraction(
     buckets: dict[str, str],
     real_headings: list[str],
     paper_title: str,
+    stored_text: str = "",
+    ctx: PaperResearchContext | None = None,
     drop_failures: bool = True,
 ) -> tuple[PaperExtractionOutput, list[dict[str, Any]]]:
     """Stage 4: Validate quotes, numbers, and section origins. Return (validated, rejected_fields)."""
@@ -1227,6 +1509,7 @@ def validate_extraction(
         "input_type",
         "output_type",
         "dataset_name",
+        "dataset_description",
         "dataset_size",
         "dataset_split",
         "model_name",
@@ -1240,10 +1523,7 @@ def validate_extraction(
     ]
 
     all_buckets_text = " ".join(buckets.values())
-    norm_all_text = _normalize_for_match(all_buckets_text).lower()
-    norm_results_text = _normalize_for_match(buckets.get("results", "")).lower()
-
-    norm_real_headings = [_normalize_for_match(h).lower() for h in real_headings]
+    norm_real_headings = [normalize_text_for_matching(h) for h in real_headings]
     bucket_aliases = ["abstract", "dataset", "method", "results", "limitations", "discussion", "conclusion", "future work"]
 
     for fld in content_fields:
@@ -1255,7 +1535,7 @@ def validate_extraction(
         if val in ["not found", "not applicable", ""]:
             continue
 
-        # 1. Quote check: quote must be non-empty and exact substring of named bucket
+        # 1. Quote check: quote must be non-empty and match in target section/bucket
         if not q:
             rejections.append({
                 "paper": paper_title,
@@ -1265,59 +1545,53 @@ def validate_extraction(
                 "quote": q,
             })
             if drop_failures:
-                f_obj.value = "not reported" if fld == "method" else "not found"
+                f_obj.value = "not found"
                 f_obj.quote = ""
             continue
 
-        norm_q = _normalize_for_match(q).lower()
-        target_corpus = norm_results_text if fld in ["reported_results", "evaluation_metrics", "baselines"] else norm_all_text
+        is_results = fld in ["reported_results", "evaluation_metrics", "baselines"]
+        is_method = fld in ["method", "model_name", "architecture"]
+        is_dataset = fld in ["dataset_name", "dataset_description", "dataset_size", "dataset_split"]
+        is_abstract = fld in ["problem_addressed", "research_objective", "domain"]
 
-        # Try recovering unbroken verbatim text if quote contains ellipsis (...)
-        if norm_q not in target_corpus and ("..." in q or "…" in q):
-            clean_q = q.replace("…", "...")
-            parts = [p.strip() for p in clean_q.split("...") if p.strip()]
-            if len(parts) >= 2:
-                p1 = _normalize_for_match(parts[0]).lower()
-                p2 = _normalize_for_match(parts[-1]).lower()
-                if p2 in target_corpus:
-                    idx2 = target_corpus.find(p2)
-                    idx1 = target_corpus.rfind(p1, max(0, idx2 - 250), idx2)
-                    if idx1 != -1 and (idx2 - (idx1 + len(p1))) <= 150:
-                        f_obj.quote = target_corpus[idx1 : idx2 + len(p2)]
-                        norm_q = f_obj.quote
-
-        # Results fields MUST come from results bucket
-        if fld in ["reported_results", "evaluation_metrics", "baselines"]:
-            if norm_q not in norm_results_text:
-                is_abstract = norm_q in _normalize_for_match(buckets.get("abstract", "")).lower()
-                r_msg = "quote came from abstract instead of results section" if is_abstract else "quote not found in results section"
-                rejections.append({
-                    "paper": paper_title,
-                    "field": fld,
-                    "reason": r_msg,
-                    "value": val,
-                    "quote": q,
-                })
-                if drop_failures:
-                    f_obj.value = "not found"
-                    f_obj.quote = ""
-                continue
+        if is_results:
+            target_bucket_text = buckets.get("results", "")
+        elif is_method:
+            target_bucket_text = (buckets.get("method", "") + " " + buckets.get("abstract", "")).strip()
+        elif is_dataset:
+            target_bucket_text = (buckets.get("dataset", "") + " " + buckets.get("method", "")).strip()
+        elif is_abstract:
+            target_bucket_text = (buckets.get("abstract", "") + " " + buckets.get("method", "")).strip()
         else:
-            if norm_q not in norm_all_text:
-                rejections.append({
-                    "paper": paper_title,
-                    "field": fld,
-                    "reason": "quote not found in paper text",
-                    "value": val,
-                    "quote": q,
-                })
-                if drop_failures:
-                    f_obj.value = "not reported" if fld == "method" else "not found"
-                    f_obj.quote = ""
-                continue
+            target_bucket_text = all_buckets_text
+
+        is_match, matched_text, match_ratio = find_quote_in_stored_text(q, stored_text or all_buckets_text, target_bucket_text or all_buckets_text)
+        if not is_match and not is_results:
+            # Fall back to searching full stored text
+            is_match, matched_text, match_ratio = find_quote_in_stored_text(q, stored_text or all_buckets_text, all_buckets_text)
+
+        if not is_match:
+            r_msg = "quote not found in results section" if is_results else "quote not found in paper text"
+            rejections.append({
+                "paper": paper_title,
+                "field": fld,
+                "reason": r_msg,
+                "value": val,
+                "quote": q,
+            })
+            if drop_failures:
+                f_obj.value = "not found"
+                f_obj.quote = ""
+            continue
+
+        # Save matched text from stored paper, not model version
+        f_obj.quote = matched_text
+        if match_ratio < 1.0 and ctx is not None:
+            ctx.record_fuzzy_match(paper_title, fld, matched_text, q, match_ratio)
 
         # 2. Number check: every number in value must appear in quote
         val_numbers = re.findall(r"\b\d+(?:[.,]\d+)*%?|\b\d+\b", val)
+        norm_q = normalize_text_for_matching(f_obj.quote)
         missing_num = None
         for vn in val_numbers:
             clean_vn = vn.rstrip("%").lower()
@@ -1331,15 +1605,15 @@ def validate_extraction(
                 "field": fld,
                 "reason": f"number '{missing_num}' in value not found in quote",
                 "value": val,
-                "quote": q,
+                "quote": f_obj.quote,
             })
             if drop_failures:
-                f_obj.value = "not reported" if fld == "method" else "not found"
+                f_obj.value = "not found"
                 f_obj.quote = ""
             continue
 
         # 3. Section check: section must be a real heading
-        norm_sec = _normalize_for_match(sec).lower()
+        norm_sec = normalize_text_for_matching(sec)
         sec_valid = (
             norm_sec in norm_real_headings
             or any(norm_sec in rh or rh in norm_sec for rh in norm_real_headings)
@@ -1351,12 +1625,23 @@ def validate_extraction(
                 "field": fld,
                 "reason": f"section '{sec}' is not a real heading in paper",
                 "value": val,
-                "quote": q,
+                "quote": f_obj.quote,
             })
             if drop_failures:
-                f_obj.value = "not reported" if fld == "method" else "not found"
+                f_obj.value = "not found"
                 f_obj.quote = ""
             continue
+
+    # Check method requirement: if method bucket exists, method must not be 'not found'
+    if not extraction.is_dataset_paper and buckets.get("method", "").strip():
+        if extraction.method.value in ["not found", "", "not reported"] or not extraction.method.quote:
+            rejections.append({
+                "paper": paper_title,
+                "field": "method",
+                "reason": "method field must not be 'not found' when a method section exists",
+                "value": extraction.method.value,
+                "quote": extraction.method.quote,
+            })
 
     # Dataset paper rule
     if extraction.is_dataset_paper:
@@ -1375,8 +1660,12 @@ def validate_extraction(
     for bf_name in ["same_task", "phone_app", "offline_stated"]:
         bf: ExtractedBooleanField = getattr(extraction, bf_name)
         if bf.value:
-            norm_q = _normalize_for_match(bf.quote).lower()
-            if not norm_q or norm_q not in norm_all_text:
+            is_match, matched_text, match_ratio = find_quote_in_stored_text(bf.quote, stored_text or all_buckets_text, all_buckets_text)
+            if is_match:
+                bf.quote = matched_text
+                if match_ratio < 1.0 and ctx is not None:
+                    ctx.record_fuzzy_match(paper_title, bf_name, matched_text, bf.quote, match_ratio)
+            else:
                 if drop_failures:
                     bf.value = False
                     bf.quote = ""
@@ -1545,8 +1834,10 @@ async def assemble_findings(
         else:
             title = raw_title or "Research Paper"
 
-        # Build citation
-        if authors and year != "not found" and doi != "not found":
+        # Use inspected citation if available
+        if cand.get("citation") and cand.get("citation") != "not found":
+            citation = cand["citation"]
+        elif authors and year != "not found" and doi != "not found":
             auth_str = ", ".join(authors[:3]) + (" et al." if len(authors) > 3 else "")
             citation = f"{auth_str} ({year}). {title}. doi:{doi}"
         elif authors and year != "not found":
@@ -1577,18 +1868,75 @@ async def assemble_findings(
             else:
                 match_reason = "Closely related: evaluated on standard compute/GPU or server without edge-only mobile deployment proof."
 
-        # Key evidence
+        # Key evidence: save every validated quote with no cap
+        ALL_CONTENT_FIELDS = [
+            "problem_addressed", "research_objective", "domain", "input_type", "output_type",
+            "dataset_name", "dataset_description", "dataset_size", "dataset_split",
+            "model_name", "architecture", "method",
+            "evaluation_metrics", "reported_results", "baselines",
+            "limitations", "research_gap",
+        ]
         key_ev: list[EvidenceQuote] = []
-        for fld_name in [
-            "problem_addressed", "research_objective", "dataset_name", "dataset_size",
-            "model_name", "method", "reported_results", "limitations", "research_gap",
-        ]:
-            f_obj: ExtractedField = getattr(ext, fld_name)
-            if f_obj.quote and f_obj.value not in ["not found", "not applicable"]:
-                key_ev.append(EvidenceQuote(quote=f_obj.quote, section=f_obj.section, field=fld_name))
+        validated_fields: set[str] = set()
 
-        if ext.phone_app.quote and ext.phone_app.value:
-            key_ev.append(EvidenceQuote(quote=ext.phone_app.quote, section=ext.phone_app.section, field="phone_app"))
+        for fld_name in ALL_CONTENT_FIELDS:
+            f_obj: ExtractedField = getattr(ext, fld_name)
+            if f_obj.quote and f_obj.value not in ["not found", "not applicable", ""]:
+                key_ev.append(EvidenceQuote(quote=f_obj.quote, section=f_obj.section, field=fld_name))
+                validated_fields.add(fld_name)
+
+        for bf_name in ["same_task", "phone_app", "offline_stated"]:
+            bf: ExtractedBooleanField = getattr(ext, bf_name)
+            if bf.value and bf.quote:
+                key_ev.append(EvidenceQuote(quote=bf.quote, section=bf.section, field=bf_name))
+                validated_fields.add(bf_name)
+
+        # Retrieve paper buckets from registry
+        rec = ctx.paper_registry.find_paper(paper_url or cand.get("paper_id") or title)
+        b_dict = rec.buckets if rec and rec.buckets else {}
+
+        # Handle method field
+        if ext.is_dataset_paper:
+            method_val = "not applicable"
+        elif ext.method.value not in ["not found", "not reported", ""] and "method" in validated_fields:
+            method_val = ext.method.value
+        elif ext.architecture.value not in ["not found", "not applicable", ""] and "architecture" in validated_fields:
+            method_val = ext.architecture.value
+            if "method" not in validated_fields and ext.architecture.quote:
+                key_ev.append(EvidenceQuote(quote=ext.architecture.quote, section=ext.architecture.section, field="method"))
+                validated_fields.add("method")
+        elif ext.model_name.value not in ["not found", "not applicable", ""] and "model_name" in validated_fields:
+            method_val = ext.model_name.value
+            if "method" not in validated_fields and ext.model_name.quote:
+                key_ev.append(EvidenceQuote(quote=ext.model_name.quote, section=ext.model_name.section, field="method"))
+                validated_fields.add("method")
+        elif b_dict.get("method", "").strip():
+            method_lines = [l.strip() for l in b_dict["method"].split("\n") if len(l.strip()) > 25 and not l.strip().startswith("#")]
+            if method_lines:
+                cand_sent = method_lines[0].split(". ")[0] + "."
+                method_val = cand_sent[:150]
+                key_ev.append(EvidenceQuote(quote=cand_sent[:150], section="method", field="method"))
+                validated_fields.add("method")
+            else:
+                method_val = "not found"
+        else:
+            method_val = "not found"
+
+        # Handle dataset.description: must be distinct sentence with own quote, or not found
+        ds_name_val = clean_dataset_name(ext.dataset_name.value) if "dataset_name" in validated_fields else "not found"
+        ds_desc_raw = ext.dataset_description.value if "dataset_description" in validated_fields else "not found"
+        if ds_desc_raw in ["not found", "", "not reported"] or ds_desc_raw.strip().lower() == ds_name_val.strip().lower():
+            ds_desc_val = "not found"
+        else:
+            ds_desc_val = ds_desc_raw
+
+        # Helper to enforce: "A field may keep a value only if at least one saved quote has that field name."
+        def _get_fld(fld_name: str, raw_val: str, allow_not_app: bool = True) -> str:
+            if allow_not_app and raw_val == "not applicable":
+                return "not applicable"
+            if fld_name in validated_fields and raw_val not in ["not found", "", "not reported"]:
+                return raw_val
+            return "not found"
 
         # Build PaperFinding
         p_finding = PaperFinding(
@@ -1600,34 +1948,34 @@ async def assemble_findings(
             citation=citation,
             match_type=match_type,
             match_reason=match_reason,
-            problem_addressed=ext.problem_addressed.value,
-            research_objective=ext.research_objective.value,
-            domain=ext.domain.value,
-            input_type=ext.input_type.value,
-            output_type=ext.output_type.value,
+            problem_addressed=_get_fld("problem_addressed", ext.problem_addressed.value),
+            research_objective=_get_fld("research_objective", ext.research_objective.value),
+            domain=_get_fld("domain", ext.domain.value),
+            input_type=_get_fld("input_type", ext.input_type.value),
+            output_type=_get_fld("output_type", ext.output_type.value),
             dataset=DatasetInfo(
-                name=clean_dataset_name(ext.dataset_name.value),
-                description=ext.dataset_name.value,
-                size=ext.dataset_size.value,
-                split=ext.dataset_split.value,
+                name=ds_name_val,
+                description=ds_desc_val,
+                size=_get_fld("dataset_size", ext.dataset_size.value),
+                split=_get_fld("dataset_split", ext.dataset_split.value),
                 source="not found",
             ),
             model=ModelInfo(
-                model_name=ext.model_name.value,
-                architecture=ext.architecture.value,
+                model_name="not applicable" if ext.is_dataset_paper else _get_fld("model_name", ext.model_name.value),
+                architecture="not applicable" if ext.is_dataset_paper else _get_fld("architecture", ext.architecture.value),
                 backbone="not found",
                 components="not found",
             ),
-            method=ext.method.value,
+            method=method_val,
             experiments_and_results=ExperimentsAndResults(
                 experimental_setup="not applicable" if ext.is_dataset_paper else "not found",
-                evaluation_metrics=ext.evaluation_metrics.value,
-                reported_results=ext.reported_results.value,
-                baseline_comparisons=ext.baselines.value,
+                evaluation_metrics="not applicable" if ext.is_dataset_paper else _get_fld("evaluation_metrics", ext.evaluation_metrics.value),
+                reported_results="not applicable" if ext.is_dataset_paper else _get_fld("reported_results", ext.reported_results.value),
+                baseline_comparisons="not applicable" if ext.is_dataset_paper else _get_fld("baselines", ext.baselines.value),
                 evidence_location=", ".join(real_headings[:5]) if real_headings else "Read full text",
             ),
-            limitations=ext.limitations.value,
-            research_gap=ext.research_gap.value,
+            limitations=_get_fld("limitations", ext.limitations.value),
+            research_gap=_get_fld("research_gap", ext.research_gap.value),
             code_repository=code_repo,
             key_evidence=key_ev,
             source_urls=cand.get("source_urls") or ([paper_url] if paper_url != "not found" else []),
@@ -1675,10 +2023,12 @@ async def assemble_findings(
         cand_year = cand.get("year", "not found")
         cand_doi = cand.get("doi", "not found")
 
-        cand_cit = "not found"
-        if cand_authors and cand_year != "not found" and cand_doi != "not found":
-            auth_s = ", ".join(cand_authors[:3]) + (" et al." if len(cand_authors) > 3 else "")
-            cand_cit = f"{auth_s} ({cand_year}). {c_title}. doi:{cand_doi}"
+        cand_cit = cand.get("citation") or "not found"
+        if cand_cit == "not found" and (cand_authors or cand_year != "not found"):
+            auth_s = ", ".join(cand_authors[:3]) + (" et al." if len(cand_authors) > 3 else "") if cand_authors else "Anonymous"
+            year_s = f"({cand_year})" if cand_year != "not found" else "(n.d.)"
+            doi_s = f" doi:{cand_doi}" if cand_doi != "not found" else ""
+            cand_cit = f"{auth_s} {year_s}. {c_title}.{doi_s}".strip()
 
         snippet_entry = PaperFinding(
             title=c_title,
