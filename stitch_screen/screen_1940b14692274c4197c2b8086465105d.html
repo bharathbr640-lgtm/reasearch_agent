@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-slate-100" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Research Agent - Unified Workspace</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            primary: '#004ac6',
+            'primary-container': '#2563eb',
+            surface: '#f8f9ff',
+            'surface-container-low': '#eff4ff',
+            'surface-container': '#e5eeff',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .45; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .active-nav {
+      background-color: rgba(99, 102, 241, 0.18) !important;
+      color: #a5b4fc !important;
+      border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    }
+    .report-anchor.active-anchor {
+      background-color: #eff4ff;
+      color: #004ac6;
+      border-left: 3px solid #2563eb;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-800 antialiased flex bg-[#f5f7fb] font-sans selection:bg-indigo-500 selection:text-white">
+<!-- Toast Notification Element -->
+<div class="fixed top-5 right-5 z-50 transform -translate-y-12 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 text-white shadow-xl border border-slate-800 text-xs font-medium" id="toast-notification">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span id="toast-message">Notification message</span>
+</div>
+<!-- BEGIN: Left Dark Sidebar (Persists Across SPA) -->
+<aside class="w-64 flex-shrink-0 bg-[#0f111a] text-slate-300 flex flex-col border-r border-slate-800/80 z-30">
+<!-- Brand / Header -->
+<div class="px-5 py-4 border-b border-slate-800/60 flex items-center justify-between cursor-pointer" onclick="switchView('dashboard')">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/30">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<div class="text-[13px] font-bold tracking-tight text-white flex items-center gap-1.5 font-display">
+          AI Research Agent
+        </div>
+<p class="text-[10px] text-slate-400 font-medium tracking-tight">Autonomous Agent System</p>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" title="System Online"></span>
+</div>
+<!-- Primary CTA Button (Switches to Start view 04) -->
+<div class="px-4 pt-4 pb-2">
+<button class="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs tracking-tight shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 transition active:scale-[0.98]" id="btn-sidebar-new" onclick="switchView('start')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>New Research</span>
+</button>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 px-3 py-3 space-y-1 overflow-y-auto no-scrollbar text-xs">
+<div class="px-3 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-mono">Navigation</div>
+<button class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition active-nav" id="nav-dashboard" onclick="switchView('dashboard')">
+<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Dashboard</span>
+</button>
+<!-- My Research navigates directly to Active Research View 02 -->
+<button class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" id="nav-active" onclick="switchView('active')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>My Research</span>
+<span class="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping"></span>
+</button>
+<!-- Research History / Report navigates to View 03 -->
+<button class="w-full text-left flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" id="nav-report" onclick="switchView('report')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Final Reports</span>
+<span class="ml-auto text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">4</span>
+</button>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" href="#" onclick="showToast('Opened Saved Findings bookmarks')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Saved Findings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium transition" href="#" onclick="showToast('Semantic Knowledge Base index loaded')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Knowledge Base</span>
+</a>
+<!-- Agents Status section -->
+<div class="pt-5 pb-2">
+<div class="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-mono">Autonomous Agents</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+<span class="text-[11px] font-medium">Orchestrator</span>
+</div>
+<span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">STANDBY</span>
+</div>
+<div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span class="text-[11px] font-medium">Project Finder</span>
+</div>
+<span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">READY</span>
+</div>
+<div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-purple-400"></span>
+<span class="text-[11px] font-medium">Paper Finder</span>
+</div>
+<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">QUEUED</span>
+</div>
+<div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+<span class="text-[11px] font-medium">Evaluator</span>
+</div>
+<span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">PENDING</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Sidebar footer profile -->
+<div class="p-3 border-t border-slate-800/70 bg-[#0c0e15]">
+<div class="flex items-center gap-2.5 px-2 py-1">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-semibold text-xs flex items-center justify-center ring-2 ring-slate-800 shadow-sm flex-shrink-0">
+        B
+      </div>
+<div class="min-w-0 flex-1">
+<p class="text-xs font-semibold text-white truncate font-display">Bharath R</p>
+<p class="text-[10px] text-slate-400 truncate">bharath@workspace.ai</p>
+</div>
+<button class="text-slate-400 hover:text-white transition" onclick="showToast('User settings opened')" title="Workspace Settings">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: Left Dark Sidebar -->
+<!-- BEGIN: SPA Views Container -->
+<div class="flex-1 flex overflow-hidden">
+<!-- ============================================================== -->
+<!-- VIEW 1: DASHBOARD (01)                                        -->
+<!-- ============================================================== -->
+<div class="flex-1 flex overflow-hidden w-full" id="view-dashboard">
+<!-- Main Scrollable Area -->
+<main class="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+<!-- Top Header Row -->
+<div class="flex items-center justify-between pb-1">
+<div class="space-y-1" data-purpose="welcome-banner">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-100/80 text-indigo-700 text-[11px] font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            Workspace Active
+          </div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">
+            Good evening, Bharath.
+          </h1>
+<p class="text-xs text-slate-500">
+            Turn a project idea into evidence-based research.
+          </p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<input class="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 w-64 shadow-sm" placeholder="Search research, papers..." type="text"/>
+<svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<button aria-label="Notifications" class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 shadow-sm transition" onclick="showToast('You have 2 agent completion alerts')" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- BEGIN: HeroCard (wide) -->
+<section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#17143a] via-[#241154] to-[#1a1444] p-6 text-white shadow-lg shadow-indigo-950/15 border border-indigo-900/40" data-purpose="hero-overview-card">
+<div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:14px_14px] pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+<div class="space-y-2 max-w-xl">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase rounded-md bg-white/10 text-indigo-200 border border-white/10 font-mono">
+                AI-POWERED RESEARCH
+              </span>
+<div class="flex items-center gap-1.5 text-[10px] bg-white/10 px-2.5 py-0.5 rounded-full text-indigo-100">
+<span>GitHub</span>
+<span class="text-indigo-400">•</span>
+<span>Hugging Face</span>
+</div>
+</div>
+<h2 class="text-xl font-extrabold text-white tracking-tight font-display">
+              From problem statement <span class="text-indigo-300">to verified research.</span>
+</h2>
+<p class="text-xs text-indigo-100/80 leading-relaxed font-normal">
+              Discover what has already been built, what has already been researched, and where the real gap is.
+            </p>
+</div>
+<div class="flex-shrink-0">
+<!-- Interactivity: Opens Final Research Report directly -->
+<button class="py-2.5 px-5 rounded-xl bg-white text-slate-900 font-semibold text-xs tracking-tight shadow-md hover:bg-slate-50 active:scale-[0.98] transition flex items-center justify-center gap-2 font-display" onclick="switchView('report')" type="button">
+<span>Read Research Report</span>
+<svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</section>
+<!-- END: HeroCard -->
+<!-- BEGIN: ProblemStatementInput (wide desktop) -->
+<section class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm space-y-4" data-purpose="input-section">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[11px]">01</span>
+<div>
+<h3 class="text-sm font-bold text-slate-900 tracking-tight font-display">Start with your problem</h3>
+<p class="text-[11px] text-slate-500">The Orchestrator will clarify the spec before research begins.</p>
+</div>
+</div>
+<span class="text-[10px] font-mono text-slate-400" id="dash-char-count">72 / 2500</span>
+</div>
+<!-- Input box area -->
+<div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-3 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
+<textarea class="w-full text-xs text-slate-800 placeholder-slate-400 bg-transparent border-0 p-0 focus:ring-0 resize-none font-normal leading-relaxed" id="dashboard-input" oninput="updateDashboardCharCount(this)" placeholder="Example: Build a system that predicts crop yield using satellite imagery and weather data." rows="3">Build a system that predicts crop yield using satellite imagery and weather data.</textarea>
+</div>
+<!-- Domains & CTA row -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-mono">Suggested domains:</span>
+<div class="flex flex-wrap gap-1.5">
+<button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Computer Vision')" type="button">Computer Vision</button>
+<button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('NLP')" type="button">NLP</button>
+<button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Time Series')" type="button">Time Series</button>
+<button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Recommendation')" type="button">Recommendation</button>
+<button class="text-[11px] font-medium bg-slate-100 text-slate-700 hover:bg-slate-200/70 px-2.5 py-1 rounded-full border border-slate-200/70 transition" onclick="appendDomain('Robotics')" type="button">Robotics</button>
+</div>
+</div>
+<!-- Interactivity: Starts research session and opens View 02 -->
+<button class="py-2.5 px-5 rounded-xl bg-indigo-600 text-white font-semibold text-xs tracking-tight shadow-sm shadow-indigo-600/30 hover:bg-indigo-700 active:scale-[0.98] transition flex items-center justify-center gap-2 font-display self-end md:self-auto" onclick="startResearchProcess()" type="button">
+<span>Start Research</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</section>
+<!-- END: ProblemStatementInput -->
+<!-- BEGIN: ResearchWorkflow (4-Column Pipeline Grid) -->
+<section class="space-y-3" data-purpose="research-workflow-section">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[11px]">02</span>
+<div>
+<h3 class="text-sm font-bold text-slate-900 tracking-tight font-display">Research workflow</h3>
+<p class="text-[11px] text-slate-500">Autonomous multi-agent execution pipeline</p>
+</div>
+</div>
+<span class="text-xs font-semibold text-indigo-600 font-display cursor-pointer hover:underline" onclick="switchView('active')">View live pipeline →</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+<!-- Step 1: Orchestrator -->
+<article class="bg-white rounded-xl p-4 border border-indigo-200 shadow-sm relative flex flex-col justify-between hover:border-indigo-400 transition cursor-pointer" onclick="switchView('active')">
+<div>
+<div class="flex items-center gap-2 mb-2.5">
+<span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">01</span>
+<h4 class="text-xs font-bold text-slate-900 font-display">Orchestrator</h4>
+<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-100 font-mono">Active</span>
+</div>
+<ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+<li class="flex items-center gap-1.5">
+<svg class="w-3 h-3 text-indigo-600 flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+<span>Understand problem</span>
+</li>
+<li class="flex items-center gap-1.5">
+<svg class="w-3 h-3 text-indigo-600 flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+<span>Ask clarifying questions</span>
+</li>
+<li class="flex items-center gap-1.5">
+<svg class="w-3 h-3 text-indigo-600 flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+<span>Create research spec</span>
+</li>
+</ul>
+</div>
+<div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+<span>Status</span>
+<span class="text-indigo-600 font-medium">Ready to prompt</span>
+</div>
+</article>
+<!-- Step 2: Project Finder -->
+<article class="bg-white rounded-xl p-4 border border-emerald-200 shadow-sm relative flex flex-col justify-between hover:border-emerald-400 transition cursor-pointer" onclick="switchView('active')">
+<div>
+<div class="flex items-center gap-2 mb-2.5">
+<span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">02</span>
+<h4 class="text-xs font-bold text-slate-900 font-display">Project Finder</h4>
+<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-100 font-mono">Ready</span>
+</div>
+<ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>Search GitHub repos</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>Search Hugging Face</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>Analyze implementations</span>
+</li>
+</ul>
+</div>
+<div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+<span>Coverage</span>
+<span class="text-emerald-600 font-medium">Full access</span>
+</div>
+</article>
+<!-- Step 3: Paper Finder -->
+<article class="bg-white rounded-xl p-4 border border-purple-200 shadow-sm relative flex flex-col justify-between hover:border-purple-400 transition cursor-pointer" onclick="switchView('active')">
+<div>
+<div class="flex items-center gap-2 mb-2.5">
+<span class="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">03</span>
+<h4 class="text-xs font-bold text-slate-900 font-display">Paper Finder</h4>
+<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded border border-purple-100 font-mono">Queued</span>
+</div>
+<ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<span>Semantic paper search</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<span>Extract methods</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<span>Find related work</span>
+</li>
+</ul>
+</div>
+<div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+<span>ArXiv Index</span>
+<span class="text-purple-600 font-medium">Semantic API</span>
+</div>
+</article>
+<!-- Step 4: Evaluator -->
+<article class="bg-white rounded-xl p-4 border border-amber-200 shadow-sm relative flex flex-col justify-between hover:border-amber-400 transition cursor-pointer" onclick="switchView('active')">
+<div>
+<div class="flex items-center gap-2 mb-2.5">
+<span class="w-5 h-5 rounded-full bg-amber-600 text-white font-bold text-[10px] flex items-center justify-center">04</span>
+<h4 class="text-xs font-bold text-slate-900 font-display">Evaluator</h4>
+<span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-100 font-mono">Pending</span>
+</div>
+<ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+<span>Verify relevance</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+<span>Compare evidence</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+<span>Identify research gaps</span>
+</li>
+</ul>
+</div>
+<div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+<span>Synthesis</span>
+<span class="text-amber-600 font-medium">Final audit</span>
+</div>
+</article>
+</div>
+</section>
+<!-- END: ResearchWorkflow -->
+</main>
+<!-- BEGIN: Dashboard Right Sidebar -->
+<aside class="w-80 flex-shrink-0 bg-white border-l border-slate-200/90 p-5 overflow-y-auto space-y-5">
+<!-- Recent Research Section -->
+<section class="space-y-3" data-purpose="recent-research-section">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Recent research</h3>
+<button class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700" onclick="switchView('report')" type="button">View all →</button>
+</div>
+<div class="divide-y divide-slate-100">
+<!-- Item 1 (Interactive Click: jumps straight to Final Report) -->
+<article class="py-2.5 flex items-center justify-between gap-3 first:pt-0 last:pb-0 group cursor-pointer hover:bg-slate-50/80 -mx-2 px-2 rounded-lg transition" onclick="switchView('report')">
+<div class="min-w-0 flex-1">
+<p class="text-xs font-medium text-slate-800 group-hover:text-indigo-600 truncate transition">Satellite crop yield prediction</p>
+<span class="text-[10px] text-slate-400">2 days ago</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" title="Completed"></span>
+</article>
+<!-- Item 2 -->
+<article class="py-2.5 flex items-center justify-between gap-3 first:pt-0 last:pb-0 group cursor-pointer hover:bg-slate-50/80 -mx-2 px-2 rounded-lg transition" onclick="switchView('report')">
+<div class="min-w-0 flex-1">
+<p class="text-xs font-medium text-slate-800 group-hover:text-indigo-600 truncate transition">LLM for medical report analysis</p>
+<span class="text-[10px] text-slate-400">3 days ago</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" title="Completed"></span>
+</article>
+<!-- Item 3 -->
+<article class="py-2.5 flex items-center justify-between gap-3 first:pt-0 last:pb-0 group cursor-pointer hover:bg-slate-50/80 -mx-2 px-2 rounded-lg transition" onclick="switchView('report')">
+<div class="min-w-0 flex-1">
+<p class="text-xs font-medium text-slate-800 group-hover:text-indigo-600 truncate transition">Real-time object detection</p>
+<span class="text-[10px] text-slate-400">1 week ago</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0" title="Completed"></span>
+</article>
+<!-- Item 4 -->
+<article class="py-2.5 flex items-center justify-between gap-3 first:pt-0 last:pb-0 group cursor-pointer hover:bg-slate-50/80 -mx-2 px-2 rounded-lg transition" onclick="switchView('report')">
+<div class="min-w-0 flex-1">
+<p class="text-xs font-medium text-slate-800 group-hover:text-indigo-600 truncate transition">Soil moisture prediction using IoT</p>
+<span class="text-[10px] text-slate-400">1 week ago</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" title="Completed"></span>
+</article>
+</div>
+</section>
+<!-- Divider -->
+<hr class="border-slate-100"/>
+<!-- Research Snapshot Section -->
+<section class="space-y-3" data-purpose="metrics-grid">
+<h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Research snapshot</h3>
+<div class="grid grid-cols-2 gap-2.5 text-center">
+<div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100/60 transition" onclick="switchView('report')">
+<span class="block text-xl font-extrabold text-blue-700 font-display">12</span>
+<span class="text-[10px] font-medium text-blue-600/90 leading-tight">Projects found</span>
+</div>
+<div class="bg-purple-50/70 p-3 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100/60 transition" onclick="switchView('report')">
+<span class="block text-xl font-extrabold text-purple-700 font-display">18</span>
+<span class="text-[10px] font-medium text-purple-600/90 leading-tight">Papers found</span>
+</div>
+<div class="bg-amber-50/70 p-3 rounded-xl border border-amber-100 cursor-pointer hover:bg-amber-100/60 transition" onclick="switchView('report')">
+<span class="block text-xl font-extrabold text-amber-700 font-display">4</span>
+<span class="text-[10px] font-medium text-amber-600/90 leading-tight">Gaps identified</span>
+</div>
+<div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-100 cursor-pointer hover:bg-emerald-100/60 transition" onclick="switchView('report')">
+<span class="block text-xl font-extrabold text-emerald-700 font-display">4</span>
+<span class="text-[10px] font-medium text-emerald-600/90 leading-tight">Verified reports</span>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<hr class="border-slate-100"/>
+<!-- Research Quality Gauge Section -->
+<section class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Research quality</h3>
+<p class="text-[10px] text-slate-500">Evidence coverage</p>
+</div>
+<span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+            VERIFIED
+          </span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div>
+<div class="text-2xl font-black text-slate-900 font-display">83%</div>
+<span class="text-[10px] font-medium text-emerald-700">Strong evidence base</span>
+</div>
+<!-- Radial Progress Gauge -->
+<div class="w-12 h-12 relative flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-indigo-600" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="83, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+</div>
+</div>
+<div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+<div class="bg-indigo-600 h-1.5 rounded-full" style="width: 83%"></div>
+</div>
+</section>
+</aside>
+<!-- END: Dashboard Right Sidebar -->
+</div>
+<!-- ============================================================== -->
+<!-- VIEW 2: START A RESEARCH (04)                                 -->
+<!-- ============================================================== -->
+<div class="hidden flex-1 overflow-y-auto px-8 py-6 space-y-6 w-full" id="view-start">
+<!-- Header with breadcrumbs -->
+<div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+<button class="hover:text-indigo-600" onclick="switchView('dashboard')">Dashboard</button>
+<span>/</span>
+<span class="text-slate-800 font-semibold">New Research Intake</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">Start a New Research Session</h1>
+<p class="text-xs text-slate-500">Provide an initial objective. Our multi-agent system will cross-reference state-of-the-art literature &amp; codebases.</p>
+</div>
+<button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 shadow-sm flex items-center gap-1.5" onclick="switchView('dashboard')">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        Cancel
+      </button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+<!-- Left 2 Cols: Interactive Intake Form -->
+<div class="lg:col-span-2 space-y-6">
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+<div class="flex items-center justify-between">
+<label class="text-sm font-bold text-slate-900 font-display flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center">1</span>
+              Describe your research problem or project vision
+            </label>
+<span class="text-xs font-mono text-slate-400" id="start-char-count">118 / 2500</span>
+</div>
+<div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-3.5 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
+<textarea class="w-full text-xs text-slate-800 placeholder-slate-400 bg-transparent border-0 p-0 focus:ring-0 resize-none font-normal leading-relaxed" id="start-problem-textarea" oninput="updateStartCharCount(this)" placeholder="State your technical problem, baseline assumptions, expected inputs and target output metrics..." rows="4">Build an automated system that predicts regional crop yield using multi-spectral satellite imagery and temporal weather data.</textarea>
+</div>
+<!-- Optional Context Tags / Adders -->
+<div class="space-y-2">
+<span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider font-mono">Optional context tags:</span>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Domain: Agritech &amp; Remote Sensing')">
+<span class="text-indigo-500 font-bold">+</span> Domain: Agritech
+              </button>
+<button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Dataset: Sentinel-2 &amp; MODIS')">
+<span class="text-indigo-500 font-bold">+</span> Dataset: Sentinel-2
+              </button>
+<button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Tech: PyTorch / Vision Transformer')">
+<span class="text-indigo-500 font-bold">+</span> Tech: PyTorch ViT
+              </button>
+<button class="px-3 py-1 text-xs rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 border border-slate-200 transition flex items-center gap-1.5" onclick="addContextTag(this, 'Constraint: Low-latency inference &lt; 200ms')">
+<span class="text-indigo-500 font-bold">+</span> Constraint: Low-latency
+              </button>
+</div>
+</div>
+<div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+<span class="text-xs text-slate-500 flex items-center gap-1.5">
+<svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              Orchestrator pre-checks passed
+            </span>
+<button class="py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs tracking-tight shadow-md shadow-indigo-600/30 flex items-center gap-2 active:scale-95 transition font-display" onclick="startResearchProcess()">
+<span>Start Research Pipeline</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Research Test Cases Card Group (Clicking fills prompt) -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold text-slate-900 tracking-tight font-display uppercase">Recommended Benchmark Test Cases</h3>
+<span class="text-[11px] text-slate-400">Click to fill</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md cursor-pointer transition group" onclick="selectTestCase('Crop Yield Prediction with Satellite Imagery', 'Predict crop yield across regional farmlands using Sentinel-2 multispectral imagery and daily weather variables (soil moisture, temperature) to forecast output 30 days before harvest.')">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 font-display">Satellite Crop Yield</span>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">Agritech</span>
+</div>
+<p class="text-[11px] text-slate-500 line-clamp-2">Multispectral satellite imagery + daily temporal weather forecasts for 30-day pre-harvest projections.</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md cursor-pointer transition group" onclick="selectTestCase('Clinical LLM for Discharge Summaries', 'Design a privacy-preserving Clinical LLM system that ingests unstructured EHR notes and outputs compliant discharge summaries with verified citations to medical guidelines.')">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 font-display">Clinical LLM Summaries</span>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">Healthcare</span>
+</div>
+<p class="text-[11px] text-slate-500 line-clamp-2">HIPAA compliant summarization of EHR notes with cited guideline justification.</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md cursor-pointer transition group" onclick="selectTestCase('Real-time Edge Drone Object Detection', 'Deploy a lightweight YOLO/MobileNet model on Jetson Nano capable of detecting agricultural pests in high-resolution video streams at &gt;30 FPS.')">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 font-display">Edge Drone Detection</span>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-purple-50 text-purple-700">Edge AI</span>
+</div>
+<p class="text-[11px] text-slate-500 line-clamp-2">Under 5W power envelope, real-time pest detection on low-cost edge accelerators.</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md cursor-pointer transition group" onclick="selectTestCase('Financial Time Series Anomaly Engine', 'Detect market flash anomalies across high-frequency tick data using variational autoencoders and diffusion-based temporal baselines.')">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-bold text-slate-900 group-hover:text-indigo-600 font-display">High-Freq Tick Anomaly</span>
+<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-50 text-amber-700">FinTech</span>
+</div>
+<p class="text-[11px] text-slate-500 line-clamp-2">Tick-level latency anomaly detection on order book depth fluctuations.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right 1 Col: "What Happens Next" 4-Step Pipeline -->
+<div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm space-y-4">
+<h3 class="text-xs font-bold text-slate-900 font-display uppercase tracking-wide">Autonomous Pipeline Phases</h3>
+<p class="text-[11px] text-slate-500">When you launch, our specialized autonomous sub-agents execute sequentially:</p>
+<div class="space-y-3 pt-2">
+<div class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+<div>
+<h4 class="text-xs font-semibold text-slate-900">Problem Deconstruction</h4>
+<p class="text-[11px] text-slate-500">Orchestrator generates targeted query expansions &amp; taxonomic parameters.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+<div>
+<h4 class="text-xs font-semibold text-slate-900">Codebase Discovery</h4>
+<p class="text-[11px] text-slate-500">Project Finder queries GitHub API &amp; Hugging Face models for runnable architectures.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+<div>
+<h4 class="text-xs font-semibold text-slate-900">Literature Synthesis</h4>
+<p class="text-[11px] text-slate-500">Paper Finder accesses arXiv semantic embeddings for peer-reviewed SOTA papers.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center flex-shrink-0">4</span>
+<div>
+<h4 class="text-xs font-semibold text-slate-900">Gap Analysis &amp; Audit</h4>
+<p class="text-[11px] text-slate-500">Evaluator identifies benchmark discrepancies and generates your verified report.</p>
+</div>
+</div>
+</div>
+<div class="mt-4 p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl text-[11px] text-indigo-900">
+<span class="font-semibold">Average duration:</span> ~45 seconds across 4 agent instances with parallel verification.
+        </div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- VIEW 3: ACTIVE RESEARCH (02)                                  -->
+<!-- ============================================================== -->
+<div class="hidden flex-1 overflow-y-auto px-8 py-6 space-y-6 w-full" id="view-active">
+<!-- Active Research Header & Breadcrumbs -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+<button class="hover:text-indigo-600" onclick="switchView('dashboard')">Dashboard</button>
+<span>/</span>
+<span class="text-indigo-600 font-semibold flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+            Active Research Session
+          </span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display flex items-center gap-3">
+<span>Satellite Crop Yield Prediction</span>
+<span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-semibold uppercase">Session #AG-9042</span>
+</h1>
+<p class="text-xs text-slate-500">Orchestrator dispatching parallel sub-agent workers across arXiv and Hugging Face repositories.</p>
+</div>
+<!-- Controls: Pause & View Live Findings -->
+<div class="flex items-center gap-2.5 flex-shrink-0">
+<button class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm flex items-center gap-1.5 transition" id="btn-pause-session" onclick="togglePauseResearch()">
+<svg class="w-3.5 h-3.5" fill="none" id="icon-pause" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M15.75 5.25v13.5m-7.5-13.5v13.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span id="label-pause">Pause Agents</span>
+</button>
+<button class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 flex items-center gap-2 transition font-display" onclick="switchView('report')">
+<span>View Verified Report</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<!-- Overall Interactive Progress Bar -->
+<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2 font-display font-bold text-slate-800">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          Pipeline Progress: <span class="text-indigo-600 font-mono" id="active-percent-text">78% Complete</span>
+</div>
+<span class="text-[11px] font-mono text-slate-500">Stage 3 of 4: Paper Finder Synthesizing</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+<div class="bg-gradient-to-r from-indigo-500 to-indigo-600 h-2.5 rounded-full transition-all duration-700" id="active-progress-bar" style="width: 78%"></div>
+</div>
+</div>
+<!-- 4 Pipeline Agent State Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+<!-- Agent 1: Completed -->
+<div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-900 font-display">01 Orchestrator</span>
+<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">DONE</span>
+</div>
+<p class="text-[11px] text-slate-500">Specification defined into 3 research hypotheses &amp; evaluation parameters.</p>
+<div class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+<svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+          Spec locked in 1.4s
+        </div>
+</div>
+<!-- Agent 2: Completed -->
+<div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-900 font-display">02 Project Finder</span>
+<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">12 REPOS</span>
+</div>
+<p class="text-[11px] text-slate-500">Cloned metadata from GitHub, CropHarvest benchmarks &amp; TorchGeo configs.</p>
+<div class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+<svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+          Code analyzed
+        </div>
+</div>
+<!-- Agent 3: Currently Running -->
+<div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-300 shadow-sm space-y-2 relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-indigo-950 font-display">03 Paper Finder</span>
+<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-600 text-white font-semibold animate-pulse">RUNNING</span>
+</div>
+<p class="text-[11px] text-indigo-900/80">Semantic paper retrieval via arXiv embedding index. 18 relevant preprints indexed.</p>
+<div class="text-[10px] text-indigo-600 font-medium flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-ping"></span>
+          Filtering SOTA methods...
+        </div>
+</div>
+<!-- Agent 4: Queued -->
+<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2 opacity-80">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-900 font-display">04 Evaluator</span>
+<span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">QUEUED</span>
+</div>
+<p class="text-[11px] text-slate-500">Awaiting Paper Finder completion to audit claims and score evidence base.</p>
+<div class="text-[10px] text-slate-400 font-medium">Pending input feed</div>
+</div>
+</div>
+<!-- Live Evidence Stream Console -->
+<div class="bg-slate-900 text-slate-200 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-3 font-mono">
+<div class="flex items-center justify-between border-b border-slate-800 pb-3">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+<span class="text-xs font-bold text-white tracking-wide">Live Agent Telemetry &amp; Evidence Stream</span>
+</div>
+<span class="text-[10px] text-slate-400">STREAMING • 482 events</span>
+</div>
+<div class="space-y-2 text-xs max-h-64 overflow-y-auto no-scrollbar font-normal text-slate-300" id="telemetry-log">
+<div class="flex items-start gap-2 text-slate-400">
+<span class="text-slate-500 text-[10px]">[16:42:01]</span>
+<span class="text-indigo-400 font-semibold">[Orchestrator]</span>
+<span>Task formulated: "Sentinel-2 Multi-Spectral Crop Yield Modeling with Temporal Fusion Transformer".</span>
+</div>
+<div class="flex items-start gap-2 text-slate-400">
+<span class="text-slate-500 text-[10px]">[16:42:04]</span>
+<span class="text-emerald-400 font-semibold">[ProjectFinder]</span>
+<span>Extracted PyTorch repo: <a class="text-indigo-300 underline" href="#">nasaharvest/crop-mask</a> (Stars: 1.2k, License: Apache 2.0).</span>
+</div>
+<div class="flex items-start gap-2 text-slate-400">
+<span class="text-slate-500 text-[10px]">[16:42:07]</span>
+<span class="text-emerald-400 font-semibold">[ProjectFinder]</span>
+<span>Verified HuggingFace model weight: <code class="text-amber-300">ibm-nasa-geospatial/Prithvi-100M</code>.</span>
+</div>
+<div class="flex items-start gap-2 text-slate-400">
+<span class="text-slate-500 text-[10px]">[16:42:12]</span>
+<span class="text-purple-400 font-semibold">[PaperFinder]</span>
+<span>Matched arXiv:2308.12879 - "Foundation Models in Earth Observation for Agriculture Yield Estimation".</span>
+</div>
+<div class="flex items-start gap-2 text-slate-300">
+<span class="text-slate-500 text-[10px]">[16:42:18]</span>
+<span class="text-purple-400 font-semibold">[PaperFinder]</span>
+<span>Extracted metric: R² = 0.84 achieved using combined Sentinel-1 SAR + Sentinel-2 Optical bands.</span>
+</div>
+<div class="flex items-start gap-2 text-emerald-300">
+<span class="text-slate-500 text-[10px]">[16:42:22]</span>
+<span class="text-amber-400 font-semibold">[Evaluator]</span>
+<span>Gap detected: Current models lack validation under severe drought anomaly conditions.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- VIEW 4: FINAL RESEARCH REPORT (03)                            -->
+<!-- ============================================================== -->
+<div class="hidden flex-1 overflow-y-auto px-8 py-6 space-y-6 w-full pb-24" id="view-report">
+<!-- Breadcrumbs & Report Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-slate-200">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+<button class="hover:text-indigo-600" onclick="switchView('dashboard')">Dashboard</button>
+<span>/</span>
+<button class="hover:text-indigo-600" onclick="switchView('active')">Research Runs</button>
+<span>/</span>
+<span class="text-slate-800 font-semibold">Report #REP-0824</span>
+</div>
+<div class="flex items-center gap-3">
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">Crop Yield Prediction via Satellite &amp; Weather</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold flex items-center gap-1 font-mono">
+<svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewbox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path></svg>
+            VERIFIED REPORT
+          </span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-2.5">
+<div class="px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center gap-2">
+<span class="text-xs text-indigo-700 font-medium">Agent Confidence:</span>
+<span class="text-xs font-bold text-indigo-900 font-display">8.7 / 10</span>
+</div>
+<button class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-sm transition" onclick="switchView('dashboard')">
+          Back to Dashboard
+        </button>
+</div>
+</div>
+<!-- 4 Metrics Snapshot Ribbon -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm">
+<div class="text-xs text-slate-500 font-medium">Projects Analyzed</div>
+<div class="text-2xl font-extrabold text-blue-700 font-display mt-1">12</div>
+<div class="text-[10px] text-slate-400">8 with open-source PyTorch weights</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm">
+<div class="text-xs text-slate-500 font-medium">arXiv Papers Synthesized</div>
+<div class="text-2xl font-extrabold text-purple-700 font-display mt-1">18</div>
+<div class="text-[10px] text-slate-400">Published between 2021 - 2024</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm">
+<div class="text-xs text-slate-500 font-medium">Synthesized Findings</div>
+<div class="text-2xl font-extrabold text-indigo-700 font-display mt-1">8</div>
+<div class="text-[10px] text-slate-400">Verified by cross-agent consensus</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm">
+<div class="text-xs text-slate-500 font-medium">Unsolved Gaps Found</div>
+<div class="text-2xl font-extrabold text-amber-600 font-display mt-1">4</div>
+<div class="text-[10px] text-slate-400">High commercial opportunity</div>
+</div>
+</div>
+<!-- Main Report Body Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+<!-- Sticky Report Table of Contents Navigation -->
+<aside class="bg-white rounded-xl p-3 border border-slate-200/90 shadow-sm space-y-1 text-xs font-medium">
+<div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Report Sections</div>
+<a class="report-anchor active-anchor block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 transition" href="#rep-sec-1">01 Executive Summary</a>
+<a class="report-anchor block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 transition" href="#rep-sec-2">02 Problem Definition</a>
+<a class="report-anchor block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 transition" href="#rep-sec-3">03 Existing Repos &amp; Models</a>
+<a class="report-anchor block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 transition" href="#rep-sec-4">04 Comparative Matrix</a>
+<a class="report-anchor block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 transition" href="#rep-sec-5">05 Identified Research Gaps</a>
+<a class="report-anchor block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50 transition" href="#rep-sec-6">06 Next Actionable Step</a>
+</aside>
+<!-- Main Report Content (Span 3 Cols) -->
+<div class="lg:col-span-3 space-y-6">
+<!-- 01 Executive Summary -->
+<section class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3" id="rep-sec-1">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+<h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide font-display">01 Executive Summary</h2>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">
+            Existing state-of-the-art approaches combine Sentinel-2 optical bands (10m resolution) with Sentinel-1 SAR backscatter to bypass cloud occlusion. When combined with meteorological variables (ERA5-Land reanalysis), Temporal Fusion Transformers achieve an average <strong class="text-slate-800">R² of 0.82 to 0.87</strong> for corn and soybean crop yield forecasting.
+          </p>
+<div class="p-3 bg-amber-50 rounded-xl border border-amber-200/80 text-xs text-amber-900">
+<strong class="font-semibold">Core Agent Finding:</strong> Over 70% of open-source repositories suffer from severe temporal data leakage due to non-contiguous train/test geographic splits. Implementing spatial leave-one-region-out cross validation drops claimed performance by ~14%, highlighting an immediate opportunity for rigorous modeling.
+          </div>
+</section>
+<!-- 04 Comparative Evaluation Matrix -->
+<section class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4" id="rep-sec-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+<h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide font-display">04 Comparative Evaluation Matrix</h2>
+</div>
+<span class="text-[10px] font-mono text-slate-400">Verified by Evaluator Agent</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs border-collapse">
+<thead>
+<tr class="border-b border-slate-200 text-slate-500 font-mono text-[11px]">
+<th class="py-2.5 font-semibold">Architecture / Repo</th>
+<th class="py-2.5 font-semibold">Modality</th>
+<th class="py-2.5 font-semibold">Reported R²</th>
+<th class="py-2.5 font-semibold">Code Quality</th>
+<th class="py-2.5 font-semibold">Evaluation Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 text-slate-700">
+<tr class="hover:bg-slate-50/70">
+<td class="py-3 font-semibold text-slate-900">Prithvi-100M GeoFM</td>
+<td class="py-3 text-slate-600">Multispectral ViT</td>
+<td class="py-3 font-mono text-indigo-700 font-bold">0.86</td>
+<td class="py-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px]">Verified HF</span></td>
+<td class="py-3 text-emerald-600 font-medium">Ready for fine-tune</td>
+</tr>
+<tr class="hover:bg-slate-50/70">
+<td class="py-3 font-semibold text-slate-900">CropHarvest Bi-LSTM</td>
+<td class="py-3 text-slate-600">Optical + ERA5</td>
+<td class="py-3 font-mono text-indigo-700 font-bold">0.79</td>
+<td class="py-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px]">Apache 2.0</span></td>
+<td class="py-3 text-emerald-600 font-medium">Baseline valid</td>
+</tr>
+<tr class="hover:bg-slate-50/70">
+<td class="py-3 font-semibold text-slate-900">SatYield 3D-CNN</td>
+<td class="py-3 text-slate-600">Sentinel-2 only</td>
+<td class="py-3 font-mono text-slate-500 font-bold">0.72</td>
+<td class="py-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-mono text-[10px]">No Lic.</span></td>
+<td class="py-3 text-amber-600 font-medium">Spatial leakage risk</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- 06 Recommended Next Step Card -->
+<section class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-md border border-indigo-800 space-y-3" id="rep-sec-6">
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 uppercase tracking-wider font-semibold">Recommended Path</span>
+<span class="text-xs text-indigo-300 font-mono">Estimated Setup: 2 days</span>
+</div>
+<h3 class="text-base font-bold text-white font-display">Fine-tune Prithvi-100M with Spatially Disjoint Holdouts</h3>
+<p class="text-xs text-indigo-100/80 leading-relaxed">
+            Begin by downloading the pre-trained weights from Hugging Face, attach a spatial attention regression head, and benchmark on the USDA NASS ground truth dataset using block-level k-fold cross validation.
+          </p>
+<div class="pt-2 flex items-center gap-3">
+<button class="px-4 py-2 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs shadow-md transition font-display" onclick="showToast('Exported PyTorch scaffold starter notebook')">
+              Export Starter Notebook (.ipynb)
+            </button>
+<button class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs border border-white/20 transition" onclick="showToast('Research ticket added to workspace backlog')">
+              Add to Workspace Backlog
+            </button>
+</div>
+</section>
+</div>
+</div>
+<!-- Sticky Bottom Bar for Report Actions -->
+<div class="fixed bottom-0 right-0 left-64 bg-white/95 backdrop-blur border-t border-slate-200 px-8 py-3.5 flex items-center justify-between z-20 shadow-lg">
+<div class="flex items-center gap-3 text-xs text-slate-600">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Report generated and verified by 4 autonomous agents in 42.8 seconds</span>
+</div>
+<div class="flex items-center gap-2.5">
+<button class="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm flex items-center gap-1.5 transition" onclick="shareReport()">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Share Report
+        </button>
+<button class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 flex items-center gap-2 transition font-display" onclick="exportFullSpec()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Export Full Research Spec (PDF)
+        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- END: SPA Views Container -->
+<!-- Client-side SPA State & Interaction Scripts -->
+<script>
+  let activeResearchInterval = null;
+  let currentProgress = 78;
+  let isPaused = false;
+
+  // SPA View Switcher
+  function switchView(viewName) {
+    const views = {
+      'dashboard': document.getElementById('view-dashboard'),
+      'start': document.getElementById('view-start'),
+      'active': document.getElementById('view-active'),
+      'report': document.getElementById('view-report')
+    };
+
+    // Hide all views
+    Object.values(views).forEach(el => {
+      if (el) el.classList.add('hidden');
+    });
+
+    // Reset nav link active states
+    document.getElementById('nav-dashboard').classList.remove('active-nav', 'text-slate-400');
+    document.getElementById('nav-active').classList.remove('active-nav', 'text-slate-400');
+    document.getElementById('nav-report').classList.remove('active-nav', 'text-slate-400');
+
+    // Show target view & update nav highlighting
+    if (viewName === 'dashboard') {
+      views['dashboard'].classList.remove('hidden');
+      document.getElementById('nav-dashboard').classList.add('active-nav');
+    } else if (viewName === 'start') {
+      views['start'].classList.remove('hidden');
+      document.getElementById('nav-dashboard').classList.add('text-slate-400');
+    } else if (viewName === 'active') {
+      views['active'].classList.remove('hidden');
+      document.getElementById('nav-active').classList.add('active-nav');
+      startLiveTelemetrySimulation();
+    } else if (viewName === 'report') {
+      views['report'].classList.remove('hidden');
+      document.getElementById('nav-report').classList.add('active-nav');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // Toast feedback helper
+  function showToast(message) {
+    const toast = document.getElementById('toast-notification');
+    const msgEl = document.getElementById('toast-message');
+    msgEl.textContent = message;
+    toast.classList.remove('-translate-y-12', 'opacity-0', 'pointer-events-none');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('-translate-y-12', 'opacity-0', 'pointer-events-none');
+    }, 2800);
+  }
+
+  // Domain Appender on Dashboard
+  function appendDomain(domain) {
+    const input = document.getElementById('dashboard-input');
+    if (!input.value.includes(domain)) {
+      input.value = input.value.trim() + " [" + domain + "]";
+      updateDashboardCharCount(input);
+      showToast('Added domain filter: ' + domain);
+    }
+  }
+
+  function updateDashboardCharCount(el) {
+    document.getElementById('dash-char-count').innerText = el.value.length + " / 2500";
+  }
+
+  function updateStartCharCount(el) {
+    document.getElementById('start-char-count').innerText = el.value.length + " / 2500";
+  }
+
+  // Start Research Action from either Dashboard or View 04
+  function startResearchProcess() {
+    showToast('Initializing multi-agent pipeline...');
+    currentProgress = 25;
+    const bar = document.getElementById('active-progress-bar');
+    const txt = document.getElementById('active-percent-text');
+    if (bar && txt) {
+      bar.style.width = '25%';
+      txt.innerText = '25% - Orchestrator parsing problem';
+    }
+    switchView('active');
+  }
+
+  // Select Test Case card helper
+  function selectTestCase(title, description) {
+    const area = document.getElementById('start-problem-textarea');
+    area.value = description;
+    updateStartCharCount(area);
+    showToast('Loaded benchmark: ' + title);
+  }
+
+  // Add context chips
+  function addContextTag(btn, tagText) {
+    const area = document.getElementById('start-problem-textarea');
+    area.value = area.value.trim() + " (" + tagText + ")";
+    updateStartCharCount(area);
+    btn.classList.add('bg-indigo-100', 'text-indigo-800', 'border-indigo-300');
+    showToast('Tag appended: ' + tagText);
+  }
+
+  // Telemetry event logs generator
+  function startLiveTelemetrySimulation() {
+    if (activeResearchInterval) clearInterval(activeResearchInterval);
+    const bar = document.getElementById('active-progress-bar');
+    const txt = document.getElementById('active-percent-text');
+    const logBox = document.getElementById('telemetry-log');
+
+    activeResearchInterval = setInterval(() => {
+      if (isPaused) return;
+      if (currentProgress < 98) {
+        currentProgress += 3;
+        bar.style.width = currentProgress + '%';
+        txt.innerText = currentProgress + '% Complete';
+      }
+    }, 1800);
+  }
+
+  function togglePauseResearch() {
+    isPaused = !isPaused;
+    const btn = document.getElementById('label-pause');
+    if (isPaused) {
+      btn.innerText = 'Resume Agents';
+      showToast('Multi-agent pipeline paused');
+    } else {
+      btn.innerText = 'Pause Agents';
+      showToast('Multi-agent pipeline resumed');
+    }
+  }
+
+  function shareReport() {
+    navigator.clipboard?.writeText(window.location.href);
+    showToast('Direct report link copied to clipboard!');
+  }
+
+  function exportFullSpec() {
+    showToast('Generating signed PDF specification package...');
+    setTimeout(() => {
+      showToast('Research Spec #REP-0824 downloaded successfully');
+    }, 1200);
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    switchView('dashboard');
+  });
+</script>
+</body></html>
