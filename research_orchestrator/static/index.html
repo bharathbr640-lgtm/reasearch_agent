@@ -150,33 +150,21 @@
       <div class="pt-5 pb-2">
         <div class="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500 font-mono">Autonomous Agents</div>
         <div class="space-y-1">
-          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-              <span class="text-[11px] font-medium">Orchestrator</span>
-            </div>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">STANDBY</span>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+            <span class="text-[11px] font-medium">Orchestrator</span>
           </div>
-          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span class="text-[11px] font-medium">Project Finder</span>
-            </div>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">READY</span>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-[11px] font-medium">Project Finder</span>
           </div>
-          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-purple-400"></span>
-              <span class="text-[11px] font-medium">Paper Finder</span>
-            </div>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">QUEUED</span>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+            <span class="text-[11px] font-medium">Paper Finder</span>
           </div>
-          <div class="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-              <span class="text-[11px] font-medium">Evaluator</span>
-            </div>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">PENDING</span>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-slate-800/40 text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span class="text-[11px] font-medium">Evaluator</span>
           </div>
         </div>
       </div>
@@ -185,11 +173,11 @@
     <!-- Sidebar footer profile -->
     <div class="p-3 border-t border-slate-800/70 bg-[#0c0e15]">
       <div class="flex items-center gap-2.5 px-2 py-1">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-semibold text-xs flex items-center justify-center ring-2 ring-slate-800 shadow-sm flex-shrink-0">
-          B
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-semibold text-xs flex items-center justify-center ring-2 ring-slate-800 shadow-sm flex-shrink-0 font-display">
+          BR
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-xs font-semibold text-white truncate font-display">Bharath R</p>
+          <p class="text-xs font-semibold text-white truncate font-display">Bharath BR</p>
           <p class="text-[10px] text-slate-400 truncate">bharath@workspace.ai</p>
         </div>
         <button class="text-slate-400 hover:text-white transition" onclick="showToast('User settings opened')" title="Workspace Settings" type="button">
@@ -220,7 +208,7 @@
               Workspace Active
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">
-              Good evening, Bharath.
+              Good evening, Bharath BR.
             </h1>
             <p class="text-xs text-slate-500">
               Turn a project idea into evidence-based research.
@@ -281,11 +269,17 @@
             <div class="flex items-center gap-2">
               <span class="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[11px]">01</span>
               <div>
-                <h3 class="text-sm font-bold text-slate-900 tracking-tight font-display">Start with your problem</h3>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight font-display">New Research Intake</h3>
                 <p class="text-[11px] text-slate-500">The Orchestrator will clarify the spec before research begins.</p>
               </div>
             </div>
-            <span class="text-[10px] font-mono text-slate-400" id="dash-char-count">0 / 2500</span>
+            <div class="flex items-center gap-2.5">
+              <span class="text-[10px] font-mono text-slate-400" id="dash-char-count">0 / 2500</span>
+              <button onclick="openFullscreenIntake()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-slate-200 hover:border-indigo-300 bg-slate-50 hover:bg-indigo-50/70 text-[11px] font-semibold text-slate-700 hover:text-indigo-600 shadow-sm transition active:scale-95" title="Open Fullscreen Intake Form">
+                <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <span>Fullscreen</span>
+              </button>
+            </div>
           </div>
           <!-- Input box area -->
           <div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-3 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
@@ -332,7 +326,6 @@
                 <div class="flex items-center gap-2 mb-2.5">
                   <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">01</span>
                   <h4 class="text-xs font-bold text-slate-900 font-display">Orchestrator</h4>
-                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-100 font-mono">Active</span>
                 </div>
                 <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
                   <li class="flex items-center gap-1.5">
@@ -360,7 +353,6 @@
                 <div class="flex items-center gap-2 mb-2.5">
                   <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">02</span>
                   <h4 class="text-xs font-bold text-slate-900 font-display">Project Finder</h4>
-                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-100 font-mono">Ready</span>
                 </div>
                 <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
                   <li class="flex items-center gap-1.5">
@@ -388,7 +380,6 @@
                 <div class="flex items-center gap-2 mb-2.5">
                   <span class="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">03</span>
                   <h4 class="text-xs font-bold text-slate-900 font-display">Paper Finder</h4>
-                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded border border-purple-100 font-mono">Queued</span>
                 </div>
                 <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
                   <li class="flex items-center gap-1.5">
@@ -416,7 +407,6 @@
                 <div class="flex items-center gap-2 mb-2.5">
                   <span class="w-5 h-5 rounded-full bg-amber-600 text-white font-bold text-[10px] flex items-center justify-center">04</span>
                   <h4 class="text-xs font-bold text-slate-900 font-display">Evaluator</h4>
-                  <span class="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-100 font-mono">Pending</span>
                 </div>
                 <ul class="text-[11px] text-slate-600 space-y-1.5 pl-0.5">
                   <li class="flex items-center gap-1.5">
@@ -443,83 +433,7 @@
         <!-- END: ResearchWorkflow -->
       </main>
 
-      <!-- BEGIN: Dashboard Right Sidebar -->
-      <aside class="w-80 flex-shrink-0 bg-white border-l border-slate-200/90 p-5 overflow-y-auto space-y-5">
-        <!-- Recent Research Section -->
-        <section class="space-y-3" data-purpose="recent-research-section">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Recent research</h3>
-            <button class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700" onclick="switchView('report')" type="button">View all →</button>
-          </div>
-          <div id="recent-research-empty" class="py-8 text-center text-slate-400">
-            <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-              <path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-            <p class="text-xs font-medium text-slate-500">No recent research</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Sessions will appear here once started.</p>
-          </div>
-          <div class="divide-y divide-slate-100 hidden" id="recent-research-list"></div>
-        </section>
 
-        <!-- Divider -->
-        <hr class="border-slate-100"/>
-
-        <!-- Research Snapshot Section -->
-        <section class="space-y-3" data-purpose="metrics-grid">
-          <h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Research snapshot</h3>
-          <div class="grid grid-cols-2 gap-2.5 text-center">
-            <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-100/60 transition" onclick="switchView('report')">
-              <span class="block text-xl font-extrabold text-blue-700 font-display" id="metric-projects-count">0</span>
-              <span class="text-[10px] font-medium text-blue-600/90 leading-tight">Projects found</span>
-            </div>
-            <div class="bg-purple-50/70 p-3 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100/60 transition" onclick="switchView('report')">
-              <span class="block text-xl font-extrabold text-purple-700 font-display" id="metric-papers-count">0</span>
-              <span class="text-[10px] font-medium text-purple-600/90 leading-tight">Papers found</span>
-            </div>
-            <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-100 cursor-pointer hover:bg-amber-100/60 transition" onclick="switchView('report')">
-              <span class="block text-xl font-extrabold text-amber-700 font-display" id="metric-gaps-count">0</span>
-              <span class="text-[10px] font-medium text-amber-600/90 leading-tight">Gaps identified</span>
-            </div>
-            <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-100 cursor-pointer hover:bg-emerald-100/60 transition" onclick="switchView('report')">
-              <span class="block text-xl font-extrabold text-emerald-700 font-display" id="metric-reports-count">0</span>
-              <span class="text-[10px] font-medium text-emerald-600/90 leading-tight">Verified reports</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- Divider -->
-        <hr class="border-slate-100"/>
-
-        <!-- Research Quality Gauge Section -->
-        <section class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 space-y-3">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-xs font-bold text-slate-900 tracking-tight font-display">Research quality</h3>
-              <p class="text-[10px] text-slate-500">Evidence coverage</p>
-            </div>
-            <span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 font-mono">
-              IDLE
-            </span>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <div>
-              <div class="text-2xl font-black text-slate-900 font-display">0%</div>
-              <span class="text-[10px] font-medium text-slate-500">Awaiting research data</span>
-            </div>
-            <!-- Radial Progress Gauge -->
-            <div class="w-12 h-12 relative flex items-center justify-center">
-              <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
-                <path class="text-indigo-600" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3.5"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%"></div>
-          </div>
-        </section>
-      </aside>
-      <!-- END: Dashboard Right Sidebar -->
     </div>
 
     <!-- ============================================================== -->
@@ -537,24 +451,24 @@
           <h1 class="text-2xl font-bold tracking-tight text-slate-900 font-display">Start a New Research Session</h1>
           <p class="text-xs text-slate-500">Provide an initial objective. Our multi-agent system will cross-reference state-of-the-art literature &amp; codebases.</p>
         </div>
-        <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 shadow-sm flex items-center gap-1.5 transition" onclick="switchView('dashboard')" type="button">
+        <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 shadow-sm flex items-center gap-1.5 transition active:scale-95" onclick="switchView('dashboard')" type="button">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          Cancel
+          Back to Dashboard
         </button>
       </div>
 
-      <div class="max-w-4xl space-y-6">
+      <div class="w-full space-y-6">
         <!-- Interactive Intake Form -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+        <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-6 w-full">
           <div class="flex items-center justify-between">
-            <label class="text-sm font-bold text-slate-900 font-display flex items-center gap-2">
+            <label class="text-sm md:text-base font-bold text-slate-900 font-display flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center">1</span>
               Describe your research problem or project vision
             </label>
             <span class="text-xs font-mono text-slate-400" id="start-char-count">0 / 2500</span>
           </div>
-          <div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-3.5 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
-            <textarea class="w-full text-xs text-slate-800 placeholder-slate-400 bg-transparent border-0 p-0 focus:ring-0 resize-none font-normal leading-relaxed" id="start-problem-textarea" oninput="updateStartCharCount(this)" placeholder="State your technical problem, baseline assumptions, expected inputs and target output metrics..." rows="4"></textarea>
+          <div class="relative rounded-xl border border-slate-200 bg-slate-50/60 p-4 focus-within:border-indigo-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition">
+            <textarea class="w-full text-sm text-slate-800 placeholder-slate-400 bg-transparent border-0 p-0 focus:ring-0 resize-y font-normal leading-relaxed min-h-[160px]" id="start-problem-textarea" oninput="updateStartCharCount(this)" placeholder="State your technical problem, baseline assumptions, expected inputs and target output metrics..." rows="6"></textarea>
           </div>
           <!-- Optional Context Tags / Adders -->
           <div class="space-y-2">
@@ -793,6 +707,38 @@
   </div>
   <!-- END: SPA Views Container -->
 
+  <!-- BEGIN: Floating Navigation Bar (Hovering quick-swap dock) -->
+  <aside id="floating-nav-bar" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 transition-all duration-300" aria-label="Quick View Navigation">
+    <div class="flex items-center gap-1.5 p-1.5 bg-slate-900/90 hover:bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-full shadow-2xl shadow-black/50 ring-1 ring-white/10 hover:shadow-indigo-500/20 hover:scale-[1.02] transition-all">
+      <!-- Dashboard -->
+      <button id="float-nav-dashboard" onclick="switchView('dashboard')" class="float-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 bg-indigo-600 text-white shadow-md shadow-indigo-600/40" title="Dashboard (Press 1)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <span>Dashboard</span>
+      </button>
+
+      <!-- New Research Intake -->
+      <button id="float-nav-start" onclick="switchView('start')" class="float-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium transition active:scale-95 text-slate-300 hover:text-white hover:bg-slate-800/80" title="New Research Intake Fullscreen (Press 2)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <span>New Intake</span>
+      </button>
+
+      <div class="h-4 w-[1px] bg-slate-700/70 mx-0.5"></div>
+
+      <!-- Active Research Session -->
+      <button id="float-nav-active" onclick="switchView('active')" class="float-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium transition active:scale-95 text-slate-300 hover:text-white hover:bg-slate-800/80" title="Live Research Pipeline (Press 3)">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Active Agent</span>
+      </button>
+
+      <!-- Reports -->
+      <button id="float-nav-report" onclick="switchView('report')" class="float-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium transition active:scale-95 text-slate-300 hover:text-white hover:bg-slate-800/80" title="Synthesized Final Reports (Press 4)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <span>Reports</span>
+      </button>
+    </div>
+  </aside>
+  <!-- END: Floating Navigation Bar -->
+
   <!-- Client-side SPA State & Interaction Scripts -->
   <script>
     // Global View and State Definitions
@@ -1020,6 +966,23 @@
         if (dashNav) dashNav.classList.add('text-slate-400');
       }
 
+      // Synchronize Floating Navigation Dock active state
+      const floatNavMap = {
+        'dashboard': 'float-nav-dashboard',
+        'start': 'float-nav-start',
+        'active': 'float-nav-active',
+        'report': 'float-nav-report'
+      };
+      Object.entries(floatNavMap).forEach(([vKey, btnId]) => {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        if (vKey === viewName) {
+          btn.className = 'float-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 bg-indigo-600 text-white shadow-md shadow-indigo-600/40';
+        } else {
+          btn.className = 'float-nav-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium transition active:scale-95 text-slate-300 hover:text-white hover:bg-slate-800/80';
+        }
+      });
+
       // View-specific lifecycle hooks
       if (viewName === 'report') {
         if (sectionId) {
@@ -1052,6 +1015,29 @@
         window.location.hash = targetHash;
       }
     }
+
+    /**
+     * Seamlessly transition from Dashboard to Fullscreen New Research Intake,
+     * carrying over any drafted text.
+     */
+    function openFullscreenIntake() {
+      const dashArea = document.getElementById('dashboard-input');
+      const startArea = document.getElementById('start-problem-textarea');
+      if (dashArea && startArea && dashArea.value.trim() && !startArea.value.trim()) {
+        startArea.value = dashArea.value.trim();
+        updateStartCharCount(startArea);
+      }
+      switchView('start');
+    }
+
+    // Floating navigation hotkeys (1: Dashboard, 2: New Intake, 3: Active Agent, 4: Reports)
+    window.addEventListener('keydown', (e) => {
+      if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === '1') switchView('dashboard');
+      if (e.key === '2') switchView('start');
+      if (e.key === '3') switchView('active');
+      if (e.key === '4') switchView('report');
+    });
 
     // Window hashchange event listener for browser history (Back / Forward)
     window.addEventListener('hashchange', () => {
@@ -1291,6 +1277,7 @@
 
     // Expose functions globally for event handlers & testing
     window.switchView = switchView;
+    window.openFullscreenIntake = openFullscreenIntake;
     window.showToast = showToast;
     window.renderView = renderView;
     window.togglePauseResearch = togglePauseResearch;
