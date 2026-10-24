@@ -1,3 +1,10 @@
 .env
+.env.*
 outputs/
-research_orchestrator/outputs/
+research_orchestrator/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.DS_Store

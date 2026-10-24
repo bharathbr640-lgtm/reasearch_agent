@@ -64,21 +64,20 @@ The testing track maps all 40 features defined in `PROJECT.md` into four distinc
 - **Deterministic Mocking**: For LLM interactions in CI/test runner environments where live Ollama/OpenAI servers may be unavailable or non-deterministic, tests provide a deterministic runner mock via pytest fixtures (`conftest.py`) simulating realistic Orchestrator responses, tool calls, and finalization sequences while keeping the full FastAPI HTTP endpoint, schema validation, and session store completely intact.
 
 ### 3.2 Directory Structure
-All automated tests reside under `research_orchestrator/tests/`:
+All automated tests reside under `tests/`:
 ```
-research_orchestrator/
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py               # Shared fixtures, test clients, mock runners
-│   ├── test_api_contract.py      # Tier 1 & Tier 2: Endpoint schemas, validation, headers, 404/405/422
-│   ├── test_spa_structure.py     # Tier 1 & Tier 4: DOM verification, 4 views, IDs, prototype fidelity
-│   └── test_flow_scenarios.py    # Tier 3 & Tier 4: Multi-turn chat, isolation, lifecycle simulation
+tests/
+├── __init__.py
+├── conftest.py               # Shared fixtures, test clients, mock runners
+├── test_api_contract.py      # Tier 1 & Tier 2: Endpoint schemas, validation, headers, 404/405/422
+├── test_spa_structure.py     # Tier 1 & Tier 4: DOM verification, 4 views, IDs, prototype fidelity
+└── test_flow_scenarios.py    # Tier 3 & Tier 4: Multi-turn chat, isolation, lifecycle simulation
 ```
 
 ### 3.3 Test Execution Commands
 - **Run all E2E test suites**:
   ```bash
-  cd /Users/bharathbr/reasearch_agent/research_orchestrator && python3 -m pytest tests/ -v
+  cd /Users/bharathbr/reasearch_agent && python3 -m pytest tests/ -v
   ```
 - **Run specific tier / suite**:
   ```bash

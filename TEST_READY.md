@@ -3,7 +3,7 @@
 **Date**: 2026-10-14  
 **Track**: End-to-End (E2E) & Integration Testing  
 **Status**: **READY** (Baseline Execution: 28 Passed, 1 Skipped [Progressive Gate], 0 Failed)  
-**Test Suite Directory**: `/Users/bharathbr/reasearch_agent/research_orchestrator/tests/`
+**Test Suite Directory**: `/Users/bharathbr/reasearch_agent/tests/`
 
 ---
 
@@ -11,7 +11,7 @@
 
 To execute the entire automated E2E test suite:
 ```bash
-cd /Users/bharathbr/reasearch_agent/research_orchestrator && python3 -m pytest tests/ -v
+cd /Users/bharathbr/reasearch_agent && python3 -m pytest tests/ -v
 ```
 
 To run individual test suites:
@@ -95,7 +95,7 @@ In accordance with progressive testability guidelines:
 ```
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.2, pytest-9.0.3, pluggy-1.6.0
-rootdir: /Users/bharathbr/reasearch_agent/research_orchestrator
+rootdir: /Users/bharathbr/reasearch_agent
 plugins: anyio-4.12.1, langsmith-0.11.1, asyncio-1.3.0
 collected 29 items
 

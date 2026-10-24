@@ -1,10 +1,10 @@
 # Project: AI Research Agent - Unified Workspace Replication
 
 ## Architecture
-- **Presentation Layer**: Single-page application in `research_orchestrator/static/index.html` utilizing Tailwind CSS (via CDN with forms and container-queries plugins), Google Fonts (`Inter`, `Plus Jakarta Sans`, `JetBrains Mono`), and Material Symbols Outlined.
+- **Presentation Layer**: Single-page application in `static/index.html` utilizing Tailwind CSS (via CDN with forms and container-queries plugins), Google Fonts (`Inter`, `Plus Jakarta Sans`, `JetBrains Mono`), and Material Symbols Outlined.
 - **Client Controller & State Management**: Zero-reload client-side hash router (`#/dashboard`, `#/start`, `#/active`, `#/report`) managing 4 view containers (`#view-dashboard`, `#view-start`, `#view-active`, `#view-report`), localStorage-backed session registry, turn history, and real-time pipeline telemetry.
-- **Backend Service**: Lightweight FastAPI service (`research_orchestrator/app/main.py`) serving static UI on `GET /` and `/static`, managing conversational agent execution via `POST /chat`, and persisting confirmed specs to `outputs/{session_id}/`.
-- **Zero Heavy Dependencies Constraint**: Strict preservation of `research_orchestrator/requirements.txt` with no new backend frameworks, databases, or build toolchains added.
+- **Backend Service**: Lightweight FastAPI service (`app/main.py`) serving static UI on `GET /` and `/static`, managing conversational agent execution via `POST /chat`, and persisting confirmed specs to `outputs/{session_id}/`.
+- **Zero Heavy Dependencies Constraint**: Strict preservation of `requirements.txt` with no new backend frameworks, databases, or build toolchains added.
 
 ---
 
@@ -59,7 +59,7 @@
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
 | M1 | Backend Foundation & Static Output Mounting | Verify `app/main.py` routes, mount `outputs/` via `StaticFiles`, verify zero dependency additions in `requirements.txt` | none | DONE |
-| M2 | SPA Shell & High-Fidelity 4-View Layout | Implement unified workspace layout in `research_orchestrator/static/index.html` with Tailwind, fonts, icons, hash routing, and all 4 views | M1 | IN_PROGRESS |
+| M2 | SPA Shell & High-Fidelity 4-View Layout | Implement unified workspace layout in `static/index.html` with Tailwind, fonts, icons, hash routing, and all 4 views | M1 | IN_PROGRESS |
 | M3 | Interactive Client State, Dialogue & Backend Flow | Implement client store, wire `POST /chat`, interactive 2-column active session with dialogue and telemetry, error handling | M2 | PLANNED |
 | M4 | Report Hydration, Export Actions & Final E2E Suite Pass | Wire `finalized: true` report hydration, spec export, pass 100% E2E test suite (Tiers 1-4), and Tier 5 adversarial hardening | M3 | PLANNED |
 
@@ -93,7 +93,7 @@
 
 ### Client ↔ Backend (`GET /` and `/static/*`)
 - `GET /` -> Returns `static/index.html` with MIME type `text/html; charset=utf-8`.
-- `GET /static/{filepath}` -> Serves static assets from `research_orchestrator/static/`.
+- `GET /static/{filepath}` -> Serves static assets from `static/`.
 - `GET /outputs/{session_id}/{filename}` -> Serves `research_spec.json` and `clarified_problem_statement.md`.
 
 ### Client Internal State Model
@@ -128,10 +128,10 @@ interface AppState {
 ---
 
 ## Code Layout
-- `research_orchestrator/app/main.py`: FastAPI server entrypoint and route declarations.
-- `research_orchestrator/app/agent.py`: Orchestrator agent definitions and prompt configuration.
-- `research_orchestrator/app/tools.py`: Research spec finalization tools and file generation.
-- `research_orchestrator/app/config.py`: Configuration settings and environment variables.
-- `research_orchestrator/static/index.html`: Unified workspace SPA containing HTML markup, Tailwind configuration, SVG icons, and client JavaScript.
-- `research_orchestrator/outputs/`: Output directory where finalized research specs are saved per session.
-- `research_orchestrator/tests/` (or `test_e2e.py`): E2E and API contract test suite.
+- `app/main.py`: FastAPI server entrypoint and route declarations.
+- `app/agent.py`: Orchestrator agent definitions and prompt configuration.
+- `app/tools.py`: Research spec finalization tools and file generation.
+- `app/config.py`: Configuration settings and environment variables.
+- `static/index.html`: Unified workspace SPA containing HTML markup, Tailwind configuration, SVG icons, and client JavaScript.
+- `outputs/`: Output directory where finalized research specs are saved per session.
+- `tests/` (or `test_e2e.py`): E2E and API contract test suite.
